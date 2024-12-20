@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
+import 'package:mylo/modules/contract/pages/contract_new.dart';
 import 'contract/pages/contract_detail.dart';
 
 class PageFrame extends StatefulWidget {
@@ -85,7 +86,7 @@ class _PageFrameState extends State<PageFrame> {
                   ),
                   onChanged: (value) {},
                 ),
-              )
+              ),
             ),
             Expanded(
               child: Container(
@@ -171,7 +172,7 @@ class _PageFrameState extends State<PageFrame> {
                                           child: Column(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             mainAxisSize: MainAxisSize.min,
-                                            children: <Widget>[
+                                            children: [
                                               const Text('Modal BottomSheet'),
                                               ElevatedButton(
                                                 child: const Text('Close BottomSheet'),
@@ -407,6 +408,78 @@ class _PageFrameState extends State<PageFrame> {
       ),
       floatingActionButton: InkWell(
         onTap: () {
+          showModalBottomSheet(
+            context: context,
+            builder: (BuildContext context) {
+              return SizedBox(
+                height: 200,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const ContractNew()),
+                          );
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          height: 40,
+                          padding: const EdgeInsets.symmetric(horizontal: 16,),
+                          // color: Colors.red,
+                          alignment: Alignment.centerLeft,
+                          child: const Text(
+                            '新增合約',
+                            style: TextStyle(
+                              color: Color(0xFF222222),
+                              fontSize: 16,
+                              fontFamily: 'PingFang TC',
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        width: double.infinity,
+                        height: 40,
+                        padding: const EdgeInsets.symmetric(horizontal: 16,),
+                        // color: Colors.orange,
+                        alignment: Alignment.centerLeft,
+                        child: const Text(
+                          '上傳合約',
+                          style: TextStyle(
+                            color: Color(0xFF2B2F35),
+                            fontSize: 15,
+                            fontFamily: 'PingFang TC',
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        width: double.infinity,
+                        height: 40,
+                        padding: const EdgeInsets.symmetric(horizontal: 16,),
+                        // color: Colors.yellow,
+                        alignment: Alignment.centerLeft,
+                        child: const Text(
+                          '自訂合約',
+                          style: TextStyle(
+                            color: Color(0xFF2B2F35),
+                            fontSize: 15,
+                            fontFamily: 'PingFang TC',
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          );
           setState(() {
             _selectedIndex = 4;
           });
