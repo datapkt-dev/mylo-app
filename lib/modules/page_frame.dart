@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
-import 'package:mylo/modules/contract/pages/contract_new.dart';
-import 'contract/pages/contract_detail.dart';
+import 'contract_detail/pages/contract_detail.dart';
+import 'contract_new/pages/contract_new.dart';
 
 class PageFrame extends StatefulWidget {
   const PageFrame({super.key});
