@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mylo/modules/page_frame.dart';
+import 'package:mylo/modules/index.dart';
 
 void main() {
   runApp(const MyApp());
@@ -33,6 +33,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return const PageFrame();
+    return const IndexPage();
   }
 }

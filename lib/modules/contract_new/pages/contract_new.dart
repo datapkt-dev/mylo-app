@@ -2,8 +2,11 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:mylo/modules/contract_new/pages/contract_new_complete.dart';
 import 'package:mylo/modules/contract_new/widgets/contract_new_step1.dart';
 import 'package:mylo/modules/contract_new/widgets/contract_new_step2.dart';
+import 'package:mylo/modules/contract_new/widgets/contract_new_step3.dart';
+import 'package:mylo/modules/contract_new/widgets/contract_new_step4.dart';
 import 'package:timelines/timelines.dart';
 
 class ContractNew extends StatefulWidget {
@@ -16,8 +19,8 @@ class ContractNew extends StatefulWidget {
 class _ContractNewState extends State<ContractNew> {
   final int _totalStages = 5;
   final List<String> _processes = ['選擇物件', '填寫資料', '屋況點交', '預覽合約', '完成合約',];
-  final List<Widget> _steps = [ContractNewStep1(), ContractNewStep2(),];
-  int _currentStage = 1;
+  final List<Widget> _steps = [const ContractNewStep1(), const ContractNewStep2(), const ContractNewStep3(), const ContractNewStep4(), Container(),];
+  int _currentStage = 0;
 
 
   @override
@@ -106,7 +109,7 @@ class _ContractNewState extends State<ContractNew> {
                     ),
                   ),
                   const Gap(10),
-                  _steps[1],
+                  _steps[_currentStage],
                 ],
               ),
             ),
@@ -128,25 +131,37 @@ class _ContractNewState extends State<ContractNew> {
                   )
                 ],
               ),
-              child: Container(
-                height: 38,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                alignment: Alignment.center,
-                decoration: ShapeDecoration(
-                  color: const Color(0xFF8C5F42),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                ),
-                child: const Text(
-                  '下一步',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontFamily: 'PingFang SC',
-                    fontWeight: FontWeight.w500,
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _currentStage < 3
+                        ? _currentStage = _currentStage + 1
+                        : Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const ContractNewComplete()),
+                    );
+                  });
+                },
+                child: Container(
+                  height: 38,
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  alignment: Alignment.center,
+                  decoration: ShapeDecoration(
+                    color: const Color(0xFF8C5F42),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                  ),
+                  child: const Text(
+                    '下一步',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontFamily: 'PingFang SC',
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
-              ),
+              )
             ),
           ),
         ],

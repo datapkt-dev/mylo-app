@@ -70,6 +70,16 @@ flutter:
     - assets/icons/frame/auction.svg
     - assets/icons/index/filter.svg
     - assets/icons/index/sort.svg
+    - assets/icons/contract_new/add_button.svg
+    - assets/icons/contract_new/subtract_button.svg
+    - assets/icons/contract_new/camera.svg
+    - assets/icons/contract_new/video-recorder.svg
+    - assets/icons/contract_new/customer_female.svg
+    - assets/icons/contract_new/customer_male.svg
+
+    - assets/images/contract_new/item_0.png
+    - assets/images/contract_new/item_1.png
+    - assets/images/contract_new/item_2.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

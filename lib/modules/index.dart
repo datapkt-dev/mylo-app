@@ -4,14 +4,14 @@ import 'package:gap/gap.dart';
 import 'contract_detail/pages/contract_detail.dart';
 import 'contract_new/pages/contract_new.dart';
 
-class PageFrame extends StatefulWidget {
-  const PageFrame({super.key});
+class IndexPage extends StatefulWidget {
+  const IndexPage({super.key});
 
   @override
-  State<PageFrame> createState() => _PageFrameState();
+  State<IndexPage> createState() => _PageFrameState();
 }
 
-class _PageFrameState extends State<PageFrame> {
+class _PageFrameState extends State<IndexPage> {
   int _selectedIndex = 0;
   int _selectedTab = 0;
   List<Widget> pages = [];
@@ -163,27 +163,27 @@ class _PageFrameState extends State<PageFrame> {
                             children: [
                               GestureDetector(
                                 onTap: () {
-                                  showModalBottomSheet(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return SizedBox(
-                                        height: 200,
-                                        child: Center(
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              const Text('Modal BottomSheet'),
-                                              ElevatedButton(
-                                                child: const Text('Close BottomSheet'),
-                                                onPressed: () => Navigator.pop(context),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  );
+                                  // showModalBottomSheet(
+                                  //   context: context,
+                                  //   builder: (BuildContext context) {
+                                  //     return SizedBox(
+                                  //       height: 200,
+                                  //       child: Center(
+                                  //         child: Column(
+                                  //           mainAxisAlignment: MainAxisAlignment.center,
+                                  //           mainAxisSize: MainAxisSize.min,
+                                  //           children: [
+                                  //             const Text('Modal BottomSheet'),
+                                  //             ElevatedButton(
+                                  //               child: const Text('Close BottomSheet'),
+                                  //               onPressed: () => Navigator.pop(context),
+                                  //             ),
+                                  //           ],
+                                  //         ),
+                                  //       ),
+                                  //     );
+                                  //   },
+                                  // );
                                 },
                                 child: SvgPicture.asset(
                                   'assets/icons/index/filter.svg',
@@ -234,7 +234,7 @@ class _PageFrameState extends State<PageFrame> {
                               onTap: () {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => const Detail()),
+                                  MaterialPageRoute(builder: (context) => Detail(status: index % 3,)),
                                 );
                               },
                               child: Container(
@@ -288,6 +288,13 @@ class _PageFrameState extends State<PageFrame> {
                                             color: const Color(0xFFE3E7EA),
                                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
                                           ),
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(4), // 保持與 Container 的圓角一致
+                                            child: Image.asset(
+                                              'assets/images/contract_new/item_${index%3}.png',
+                                              fit: BoxFit.cover, // 使用 BoxFit
+                                            ),
+                                          ),
                                         ),
                                         const Gap(12),
                                         const Expanded(
@@ -319,7 +326,7 @@ class _PageFrameState extends State<PageFrame> {
                                                 children: [
                                                   CircleAvatar(
                                                     radius: 12,
-                                                    backgroundColor: const Color(0XFFF0F7FE),
+                                                    backgroundColor: Color(0XFFF0F7FE),
                                                   ),
                                                   Gap(4),
                                                   Text(

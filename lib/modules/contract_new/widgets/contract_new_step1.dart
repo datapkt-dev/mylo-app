@@ -76,6 +76,13 @@ class _ContractNewStep1State extends State<ContractNewStep1> {
                           color: const Color(0xFFE3E7EA),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
                         ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(4), // 保持與 Container 的圓角一致
+                          child: Image.asset(
+                            'assets/images/contract_new/item_${index%3}.png',
+                            fit: BoxFit.cover, // 使用 BoxFit
+                          ),
+                        ),
                       ),
                       const Gap(10),
                       const Expanded(

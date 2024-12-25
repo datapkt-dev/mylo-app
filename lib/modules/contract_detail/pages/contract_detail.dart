@@ -7,7 +7,8 @@ import '../widgets/contract_fare.dart';
 import '../widgets/contract_information.dart';
 
 class Detail extends StatefulWidget {
-  const Detail({super.key});
+  final int status;
+  const Detail({super.key, required this.status});
 
   @override
   State<Detail> createState() => _DetailState();
@@ -22,6 +23,12 @@ class _DetailState extends State<Detail> {
   List<Color> statusBlock = [const Color(0xFFFFE4E4), const Color(0xFFD9F2E5), const Color(0xFFE3E7EA),];
   List<Color> statusText = [const Color(0xFFFF4444), const Color(0xFF248568), const Color(0xFF7B8A95),];
   int key = 2;
+
+  @override
+  void initState() {
+    super.initState();
+    key = widget.status;
+  }
 
   @override
   Widget build(BuildContext context) {
