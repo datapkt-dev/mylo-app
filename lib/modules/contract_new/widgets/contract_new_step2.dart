@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
+import 'package:mylo/modules/contract_new/pages/contract_new_customer.dart';
 
 class ContractNewStep2 extends StatefulWidget {
   // 填寫資料
@@ -479,7 +480,10 @@ class _ContractNewStep2State extends State<ContractNewStep2> {
                                                 ),
                                                 onTap: () {
                                                   // 編輯簽約人操作
-                                                  Navigator.pop(context);
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(builder: (context) => const ContractNewCustomer()),
+                                                  );
                                                 },
                                               ),
                                               Divider(height: 1, color: Colors.grey.shade300),
