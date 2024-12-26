@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
+import 'package:intl/intl.dart';
 
 class ContractNewStep2 extends StatefulWidget {
+  // 填寫資料
   const ContractNewStep2({super.key});
 
   @override
@@ -16,6 +18,8 @@ class _ContractNewStep2State extends State<ContractNewStep2> {
     ['1', '林旺', 'A987654321', '2000/01/01', '0987654321', '台中市大雅區民生路三段315號'],
     ['0', '', '', '', '', ''],
   ];
+  DateTime effective = DateTime.now();
+  DateTime expiration = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -270,12 +274,18 @@ class _ContractNewStep2State extends State<ContractNewStep2> {
                       Expanded(
                         child: GestureDetector(
                           onTap: () async {
-                            await showDatePicker(
+                            var result = await showDatePicker(
                               context: context,
                               initialDate: DateTime.now(),
                               firstDate: DateTime(2023, 01),
                               lastDate: DateTime(2026, 12),
+                              locale: const Locale('zh', 'TW'),
                             );
+                            if (result != null) {
+                              setState(() {
+                                effective = result;
+                              });
+                            }
                           },
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -286,6 +296,7 @@ class _ContractNewStep2State extends State<ContractNewStep2> {
                                 borderRadius: BorderRadius.circular(3),
                               ),
                             ),
+                            child: Text('${DateFormat('yyyy/MM/dd').format(effective)}'),
                           ),
                         ),
                       ),
@@ -307,12 +318,17 @@ class _ContractNewStep2State extends State<ContractNewStep2> {
                       Expanded(
                         child: GestureDetector(
                           onTap: () async {
-                            await showDatePicker(
+                            var result = await showDatePicker(
                               context: context,
                               initialDate: DateTime.now(),
                               firstDate: DateTime(2023, 01),
                               lastDate: DateTime(2026, 12),
                             );
+                            if (result != null) {
+                              setState(() {
+                                expiration = result;
+                              });
+                            }
                           },
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -323,6 +339,7 @@ class _ContractNewStep2State extends State<ContractNewStep2> {
                                 borderRadius: BorderRadius.circular(3),
                               ),
                             ),
+                            child: Text('${DateFormat('yyyy/MM/dd').format(expiration)}'),
                           ),
                         ),
                       ),
@@ -434,15 +451,196 @@ class _ContractNewStep2State extends State<ContractNewStep2> {
                                   ),
                                 ),
                                 const Spacer(),
-                                const Text(
-                                  '編輯',
-                                  style: TextStyle(
-                                    color: Color(0xFF2B2F35),
-                                    fontSize: 15,
-                                    fontFamily: 'PingFang TC',
-                                    fontWeight: FontWeight.w400,
+                                GestureDetector(
+                                  onTap: () {
+                                    showModalBottomSheet(
+                                      context: context,
+                                      shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                                      ),
+                                      builder: (BuildContext context) {
+                                        return Container(
+                                          padding: const EdgeInsets.symmetric(vertical: 16),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              ListTile(
+                                                title: const Center(
+                                                  child: Text(
+                                                    '編輯簽約人',
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                      color: Color(0xFF007AFF),
+                                                      fontSize: 17,
+                                                      fontFamily: 'PingFang TC',
+                                                      fontWeight: FontWeight.w400,
+                                                    ),
+                                                  )
+                                                ),
+                                                onTap: () {
+                                                  // 編輯簽約人操作
+                                                  Navigator.pop(context);
+                                                },
+                                              ),
+                                              Divider(height: 1, color: Colors.grey.shade300),
+                                              ListTile(
+                                                title: const Center(
+                                                  child: Text(
+                                                    '刪除簽約人',
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                      color: Color(0xFFFF3B30),
+                                                      fontSize: 17,
+                                                      fontFamily: 'PingFang TC',
+                                                      fontWeight: FontWeight.w400,
+                                                    ),
+                                                  )
+                                                ),
+                                                onTap: () {
+                                                  // 刪除簽約人操作
+                                                  Navigator.pop(context);
+                                                  showDialog(
+                                                    context: context,
+                                                    builder: (BuildContext context) {
+                                                      return AlertDialog(
+                                                        content: Column(
+                                                          mainAxisSize: MainAxisSize.min,
+                                                          children: [
+                                                            CircleAvatar(
+                                                              radius: 20,
+                                                              backgroundColor: const Color(0xFFFFDFDF).withOpacity(0.4),
+                                                              child: CircleAvatar(
+                                                                radius: 16,
+                                                                backgroundColor: const Color(0xFFFFDFDF),
+                                                                child: SvgPicture.asset('assets/icons/contract_new/trash.svg'),
+                                                              ),
+                                                            ),
+                                                            const Gap(16),
+                                                            const Text(
+                                                              '刪除此簽約人',
+                                                              textAlign: TextAlign.center,
+                                                              style: TextStyle(
+                                                                color: Color(0xFF2B2F35),
+                                                                fontSize: 16,
+                                                                fontFamily: 'PingFang SC',
+                                                                fontWeight: FontWeight.w500,
+                                                              ),
+                                                            ),
+                                                            const Gap(8),
+                                                            const Text(
+                                                              '您是否要刪除此簽約人？',
+                                                              textAlign: TextAlign.center,
+                                                              style: TextStyle(
+                                                                color: Color(0xFF5F6E7B),
+                                                                fontSize: 15,
+                                                                fontFamily: 'PingFang TC',
+                                                                fontWeight: FontWeight.w400,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        actions: [
+                                                          Row(
+                                                            mainAxisSize: MainAxisSize.max,
+                                                            children: [
+                                                              Expanded(
+                                                                child: GestureDetector(
+                                                                  onTap: () {
+                                                                    Navigator.pop(context);
+                                                                  },
+                                                                  child: Container(
+                                                                    height: 38,
+                                                                    alignment: Alignment.center,
+                                                                    decoration: ShapeDecoration(
+                                                                      color: Colors.white,
+                                                                      shape: RoundedRectangleBorder(
+                                                                        side: const BorderSide(width: 1, color: Color(0xFFCBD2D6)),
+                                                                        borderRadius: BorderRadius.circular(4),
+                                                                      ),
+                                                                    ),
+                                                                    child: const Text(
+                                                                      '取消',
+                                                                      style: TextStyle(
+                                                                        color: Color(0xFF2B2F35),
+                                                                        fontSize: 14,
+                                                                        fontFamily: 'Poppins',
+                                                                        fontWeight: FontWeight.w500,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              const Gap(12),
+                                                              Expanded(
+                                                                child: GestureDetector(
+                                                                  onTap: () {
+                                                                    Navigator.pop(context);
+                                                                  },
+                                                                  child: Container(
+                                                                    height: 38,
+                                                                    alignment: Alignment.center,
+                                                                    decoration: ShapeDecoration(
+                                                                      color: Colors.white,
+                                                                      shape: RoundedRectangleBorder(
+                                                                        side: const BorderSide(width: 1, color: Color(0xFFCBD2D6)),
+                                                                        borderRadius: BorderRadius.circular(4),
+                                                                      ),
+                                                                    ),
+                                                                    child: const Text(
+                                                                      '刪除',
+                                                                      textAlign: TextAlign.center,
+                                                                      style: TextStyle(
+                                                                        color: Color(0xFFFF4444),
+                                                                        fontSize: 14,
+                                                                        fontFamily: 'PingFang SC',
+                                                                        fontWeight: FontWeight.w500,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      );
+                                                    },
+                                                  );
+                                                },
+                                              ),
+                                              Divider(height: 1, color: Colors.grey.shade300),
+                                              ListTile(
+                                                title: const Center(
+                                                  child: Text(
+                                                    '取消',
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                      color: Color(0xFF007AFF),
+                                                      fontSize: 17,
+                                                      fontFamily: 'PingFang TC',
+                                                      fontWeight: FontWeight.w600,
+                                                    ),
+                                                  ),
+                                                ),
+                                                onTap: () {
+                                                  Navigator.pop(context);
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                  child: const Text(
+                                    '編輯',
+                                    style: TextStyle(
+                                      color: Color(0xFF2B2F35),
+                                      fontSize: 15,
+                                      fontFamily: 'PingFang TC',
+                                      fontWeight: FontWeight.w400,
+                                    ),
                                   ),
-                                )
+                                ),
                               ],
                             ),
                             if (customerData[index][0] == '1') ...[
@@ -454,7 +652,7 @@ class _ContractNewStep2State extends State<ContractNewStep2> {
                                   //   radius: 20,
                                   //   backgroundColor: Color(0xFFB6E4D0),
                                   // ),
-                                  SvgPicture.asset('assets/icons/contract_new/customer_male.svg'),
+                                  SvgPicture.asset('assets/icons/contract_new/customer_female.svg'),
                                   const Gap(16),
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -556,7 +754,7 @@ class _ContractNewStep2State extends State<ContractNewStep2> {
                       ),
                       onChanged: (value) {},
                     ),
-                  )
+                  ),
                 ],
               )),
             ],

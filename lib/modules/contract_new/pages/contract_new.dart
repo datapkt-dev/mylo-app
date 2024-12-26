@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:mylo/modules/contract_new/pages/contract_new_complete.dart';
@@ -20,7 +18,7 @@ class _ContractNewState extends State<ContractNew> {
   final int _totalStages = 5;
   final List<String> _processes = ['選擇物件', '填寫資料', '屋況點交', '預覽合約', '完成合約',];
   final List<Widget> _steps = [const ContractNewStep1(), const ContractNewStep2(), const ContractNewStep3(), const ContractNewStep4(), Container(),];
-  int _currentStage = 0;
+  int _currentStep = 0;
 
 
   @override
@@ -32,6 +30,19 @@ class _ContractNewState extends State<ContractNew> {
         scrolledUnderElevation: 0,
         elevation: 0,
         centerTitle: false,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_rounded,
+            color: Color(0xFF2B2F35),
+          ),
+          onPressed: () {
+            setState(() {
+              _currentStep > 0
+                  ? _currentStep-=1
+                  : Navigator.pop(context);
+            });
+          },
+        ),
         title: const Text(
           '選擇物件',
           style: TextStyle(
@@ -84,7 +95,7 @@ class _ContractNewState extends State<ContractNew> {
                           );
                         },
                         indicatorBuilder: (_, index) {
-                          if (index <= _currentStage) {
+                          if (index <= _currentStep) {
                             // 完成的節點
                             return const DotIndicator(
                               size: 10.0,
@@ -109,7 +120,7 @@ class _ContractNewState extends State<ContractNew> {
                     ),
                   ),
                   const Gap(10),
-                  _steps[_currentStage],
+                  _steps[_currentStep],
                 ],
               ),
             ),
@@ -134,8 +145,8 @@ class _ContractNewState extends State<ContractNew> {
               child: GestureDetector(
                 onTap: () {
                   setState(() {
-                    _currentStage < 3
-                        ? _currentStage = _currentStage + 1
+                    _currentStep < 3
+                        ? _currentStep = _currentStep + 1
                         : Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => const ContractNewComplete()),

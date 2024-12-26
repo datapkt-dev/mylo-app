@@ -39,6 +39,9 @@ dependencies:
   gap: ^3.0.1
   qr_flutter: ^4.1.0
   timelines: ^0.1.0
+  flutter_localization: ^0.3.0
+  image_picker: ^1.1.2
+  intl: ^0.19.0
 
 dev_dependencies:
   flutter_test:
@@ -76,6 +79,7 @@ flutter:
     - assets/icons/contract_new/video-recorder.svg
     - assets/icons/contract_new/customer_female.svg
     - assets/icons/contract_new/customer_male.svg
+    - assets/icons/contract_new/trash.svg
 
     - assets/images/contract_new/item_0.png
     - assets/images/contract_new/item_1.png

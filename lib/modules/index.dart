@@ -297,12 +297,12 @@ class _PageFrameState extends State<IndexPage> {
                                           ),
                                         ),
                                         const Gap(12),
-                                        const Expanded(
+                                        Expanded(
                                           child: Column(
                                             mainAxisAlignment: MainAxisAlignment.start,
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              Text(
+                                              const Text(
                                                 '林口套房',
                                                 style: TextStyle(
                                                   color: Color(0xFF2B2F35),
@@ -311,8 +311,8 @@ class _PageFrameState extends State<IndexPage> {
                                                   fontWeight: FontWeight.w500,
                                                 ),
                                               ),
-                                              Gap(4),
-                                              Text(
+                                              const Gap(4),
+                                              const Text(
                                                 '台北市大安區和平西路88號',
                                                 style: TextStyle(
                                                   color: Color(0xFF5F6E7B),
@@ -321,15 +321,22 @@ class _PageFrameState extends State<IndexPage> {
                                                   fontWeight: FontWeight.w400,
                                                 ),
                                               ),
-                                              Gap(8),
+                                              const Gap(8),
                                               Row(
                                                 children: [
-                                                  CircleAvatar(
-                                                    radius: 12,
-                                                    backgroundColor: Color(0XFFF0F7FE),
+                                                  // CircleAvatar(
+                                                  //   radius: 12,
+                                                  //   backgroundColor: Color(0XFFF0F7FE),
+                                                  // ),
+                                                  SvgPicture.asset(
+                                                    width: 24,
+                                                    height: 24,
+                                                    index % 2 == 0
+                                                        ? 'assets/icons/contract_new/customer_female.svg'
+                                                        : 'assets/icons/contract_new/customer_male.svg',
                                                   ),
-                                                  Gap(4),
-                                                  Text(
+                                                  const Gap(4),
+                                                  const Text(
                                                     '王房客',
                                                     style: TextStyle(
                                                       color: Color(0xFF2B2F35),

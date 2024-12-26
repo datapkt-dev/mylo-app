@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
 class ContractNewStep1 extends StatefulWidget {
+  // 選擇物件
   const ContractNewStep1({super.key});
 
   @override
