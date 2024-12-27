@@ -1,21 +1,54 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:mylo/units/upload_image_widget.dart';
 
 class ContractNewCustomer extends StatefulWidget {
-  const ContractNewCustomer({super.key});
+  final List<dynamic> dataPass;
+  const ContractNewCustomer({super.key, required this.dataPass});
 
   @override
   State<ContractNewCustomer> createState() => _ContractNewCustomerState();
 }
 
 class _ContractNewCustomerState extends State<ContractNewCustomer> {
+  List<String> imgId = ['', '',];
+  List<dynamic> customerData = [false, '', '', '', '', '', '', '',];
   DateTime birthday = DateTime.now();
-  List<String> id = ['', '',];
+  // [false, '團團', 'H123456789', '2005/12/01', '0912345678', '台中市大雅區民生路三段315號']
+
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController idController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController cityController = TextEditingController();
+  final TextEditingController districtController = TextEditingController();
+  final TextEditingController addressController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.dataPass[0]) {
+      nameController.text = widget.dataPass[1];
+      idController.text = widget.dataPass[2];
+      birthday = DateTime.parse(widget.dataPass[3]);
+      phoneController.text = widget.dataPass[4];
+      cityController.text = widget.dataPass[5];
+      districtController.text = widget.dataPass[6];
+      addressController.text = widget.dataPass[7];
+    }
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    idController.dispose();
+    phoneController.dispose();
+    cityController.dispose();
+    districtController.dispose();
+    addressController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,17 +68,31 @@ class _ContractNewCustomerState extends State<ContractNewCustomer> {
             fontWeight: FontWeight.w500,
           ),
         ),
-        actions: const [
-          Text(
-            '確認',
-            style: TextStyle(
-              color: Color(0xFF8C5F42),
-              fontSize: 16,
-              fontFamily: 'PingFang SC',
-              fontWeight: FontWeight.w500,
+        actions: [
+          GestureDetector(
+            onTap: () {
+              customerData[0] = true;
+              customerData[1] = nameController.text;
+              customerData[2] = idController.text;
+              customerData[3] = DateFormat('yyyy-MM-dd').format(birthday);
+              customerData[4] = phoneController.text;
+              customerData[5] = cityController.text;
+              customerData[6] = districtController.text;
+              customerData[7] = addressController.text;
+              print(customerData);
+              Navigator.pop(context, customerData);
+            },
+            child: const Text(
+              '確認',
+              style: TextStyle(
+                color: Color(0xFF8C5F42),
+                fontSize: 16,
+                fontFamily: 'PingFang SC',
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
-          Gap(16),
+          const Gap(16),
         ],
       ),
       body: Padding(
@@ -77,6 +124,7 @@ class _ContractNewCustomerState extends State<ContractNewCustomer> {
                       ),
                     ),
                     child: TextField(
+                      controller: nameController,
                       maxLines: 1,
                       decoration: const InputDecoration(
                         hintText: '簽約人姓名',
@@ -113,6 +161,7 @@ class _ContractNewCustomerState extends State<ContractNewCustomer> {
                       ),
                     ),
                     child: TextField(
+                      controller: idController,
                       maxLines: 1,
                       decoration: const InputDecoration(
                         hintText: '簽約人身分證字號',
@@ -187,6 +236,7 @@ class _ContractNewCustomerState extends State<ContractNewCustomer> {
                       ),
                     ),
                     child: TextField(
+                      controller: phoneController,
                       maxLines: 1,
                       decoration: const InputDecoration(
                         hintText: '簽約人電話',
@@ -225,6 +275,7 @@ class _ContractNewCustomerState extends State<ContractNewCustomer> {
                             ),
                           ),
                           child: TextField(
+                            controller: cityController,
                             maxLines: 1,
                             decoration: const InputDecoration(
                               hintText: '縣市',
@@ -252,6 +303,7 @@ class _ContractNewCustomerState extends State<ContractNewCustomer> {
                             ),
                           ),
                           child: TextField(
+                            controller: districtController,
                             maxLines: 1,
                             decoration: const InputDecoration(
                               hintText: '區域',
@@ -280,6 +332,7 @@ class _ContractNewCustomerState extends State<ContractNewCustomer> {
                       ),
                     ),
                     child: TextField(
+                      controller: addressController,
                       maxLines: 1,
                       decoration: const InputDecoration(
                         hintText: '詳細地址',
@@ -316,7 +369,7 @@ class _ContractNewCustomerState extends State<ContractNewCustomer> {
                         onImagePicked: (path) {
                           if (path.isNotEmpty) {
                             setState(() {
-                              id[0] = path;
+                              imgId[0] = path;
                             });
                           }
                           else {
@@ -325,7 +378,7 @@ class _ContractNewCustomerState extends State<ContractNewCustomer> {
                         },
                         child: Image.asset('assets/images/contract_new/fillin_id_f.png'),
                       ),
-                      id[0] != ''
+                      imgId[0] != ''
                           ? Positioned(
                         top: 21,
                         left: 17,
@@ -335,7 +388,7 @@ class _ContractNewCustomerState extends State<ContractNewCustomer> {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(3),
                             child: Image.file(
-                              File(id[0]),
+                              File(imgId[0]),
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -351,7 +404,7 @@ class _ContractNewCustomerState extends State<ContractNewCustomer> {
                         onImagePicked: (path) {
                           if (path.isNotEmpty) {
                             setState(() {
-                              id[1] = path;
+                              imgId[1] = path;
                             });
                           }
                           else {
@@ -360,7 +413,7 @@ class _ContractNewCustomerState extends State<ContractNewCustomer> {
                         },
                         child: Image.asset('assets/images/contract_new/fillin_id_b.png'),
                       ),
-                      id[1] != ''
+                      imgId[1] != ''
                           ? Positioned(
                         top: 21,
                         left: 17,
@@ -370,7 +423,7 @@ class _ContractNewCustomerState extends State<ContractNewCustomer> {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(3),
                             child: Image.file(
-                              File(id[1]),
+                              File(imgId[1]),
                               fit: BoxFit.cover,
                             ),
                           ),

@@ -17,19 +17,26 @@ class ContractNewStep3 extends StatefulWidget {
 class _ContractNewStep3State extends State<ContractNewStep3> {
   bool light = true;
   List<List<dynamic>> furniture = [
-    ['雙人床床架', false, ''],
-    ['床頭櫃', false, ''],
-    ['沙發', false, ''],
+    ['雙人床床架', false, '', ''],
+    ['床頭櫃', false, '', ''],
+    ['沙發', false, '', ''],
   ];
   List<List<dynamic>> appliance = [
-    ['電風扇', false, ''],
-    ['冰箱', false, ''],
-    ['電視', false, ''],
-    ['電視遙控器', false, ''],
+    ['電風扇', false, '', ''],
+    ['冰箱', false, '', ''],
+    ['電視', false, '', ''],
+    ['電視遙控器', false, '', ''],
     ['冷氣', false, ''],
-    ['冷氣遙控器', false, ''],
+    ['冷氣遙控器', false, '', ''],
   ];
   List<String> imgRoute = [];
+  final TextEditingController descriptionController = TextEditingController();
+
+  @override
+  void dispose() {
+    descriptionController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +83,193 @@ class _ContractNewStep3State extends State<ContractNewStep3> {
                               children: [
                                 Row(
                                   children: [
-                                    SvgPicture.asset('assets/icons/contract_new/camera.svg'),
+                                    GestureDetector(
+                                      onTap: () async {
+                                        furniture[index][2] != ''
+                                            ? imgRoute[0] = furniture[index][2]
+                                            : imgRoute = [];
+                                        furniture[index][3] != ''
+                                            ? descriptionController.text = furniture[index][3]
+                                            : descriptionController.text = '';
+                                        final result = await showModalBottomSheet(
+                                          backgroundColor: Colors.white,
+                                          context: context,
+                                          shape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                                          ),
+                                          builder: (BuildContext context) {
+                                            return StatefulBuilder(
+                                              builder: (BuildContext context, StateSetter setState) {
+                                                return Container(
+                                                  width: double.infinity,
+                                                  padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16,),
+                                                  child: Column(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Text(
+                                                        '${furniture[index][0]}',
+                                                        style: const TextStyle(
+                                                          color: Color(0xFF222222),
+                                                          fontSize: 18,
+                                                          fontFamily: 'PingFang TC',
+                                                          fontWeight: FontWeight.w500,
+                                                        ),
+                                                      ),
+                                                      const Gap(12),
+                                                      Wrap(
+                                                        runSpacing: 12,
+                                                        spacing: 12,
+                                                        children: List.generate(imgRoute.length+1, (index) {
+                                                          if (index == imgRoute.length) {
+                                                            return UploadImageWidget(
+                                                              onImagePicked: (path) {
+                                                                if (imgRoute.length<3) {
+                                                                  if (path.isNotEmpty) {
+                                                                    setState(() {
+                                                                      imgRoute.add(path);
+                                                                    });
+                                                                  }
+                                                                  else {
+                                                                    print("Invalid file path.");
+                                                                  }
+                                                                }
+                                                              },
+                                                              child: Container(
+                                                                width: 80,
+                                                                height: 80,
+                                                                alignment: Alignment.center,
+                                                                decoration: ShapeDecoration(
+                                                                  color: Colors.white,
+                                                                  shape: RoundedRectangleBorder(
+                                                                    side: const BorderSide(width: 1, color: Color(0xFF319877)),
+                                                                    borderRadius: BorderRadius.circular(3),
+                                                                  ),
+                                                                ),
+                                                                child: Column(
+                                                                  mainAxisSize: MainAxisSize.min,
+                                                                  children: [
+                                                                    SvgPicture.asset(
+                                                                      width: 14,
+                                                                      height: 14,
+                                                                      'assets/icons/contract_new/camera.svg',
+                                                                    ),
+                                                                    const Gap(8),
+                                                                    Text(
+                                                                      '上傳 $index/3',
+                                                                      style: const TextStyle(
+                                                                        color: Color(0xFF5F6E7B),
+                                                                        fontSize: 14,
+                                                                        fontFamily: 'PingFang TC',
+                                                                        fontWeight: FontWeight.w400,
+                                                                        letterSpacing: 0.70,
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            );
+                                                          } else {
+                                                            return SizedBox(
+                                                              width: 80,
+                                                              height: 80,
+                                                              child: ClipRRect(
+                                                                borderRadius: BorderRadius.circular(3),
+                                                                child: Image.file(
+                                                                  File(imgRoute[index]),
+                                                                  fit: BoxFit.cover,
+                                                                ),
+                                                              ),
+                                                            );
+                                                          }
+                                                        }),
+                                                      ),
+                                                      const Gap(8),
+                                                      const Text(
+                                                        '備註',
+                                                        style: TextStyle(
+                                                          color: Color(0xFF2B2F35),
+                                                          fontSize: 15,
+                                                          fontFamily: 'PingFang TC',
+                                                          fontWeight: FontWeight.w400,
+                                                        ),
+                                                      ),
+                                                      const Gap(8),
+                                                      Container(
+                                                        height: 48,
+                                                        width: double.infinity,
+                                                        padding: const EdgeInsets.symmetric(horizontal: 16,),
+                                                        decoration: ShapeDecoration(
+                                                          color: const Color(0xFFF4F6F7),
+                                                          shape: RoundedRectangleBorder(
+                                                            side: const BorderSide(width: 1, color: Color(0xFFF4F6F7)),
+                                                            borderRadius: BorderRadius.circular(3),
+                                                          ),
+                                                        ),
+                                                        child: TextField(
+                                                          controller: descriptionController,
+                                                          maxLines: 1,
+                                                          decoration: const InputDecoration(
+                                                            hintText: '備註說明',
+                                                            hintStyle: TextStyle(
+                                                              color: Color(0xFF2B2F35),
+                                                              fontSize: 15,
+                                                              fontFamily: 'PingFang TC',
+                                                              fontWeight: FontWeight.w400,
+                                                            ),
+                                                            border: InputBorder.none,
+                                                          ),
+                                                          onChanged: (value) {},
+                                                        ),
+                                                      ),
+                                                      const Gap(24),
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          if (imgRoute.isNotEmpty) {
+                                                            List<String> img = [imgRoute[0], descriptionController.text];
+                                                            Navigator.pop(context, img);
+                                                          } else {
+                                                            Navigator.pop(context, '');
+                                                          }
+                                                        },
+                                                        child: Container(
+                                                          height: 40,
+                                                          width: double.infinity,
+                                                          alignment: Alignment.center,
+                                                          decoration: ShapeDecoration(
+                                                            color: const Color(0xFF8C5F42),
+                                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
+                                                          ),
+                                                          child: const Text(
+                                                            '確定',
+                                                            textAlign: TextAlign.center,
+                                                            style: TextStyle(
+                                                              color: Colors.white,
+                                                              fontSize: 16,
+                                                              fontFamily: 'PingFang TC',
+                                                              fontWeight: FontWeight.w500,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              },
+                                            );
+                                          },
+                                        );
+                                        if (result == null) {
+                                          print("使用者未點擊確定，返回值為 null");
+                                        } else {
+                                          setState(() {
+                                            furniture[index][2] = result[0];
+                                            furniture[index][3] = result[1];
+                                          });
+                                        }
+                                      },
+                                      child: SvgPicture.asset('assets/icons/contract_new/camera.svg'),
+                                    ),
                                     const Gap(8),
                                     Text(
                                       '${furniture[index][0]} X1',
@@ -105,231 +298,55 @@ class _ContractNewStep3State extends State<ContractNewStep3> {
                             Transform.scale(
                               scale: 0.8,
                               child: Switch(
-                                value: furniture[index][2] != '',
+                                value: furniture[index][1],
                                 activeColor: const Color(0xFF8C5F42),
                                 onChanged: (bool value) async {
-                                  furniture[index][2] != ''
-                                      ? imgRoute[0] = furniture[index][2]
-                                      : imgRoute = [];
-                                  final result = await showModalBottomSheet(
-                                    backgroundColor: Colors.white,
-                                    context: context,
-                                    shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-                                    ),
-                                    builder: (BuildContext context) {
-                                      return StatefulBuilder(
-                                        builder: (BuildContext context, StateSetter setState) {
-                                          return Container(
-                                            width: double.infinity,
-                                            padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16,),
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  '${furniture[index][0]}',
-                                                  style: const TextStyle(
-                                                    color: Color(0xFF222222),
-                                                    fontSize: 18,
-                                                    fontFamily: 'PingFang TC',
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                ),
-                                                const Gap(12),
-                                                Wrap(
-                                                  runSpacing: 12,
-                                                  spacing: 12,
-                                                  children: List.generate(imgRoute.length+1, (index) {
-                                                    if (index == imgRoute.length) {
-                                                      return UploadImageWidget(
-                                                        onImagePicked: (path) {
-                                                          if (imgRoute.length<3) {
-                                                            if (path.isNotEmpty) {
-                                                              setState(() {
-                                                                imgRoute.add(path);
-                                                              });
-                                                            }
-                                                            else {
-                                                              print("Invalid file path.");
-                                                            }
-                                                          }
-                                                        },
-                                                        child: Container(
-                                                          width: 80,
-                                                          height: 80,
-                                                          alignment: Alignment.center,
-                                                          decoration: ShapeDecoration(
-                                                            color: Colors.white,
-                                                            shape: RoundedRectangleBorder(
-                                                              side: const BorderSide(width: 1, color: Color(0xFF319877)),
-                                                              borderRadius: BorderRadius.circular(3),
-                                                            ),
-                                                          ),
-                                                          child: Column(
-                                                            mainAxisSize: MainAxisSize.min,
-                                                            children: [
-                                                              SvgPicture.asset(
-                                                                width: 14,
-                                                                height: 14,
-                                                                'assets/icons/contract_new/camera.svg',
-                                                              ),
-                                                              const Gap(8),
-                                                              Text(
-                                                                '上傳 $index/3',
-                                                                style: const TextStyle(
-                                                                  color: Color(0xFF5F6E7B),
-                                                                  fontSize: 14,
-                                                                  fontFamily: 'PingFang TC',
-                                                                  fontWeight: FontWeight.w400,
-                                                                  letterSpacing: 0.70,
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      );
-                                                    } else {
-                                                      return SizedBox(
-                                                        width: 80,
-                                                        height: 80,
-                                                        child: ClipRRect(
-                                                          borderRadius: BorderRadius.circular(3),
-                                                          child: Image.file(
-                                                            File(imgRoute[index]),
-                                                            fit: BoxFit.cover,
-                                                          ),
-                                                        ),
-                                                      );
-                                                    }
-                                                  }),
-                                                ),
-                                                const Gap(8),
-                                                const Text(
-                                                  '備註',
-                                                  style: TextStyle(
-                                                    color: Color(0xFF2B2F35),
-                                                    fontSize: 15,
-                                                    fontFamily: 'PingFang TC',
-                                                    fontWeight: FontWeight.w400,
-                                                  ),
-                                                ),
-                                                const Gap(8),
-                                                Container(
-                                                  height: 48,
-                                                  width: double.infinity,
-                                                  padding: const EdgeInsets.symmetric(horizontal: 16,),
-                                                  decoration: ShapeDecoration(
-                                                    color: const Color(0xFFF4F6F7),
-                                                    shape: RoundedRectangleBorder(
-                                                      side: const BorderSide(width: 1, color: Color(0xFFF4F6F7)),
-                                                      borderRadius: BorderRadius.circular(3),
-                                                    ),
-                                                  ),
-                                                  child: TextField(
-                                                    maxLines: 1,
-                                                    decoration: const InputDecoration(
-                                                      hintText: '備註說明',
-                                                      hintStyle: TextStyle(
-                                                        color: Color(0xFF2B2F35),
-                                                        fontSize: 15,
-                                                        fontFamily: 'PingFang TC',
-                                                        fontWeight: FontWeight.w400,
-                                                      ),
-                                                      border: InputBorder.none,
-                                                    ),
-                                                    onChanged: (value) {},
-                                                  ),
-                                                ),
-                                                const Gap(24),
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    if (imgRoute.isNotEmpty) {
-                                                      Navigator.pop(context, imgRoute[0]);
-                                                    } else {
-                                                      Navigator.pop(context, '');
-                                                    }
-                                                  },
-                                                  child: Container(
-                                                    height: 40,
-                                                    width: double.infinity,
-                                                    alignment: Alignment.center,
-                                                    decoration: ShapeDecoration(
-                                                      color: const Color(0xFF8C5F42),
-                                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-                                                    ),
-                                                    child: const Text(
-                                                      '確定',
-                                                      textAlign: TextAlign.center,
-                                                      style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 16,
-                                                        fontFamily: 'PingFang TC',
-                                                        fontWeight: FontWeight.w500,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          );
-                                        },
-                                      );
-                                    },
-                                  );
-                                  if (result == null) {
-                                    setState(() {
-                                      furniture[index][2] = '';
-                                    });
-                                    print("使用者未點擊確定，返回值為 null");
-                                  } else {
-                                    setState(() {
-                                      furniture[index][2] = result;
-                                    });
-                                  }
+                                  setState(() {
+                                    furniture[index][1] = !furniture[index][1];
+                                  });
                                 },
                               ),
                             ),
                           ],
                         ),
-                        furniture[index][2] != ''
-                            ? Container(
-                          width: double.infinity,
-                          height: 116,
-                          padding: const EdgeInsets.all(8),
-                          decoration: ShapeDecoration(
-                            color: const Color(0xFFF4F6F7),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              SizedBox(
-                                width: 80,
-                                height: 80,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(3),
-                                  child: Image.file(
-                                    File(furniture[index][2]),
-                                    fit: BoxFit.cover,
+                        if (furniture[index][2] != '' && furniture[index][1]) ...[
+                          Container(
+                            width: double.infinity,
+                            height: 116,
+                            padding: const EdgeInsets.all(8),
+                            decoration: ShapeDecoration(
+                              color: const Color(0xFFF4F6F7),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SizedBox(
+                                  width: 80,
+                                  height: 80,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(3),
+                                    child: Image.file(
+                                      File(furniture[index][2]),
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Text(
-                                '床架上有ㄧ塊明顯的污漬',
-                                style: TextStyle(
-                                  color: Color(0xFF2B2F35),
-                                  fontSize: 14,
-                                  fontFamily: 'PingFang TC',
-                                  fontWeight: FontWeight.w400,
-                                  letterSpacing: 0.70,
+                                Text(
+                                  '${furniture[index][3]}',
+                                  style: TextStyle(
+                                    color: Color(0xFF2B2F35),
+                                    fontSize: 14,
+                                    fontFamily: 'PingFang TC',
+                                    fontWeight: FontWeight.w400,
+                                    letterSpacing: 0.70,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        )
-                            : Container(),
+                              ],
+                            ),
+                          )
+                        ]
                       ],
                     )
                   );
@@ -373,7 +390,193 @@ class _ContractNewStep3State extends State<ContractNewStep3> {
                               children: [
                                 Row(
                                   children: [
-                                    SvgPicture.asset('assets/icons/contract_new/camera.svg'),
+                                    GestureDetector(
+                                      onTap: () async {
+                                        appliance[index][2] != ''
+                                            ? imgRoute[0] = appliance[index][2]
+                                            : imgRoute = [];
+                                        appliance[index][3] != ''
+                                            ? descriptionController.text = appliance[index][3]
+                                            : descriptionController.text = '';
+                                        final result = await showModalBottomSheet(
+                                          backgroundColor: Colors.white,
+                                          context: context,
+                                          shape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                                          ),
+                                          builder: (BuildContext context) {
+                                            return StatefulBuilder(
+                                              builder: (BuildContext context, StateSetter setState) {
+                                                return Container(
+                                                  width: double.infinity,
+                                                  padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16,),
+                                                  child: Column(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Text(
+                                                        '${appliance[index][0]}',
+                                                        style: const TextStyle(
+                                                          color: Color(0xFF222222),
+                                                          fontSize: 18,
+                                                          fontFamily: 'PingFang TC',
+                                                          fontWeight: FontWeight.w500,
+                                                        ),
+                                                      ),
+                                                      const Gap(12),
+                                                      Wrap(
+                                                        runSpacing: 12,
+                                                        spacing: 12,
+                                                        children: List.generate(imgRoute.length+1, (index) {
+                                                          if (index == imgRoute.length) {
+                                                            return UploadImageWidget(
+                                                              onImagePicked: (path) {
+                                                                if (imgRoute.length<3) {
+                                                                  if (path.isNotEmpty) {
+                                                                    setState(() {
+                                                                      imgRoute.add(path);
+                                                                    });
+                                                                  }
+                                                                  else {
+                                                                    print("Invalid file path.");
+                                                                  }
+                                                                }
+                                                              },
+                                                              child: Container(
+                                                                width: 80,
+                                                                height: 80,
+                                                                alignment: Alignment.center,
+                                                                decoration: ShapeDecoration(
+                                                                  color: Colors.white,
+                                                                  shape: RoundedRectangleBorder(
+                                                                    side: const BorderSide(width: 1, color: Color(0xFF319877)),
+                                                                    borderRadius: BorderRadius.circular(3),
+                                                                  ),
+                                                                ),
+                                                                child: Column(
+                                                                  mainAxisSize: MainAxisSize.min,
+                                                                  children: [
+                                                                    SvgPicture.asset(
+                                                                      width: 14,
+                                                                      height: 14,
+                                                                      'assets/icons/contract_new/camera.svg',
+                                                                    ),
+                                                                    const Gap(8),
+                                                                    Text(
+                                                                      '上傳 $index/3',
+                                                                      style: const TextStyle(
+                                                                        color: Color(0xFF5F6E7B),
+                                                                        fontSize: 14,
+                                                                        fontFamily: 'PingFang TC',
+                                                                        fontWeight: FontWeight.w400,
+                                                                        letterSpacing: 0.70,
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            );
+                                                          } else {
+                                                            return SizedBox(
+                                                              width: 80,
+                                                              height: 80,
+                                                              child: ClipRRect(
+                                                                borderRadius: BorderRadius.circular(3),
+                                                                child: Image.file(
+                                                                  File(imgRoute[index]),
+                                                                  fit: BoxFit.cover,
+                                                                ),
+                                                              ),
+                                                            );
+                                                          }
+                                                        }),
+                                                      ),
+                                                      const Gap(8),
+                                                      const Text(
+                                                        '備註',
+                                                        style: TextStyle(
+                                                          color: Color(0xFF2B2F35),
+                                                          fontSize: 15,
+                                                          fontFamily: 'PingFang TC',
+                                                          fontWeight: FontWeight.w400,
+                                                        ),
+                                                      ),
+                                                      const Gap(8),
+                                                      Container(
+                                                        height: 48,
+                                                        width: double.infinity,
+                                                        padding: const EdgeInsets.symmetric(horizontal: 16,),
+                                                        decoration: ShapeDecoration(
+                                                          color: const Color(0xFFF4F6F7),
+                                                          shape: RoundedRectangleBorder(
+                                                            side: const BorderSide(width: 1, color: Color(0xFFF4F6F7)),
+                                                            borderRadius: BorderRadius.circular(3),
+                                                          ),
+                                                        ),
+                                                        child: TextField(
+                                                          controller: descriptionController,
+                                                          maxLines: 1,
+                                                          decoration: const InputDecoration(
+                                                            hintText: '備註說明',
+                                                            hintStyle: TextStyle(
+                                                              color: Color(0xFF2B2F35),
+                                                              fontSize: 15,
+                                                              fontFamily: 'PingFang TC',
+                                                              fontWeight: FontWeight.w400,
+                                                            ),
+                                                            border: InputBorder.none,
+                                                          ),
+                                                          onChanged: (value) {},
+                                                        ),
+                                                      ),
+                                                      const Gap(24),
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          if (imgRoute.isNotEmpty) {
+                                                            List<String> img = [imgRoute[0], descriptionController.text];
+                                                            Navigator.pop(context, img);
+                                                          } else {
+                                                            Navigator.pop(context, '');
+                                                          }
+                                                        },
+                                                        child: Container(
+                                                          height: 40,
+                                                          width: double.infinity,
+                                                          alignment: Alignment.center,
+                                                          decoration: ShapeDecoration(
+                                                            color: const Color(0xFF8C5F42),
+                                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
+                                                          ),
+                                                          child: const Text(
+                                                            '確定',
+                                                            textAlign: TextAlign.center,
+                                                            style: TextStyle(
+                                                              color: Colors.white,
+                                                              fontSize: 16,
+                                                              fontFamily: 'PingFang TC',
+                                                              fontWeight: FontWeight.w500,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              },
+                                            );
+                                          },
+                                        );
+                                        if (result == null) {
+                                          print("使用者未點擊確定，返回值為 null");
+                                        } else {
+                                          setState(() {
+                                            appliance[index][2] = result[0];
+                                            appliance[index][3] = result[1];
+                                          });
+                                        }
+                                      },
+                                      child: SvgPicture.asset('assets/icons/contract_new/camera.svg'),
+                                    ),
                                     const Gap(8),
                                     Text(
                                       '${appliance[index][0]} X1',
@@ -402,231 +605,55 @@ class _ContractNewStep3State extends State<ContractNewStep3> {
                             Transform.scale(
                               scale: 0.8,
                               child: Switch(
-                                value: appliance[index][2] != '',
+                                value: appliance[index][1],
                                 activeColor: const Color(0xFF8C5F42),
                                 onChanged: (bool value) async {
-                                  appliance[index][2] != ''
-                                      ? imgRoute[0] = appliance[index][2]
-                                      : imgRoute = [];
-                                  final result = await showModalBottomSheet(
-                                    backgroundColor: Colors.white,
-                                    context: context,
-                                    shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-                                    ),
-                                    builder: (BuildContext context) {
-                                      return StatefulBuilder(
-                                        builder: (BuildContext context, StateSetter setState) {
-                                          return Container(
-                                            width: double.infinity,
-                                            padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16,),
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  '${appliance[index][0]}',
-                                                  style: const TextStyle(
-                                                    color: Color(0xFF222222),
-                                                    fontSize: 18,
-                                                    fontFamily: 'PingFang TC',
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                ),
-                                                const Gap(12),
-                                                Wrap(
-                                                  runSpacing: 12,
-                                                  spacing: 12,
-                                                  children: List.generate(imgRoute.length+1, (index) {
-                                                    if (index == imgRoute.length) {
-                                                      return UploadImageWidget(
-                                                        onImagePicked: (path) {
-                                                          if (imgRoute.length<3) {
-                                                            if (path.isNotEmpty) {
-                                                              setState(() {
-                                                                imgRoute.add(path);
-                                                              });
-                                                            }
-                                                            else {
-                                                              print("Invalid file path.");
-                                                            }
-                                                          }
-                                                        },
-                                                        child: Container(
-                                                          width: 80,
-                                                          height: 80,
-                                                          alignment: Alignment.center,
-                                                          decoration: ShapeDecoration(
-                                                            color: Colors.white,
-                                                            shape: RoundedRectangleBorder(
-                                                              side: const BorderSide(width: 1, color: Color(0xFF319877)),
-                                                              borderRadius: BorderRadius.circular(3),
-                                                            ),
-                                                          ),
-                                                          child: Column(
-                                                            mainAxisSize: MainAxisSize.min,
-                                                            children: [
-                                                              SvgPicture.asset(
-                                                                width: 14,
-                                                                height: 14,
-                                                                'assets/icons/contract_new/camera.svg',
-                                                              ),
-                                                              const Gap(8),
-                                                              Text(
-                                                                '上傳 $index/3',
-                                                                style: const TextStyle(
-                                                                  color: Color(0xFF5F6E7B),
-                                                                  fontSize: 14,
-                                                                  fontFamily: 'PingFang TC',
-                                                                  fontWeight: FontWeight.w400,
-                                                                  letterSpacing: 0.70,
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      );
-                                                    } else {
-                                                      return SizedBox(
-                                                        width: 80,
-                                                        height: 80,
-                                                        child: ClipRRect(
-                                                          borderRadius: BorderRadius.circular(3),
-                                                          child: Image.file(
-                                                            File(imgRoute[index]),
-                                                            fit: BoxFit.cover,
-                                                          ),
-                                                        ),
-                                                      );
-                                                    }
-                                                  }),
-                                                ),
-                                                const Gap(8),
-                                                const Text(
-                                                  '備註',
-                                                  style: TextStyle(
-                                                    color: Color(0xFF2B2F35),
-                                                    fontSize: 15,
-                                                    fontFamily: 'PingFang TC',
-                                                    fontWeight: FontWeight.w400,
-                                                  ),
-                                                ),
-                                                const Gap(8),
-                                                Container(
-                                                  height: 48,
-                                                  width: double.infinity,
-                                                  padding: const EdgeInsets.symmetric(horizontal: 16,),
-                                                  decoration: ShapeDecoration(
-                                                    color: const Color(0xFFF4F6F7),
-                                                    shape: RoundedRectangleBorder(
-                                                      side: const BorderSide(width: 1, color: Color(0xFFF4F6F7)),
-                                                      borderRadius: BorderRadius.circular(3),
-                                                    ),
-                                                  ),
-                                                  child: TextField(
-                                                    maxLines: 1,
-                                                    decoration: const InputDecoration(
-                                                      hintText: '備註說明',
-                                                      hintStyle: TextStyle(
-                                                        color: Color(0xFF2B2F35),
-                                                        fontSize: 15,
-                                                        fontFamily: 'PingFang TC',
-                                                        fontWeight: FontWeight.w400,
-                                                      ),
-                                                      border: InputBorder.none,
-                                                    ),
-                                                    onChanged: (value) {},
-                                                  ),
-                                                ),
-                                                const Gap(24),
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    if (imgRoute.isNotEmpty) {
-                                                      Navigator.pop(context, imgRoute[0]);
-                                                    } else {
-                                                      Navigator.pop(context, '');
-                                                    }
-                                                  },
-                                                  child: Container(
-                                                    height: 40,
-                                                    width: double.infinity,
-                                                    alignment: Alignment.center,
-                                                    decoration: ShapeDecoration(
-                                                      color: const Color(0xFF8C5F42),
-                                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-                                                    ),
-                                                    child: const Text(
-                                                      '確定',
-                                                      textAlign: TextAlign.center,
-                                                      style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 16,
-                                                        fontFamily: 'PingFang TC',
-                                                        fontWeight: FontWeight.w500,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          );
-                                        },
-                                      );
-                                    },
-                                  );
-                                  if (result == null) {
-                                    setState(() {
-                                      appliance[index][2] = '';
-                                    });
-                                    print("使用者未點擊確定，返回值為 null");
-                                  } else {
-                                    setState(() {
-                                      appliance[index][2] = result;
-                                    });
-                                  }
+                                  setState(() {
+                                    appliance[index][1] = !appliance[index][1];
+                                  });
                                 },
                               ),
                             ),
                           ],
                         ),
-                        appliance[index][2] != ''
-                            ? Container(
-                          width: double.infinity,
-                          height: 116,
-                          padding: const EdgeInsets.all(8),
-                          decoration: ShapeDecoration(
-                            color: const Color(0xFFF4F6F7),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              SizedBox(
-                                width: 80,
-                                height: 80,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(3),
-                                  child: Image.file(
-                                    File(appliance[index][2]),
-                                    fit: BoxFit.cover,
+                        if (appliance[index][2] != '' && appliance[index][1]) ...[
+                          Container(
+                            width: double.infinity,
+                            height: 116,
+                            padding: const EdgeInsets.all(8),
+                            decoration: ShapeDecoration(
+                              color: const Color(0xFFF4F6F7),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SizedBox(
+                                  width: 80,
+                                  height: 80,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(3),
+                                    child: Image.file(
+                                      File(appliance[index][2]),
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Text(
-                                '床架上有ㄧ塊明顯的污漬',
-                                style: TextStyle(
-                                  color: Color(0xFF2B2F35),
-                                  fontSize: 14,
-                                  fontFamily: 'PingFang TC',
-                                  fontWeight: FontWeight.w400,
-                                  letterSpacing: 0.70,
+                                Text(
+                                  appliance[index][3],
+                                  style: TextStyle(
+                                    color: Color(0xFF2B2F35),
+                                    fontSize: 14,
+                                    fontFamily: 'PingFang TC',
+                                    fontWeight: FontWeight.w400,
+                                    letterSpacing: 0.70,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        )
-                            : Container(),
+                              ],
+                            ),
+                          )
+                        ],
                       ]
                     ),
                   );

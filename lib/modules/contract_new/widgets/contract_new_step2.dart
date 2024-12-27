@@ -14,10 +14,10 @@ class ContractNewStep2 extends StatefulWidget {
 
 class _ContractNewStep2State extends State<ContractNewStep2> {
   int count = 1;
-  List<List<String>> customerData = [
-    ['1', '團團', 'H123456789', '2005/12/01', '0912345678', '台中市大雅區民生路三段315號'],
-    ['1', '林旺', 'A987654321', '2000/01/01', '0987654321', '台中市大雅區民生路三段315號'],
-    ['0', '', '', '', '', ''],
+  List<List<dynamic>> customerData = [
+    [false, '團團', 'H123456789', '2005/12/01', '0912345678', '台中市', '大雅區', '民生路三段315號',],
+    [false, '林旺', 'A987654321', '2000/01/01', '0987654321', '台中市', '大雅區', '民生路三段315號'],
+    [false, '', '', '', '', ''],
   ];
   DateTime effective = DateTime.now();
   DateTime expiration = DateTime.now();
@@ -437,13 +437,13 @@ class _ContractNewStep2State extends State<ContractNewStep2> {
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                                   decoration: ShapeDecoration(
-                                    color: customerData[index][0] == '1' ? const Color(0xFFD9F2E5) : const Color(0xFFE3E7EA),
+                                    color: customerData[index][0] == true ? const Color(0xFFD9F2E5) : const Color(0xFFE3E7EA),
                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                                   ),
                                   child: Text(
-                                    customerData[index][0] == '1' ? '已完成' : '未完成',
+                                    customerData[index][0] == true ? '已完成' : '未完成',
                                     style: TextStyle(
-                                      color: customerData[index][0] == '1' ? const Color(0xFF248568) : const Color(0xFF7B8A95),
+                                      color: customerData[index][0] == true ? const Color(0xFF248568) : const Color(0xFF7B8A95),
                                       fontSize: 12,
                                       fontFamily: 'PingFang SC',
                                       fontWeight: FontWeight.w400,
@@ -482,8 +482,15 @@ class _ContractNewStep2State extends State<ContractNewStep2> {
                                                   // 編輯簽約人操作
                                                   Navigator.push(
                                                     context,
-                                                    MaterialPageRoute(builder: (context) => const ContractNewCustomer()),
-                                                  );
+                                                    MaterialPageRoute(builder: (context) => ContractNewCustomer(dataPass: customerData[index],)),
+                                                  ).then((result) {
+                                                    if (result != null) {
+                                                      print(result);
+                                                      setState(() {
+                                                        customerData[index] = result;
+                                                      });
+                                                    }
+                                                  });
                                                 },
                                               ),
                                               Divider(height: 1, color: Colors.grey.shade300),
@@ -647,7 +654,7 @@ class _ContractNewStep2State extends State<ContractNewStep2> {
                                 ),
                               ],
                             ),
-                            if (customerData[index][0] == '1') ...[
+                            if (customerData[index][0] == true) ...[
                               const Gap(12),
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -656,7 +663,8 @@ class _ContractNewStep2State extends State<ContractNewStep2> {
                                   //   radius: 20,
                                   //   backgroundColor: Color(0xFFB6E4D0),
                                   // ),
-                                  SvgPicture.asset('assets/icons/contract_new/customer_female.svg'),
+                                  // SvgPicture.asset('assets/icons/contract_new/customer_female.svg'),
+                                  Image.asset(width: 20,'assets/images/contract_new/customer_male.png',),
                                   const Gap(16),
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -698,7 +706,7 @@ class _ContractNewStep2State extends State<ContractNewStep2> {
                                         ),
                                       ),
                                       Text(
-                                        customerData[index][5],
+                                        customerData[index][5]+customerData[index][6]+customerData[index][7],
                                         style: const TextStyle(
                                           color: Color(0xFF2B2F35),
                                           fontSize: 15,

@@ -328,12 +328,19 @@ class _PageFrameState extends State<IndexPage> {
                                                   //   radius: 12,
                                                   //   backgroundColor: Color(0XFFF0F7FE),
                                                   // ),
-                                                  SvgPicture.asset(
+                                                  // SvgPicture.asset(
+                                                  //   width: 24,
+                                                  //   height: 24,
+                                                  //   index % 2 == 0
+                                                  //       ? 'assets/icons/contract_new/customer_female.svg'
+                                                  //       : 'assets/icons/contract_new/customer_male.svg',
+                                                  // ),
+                                                  Image.asset(
                                                     width: 24,
                                                     height: 24,
                                                     index % 2 == 0
-                                                        ? 'assets/icons/contract_new/customer_female.svg'
-                                                        : 'assets/icons/contract_new/customer_male.svg',
+                                                        ? 'assets/images/contract_new/customer_female.png'
+                                                        : 'assets/images/contract_new/customer_male.png',
                                                   ),
                                                   const Gap(4),
                                                   const Text(
