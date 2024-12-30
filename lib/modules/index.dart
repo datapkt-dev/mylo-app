@@ -67,6 +67,7 @@ class _PageFrameState extends State<IndexPage> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10,),
               child: Container(
                 width: double.infinity,
+                alignment: Alignment.center,
                 decoration: ShapeDecoration(
                   color: const Color(0xFFF4F6F7),
                   shape: RoundedRectangleBorder(
@@ -76,6 +77,7 @@ class _PageFrameState extends State<IndexPage> {
                 ),
                 child: TextField(
                   maxLines: 1,
+                  textAlignVertical: TextAlignVertical.center,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(Icons.search),
                     hintText: '搜尋關鍵字',
