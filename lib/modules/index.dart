@@ -741,73 +741,62 @@ class _PageFrameState extends State<IndexPage> {
       floatingActionButton: InkWell(
         onTap: () {
           showModalBottomSheet(
+            backgroundColor: Colors.white,
             context: context,
             builder: (BuildContext context) {
-              return SizedBox(
+              return Container(
+                width: double.infinity,
                 height: 200,
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const ContractNew()),
-                          );
-                        },
-                        child: Container(
-                          width: double.infinity,
-                          height: 40,
-                          padding: const EdgeInsets.symmetric(horizontal: 16,),
-                          // color: Colors.red,
-                          alignment: Alignment.centerLeft,
-                          child: const Text(
-                            '新增合約',
-                            style: TextStyle(
-                              color: Color(0xFF222222),
-                              fontSize: 16,
-                              fontFamily: 'PingFang TC',
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: double.infinity,
+                padding: const EdgeInsets.only(top: 48, left: 16, right: 16,),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const ContractNew()),
+                        );
+                      },
+                      child: const SizedBox(
                         height: 40,
-                        padding: const EdgeInsets.symmetric(horizontal: 16,),
-                        // color: Colors.orange,
-                        alignment: Alignment.centerLeft,
-                        child: const Text(
-                          '上傳合約',
+                        child: Text(
+                          '新增合約',
                           style: TextStyle(
-                            color: Color(0xFF2B2F35),
-                            fontSize: 15,
+                            color: Color(0xFF222222),
+                            fontSize: 16,
                             fontFamily: 'PingFang TC',
-                            fontWeight: FontWeight.w400,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ),
-                      Container(
-                        width: double.infinity,
-                        height: 40,
-                        padding: const EdgeInsets.symmetric(horizontal: 16,),
-                        // color: Colors.yellow,
-                        alignment: Alignment.centerLeft,
-                        child: const Text(
-                          '自訂合約',
-                          style: TextStyle(
-                            color: Color(0xFF2B2F35),
-                            fontSize: 15,
-                            fontFamily: 'PingFang TC',
-                            fontWeight: FontWeight.w400,
-                          ),
+                    ),
+                    const SizedBox(
+                      height: 40,
+                      child: Text(
+                        '上傳合約',
+                        style: TextStyle(
+                          color: Color(0xFF2B2F35),
+                          fontSize: 15,
+                          fontFamily: 'PingFang TC',
+                          fontWeight: FontWeight.w400,
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(
+                      height: 40,
+                      child: Text(
+                        '自訂合約',
+                        style: TextStyle(
+                          color: Color(0xFF2B2F35),
+                          fontSize: 15,
+                          fontFamily: 'PingFang TC',
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               );
             },

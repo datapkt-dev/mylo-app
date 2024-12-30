@@ -22,7 +22,7 @@ class _DetailState extends State<Detail> {
   List<String> status = ['待簽約', '執行中', '待續約',];
   List<Color> statusBlock = [const Color(0xFFFFE4E4), const Color(0xFFD9F2E5), const Color(0xFFE3E7EA),];
   List<Color> statusText = [const Color(0xFFFF4444), const Color(0xFF248568), const Color(0xFF7B8A95),];
-  int key = 2;
+  late int key;
 
   @override
   void initState() {
@@ -125,50 +125,52 @@ class _DetailState extends State<Detail> {
                   ),
                 ),
               ),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                decoration: ShapeDecoration(
-                  shape: RoundedRectangleBorder(
-                    side: const BorderSide(width: 1, color: Color(0xFFCBD2D6)),
-                    borderRadius: BorderRadius.circular(10),
+              if (key!=1) ...[
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  decoration: ShapeDecoration(
+                    shape: RoundedRectangleBorder(
+                      side: const BorderSide(width: 1, color: Color(0xFFCBD2D6)),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'QRcode',
+                        style: TextStyle(
+                          color: Color(0xFF2B2F35),
+                          fontSize: 15,
+                          fontFamily: 'PingFang TC',
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const Text(
+                        '這裡是寫一些說明的地方沒有也可不寫',
+                        style: TextStyle(
+                          color: Color(0xFF5F6E7B),
+                          fontSize: 12,
+                          fontFamily: 'PingFang SC',
+                          fontWeight: FontWeight.w400,
+                          letterSpacing: 0.60,
+                        ),
+                      ),
+                      const Gap(25),
+                      Center(
+                        child: QrImageView(
+                          data: 'This is a simple QR code',
+                          version: QrVersions.auto,
+                          size: 131,
+                          gapless: false,
+                        ),
+                      ),
+                      const Gap(9),
+                    ],
                   ),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'QRcode',
-                      style: TextStyle(
-                        color: Color(0xFF2B2F35),
-                        fontSize: 15,
-                        fontFamily: 'PingFang TC',
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const Text(
-                      '這裡是寫一些說明的地方沒有也可不寫',
-                      style: TextStyle(
-                        color: Color(0xFF5F6E7B),
-                        fontSize: 12,
-                        fontFamily: 'PingFang SC',
-                        fontWeight: FontWeight.w400,
-                        letterSpacing: 0.60,
-                      ),
-                    ),
-                    const Gap(25),
-                    Center(
-                      child: QrImageView(
-                        data: 'This is a simple QR code',
-                        version: QrVersions.auto,
-                        size: 131,
-                        gapless: false,
-                      ),
-                    ),
-                    const Gap(9),
-                  ],
-                ),
-              ),
+              ],
               const Gap(16),
               Container(
                 alignment: Alignment.centerLeft,

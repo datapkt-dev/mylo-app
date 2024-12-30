@@ -43,9 +43,9 @@ class _ContractNewState extends State<ContractNew> {
             });
           },
         ),
-        title: const Text(
-          '選擇物件',
-          style: TextStyle(
+        title: Text(
+          _processes[_currentStep],
+          style: const TextStyle(
             color: Color(0xFF2B2F35),
             fontSize: 16,
             fontFamily: 'PingFang SC',
@@ -97,10 +97,21 @@ class _ContractNewState extends State<ContractNew> {
                         indicatorBuilder: (_, index) {
                           if (index <= _currentStep) {
                             // 完成的節點
-                            return const DotIndicator(
-                              size: 10.0,
-                              color: Color(0xFF248568),
-                            );
+                            if (index == _currentStep) {
+                              return const DotIndicator(
+                                size: 16,
+                                color: Color(0xFFB6E4D0),
+                                child: DotIndicator(
+                                  size: 8,
+                                  color: Color(0xFF248568),
+                                ),
+                              );
+                            } else {
+                              return const DotIndicator(
+                                size: 10,
+                                color: Color(0xFF248568),
+                              );
+                            }
                           } else {
                             // 未完成的節點
                             return const DotIndicator(

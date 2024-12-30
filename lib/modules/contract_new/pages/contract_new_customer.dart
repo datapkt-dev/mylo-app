@@ -16,6 +16,7 @@ class _ContractNewCustomerState extends State<ContractNewCustomer> {
   List<String> imgId = ['', '',];
   List<dynamic> customerData = [false, '', '', '', '', '', '', '',];
   DateTime birthday = DateTime.now();
+  bool native = true;
   // [false, '團團', 'H123456789', '2005/12/01', '0912345678', '台中市大雅區民生路三段315號']
 
   final TextEditingController nameController = TextEditingController();
@@ -361,6 +362,72 @@ class _ContractNewCustomerState extends State<ContractNewCustomer> {
                       fontFamily: 'PingFang TC',
                       fontWeight: FontWeight.w500,
                     ),
+                  ),
+                  const Gap(16),
+                  Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            native = true;
+                          });
+                        },
+                        child: Container(
+                          width: 14,
+                          height: 14,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              width: native ? 4 : 1,
+                              color: native ? const Color(0xFF986E49) : const Color(0xFFA6B1BA),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const Gap(8),
+                      Text(
+                        '本國身分證',
+                        style: TextStyle(
+                          color: native ? const Color(0xFF986E49) : const Color(0xFF2B2F35),
+                          fontSize: 14,
+                          fontFamily: 'PingFang TC',
+                          fontWeight: FontWeight.w400,
+                          letterSpacing: 0.70,
+                        ),
+                      ),
+                      const Gap(24),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            native = false;
+                          });
+                        },
+                        child: Container(
+                          width: 14,
+                          height: 14,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              width: !native ? 4 : 1,
+                              color: !native ? const Color(0xFF986E49) : const Color(0xFFA6B1BA),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const Gap(8),
+                      Text(
+                        '外籍居留證',
+                        style: TextStyle(
+                          color: !native ? const Color(0xFF986E49) : const Color(0xFF2B2F35),
+                          fontSize: 14,
+                          fontFamily: 'PingFang TC',
+                          fontWeight: FontWeight.w400,
+                          letterSpacing: 0.70,
+                        ),
+                      ),
+                    ],
                   ),
                   const Gap(16),
                   Stack(
