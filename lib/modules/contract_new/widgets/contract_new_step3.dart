@@ -123,64 +123,84 @@ class _ContractNewStep3State extends State<ContractNewStep3> {
                                                           spacing: 12,
                                                           children: List.generate(imgRoute.length+1, (index) {
                                                             if (index == imgRoute.length) {
-                                                              return UploadImageWidget(
-                                                                onImagePicked: (path) {
-                                                                  if (imgRoute.length<4) {
-                                                                    if (path.isNotEmpty) {
-                                                                      setState(() {
-                                                                        imgRoute.add(path);
-                                                                      });
+                                                              if (imgRoute.length < 4) {
+                                                                return UploadImageWidget(
+                                                                  onImagePicked: (path) {
+                                                                    if (imgRoute.length<4) {
+                                                                      if (path.isNotEmpty) {
+                                                                        setState(() {
+                                                                          imgRoute.add(path);
+                                                                        });
+                                                                      }
+                                                                      else {
+                                                                        print("Invalid file path.");
+                                                                      }
                                                                     }
-                                                                    else {
-                                                                      print("Invalid file path.");
-                                                                    }
-                                                                  }
-                                                                },
-                                                                child: Container(
-                                                                  width: 80,
-                                                                  height: 80,
-                                                                  alignment: Alignment.center,
-                                                                  decoration: ShapeDecoration(
-                                                                    color: Colors.white,
-                                                                    shape: RoundedRectangleBorder(
-                                                                      side: const BorderSide(width: 1, color: Color(0xFF319877)),
-                                                                      borderRadius: BorderRadius.circular(3),
+                                                                  },
+                                                                  child: Container(
+                                                                    width: 80,
+                                                                    height: 80,
+                                                                    alignment: Alignment.center,
+                                                                    decoration: ShapeDecoration(
+                                                                      color: Colors.white,
+                                                                      shape: RoundedRectangleBorder(
+                                                                        side: const BorderSide(width: 1, color: Color(0xFF319877)),
+                                                                        borderRadius: BorderRadius.circular(3),
+                                                                      ),
+                                                                    ),
+                                                                    child: Column(
+                                                                      mainAxisSize: MainAxisSize.min,
+                                                                      children: [
+                                                                        SvgPicture.asset(
+                                                                          width: 14,
+                                                                          height: 14,
+                                                                          'assets/icons/contract_new/camera.svg',
+                                                                        ),
+                                                                        const Gap(8),
+                                                                        Text(
+                                                                          '上傳 $index/4',
+                                                                          style: const TextStyle(
+                                                                            color: Color(0xFF5F6E7B),
+                                                                            fontSize: 14,
+                                                                            fontFamily: 'PingFang TC',
+                                                                            fontWeight: FontWeight.w400,
+                                                                            letterSpacing: 0.70,
+                                                                          ),
+                                                                        ),
+                                                                      ],
                                                                     ),
                                                                   ),
-                                                                  child: Column(
-                                                                    mainAxisSize: MainAxisSize.min,
-                                                                    children: [
-                                                                      SvgPicture.asset(
-                                                                        width: 14,
-                                                                        height: 14,
-                                                                        'assets/icons/contract_new/camera.svg',
-                                                                      ),
-                                                                      const Gap(8),
-                                                                      Text(
-                                                                        '上傳 $index/4',
-                                                                        style: const TextStyle(
-                                                                          color: Color(0xFF5F6E7B),
-                                                                          fontSize: 14,
-                                                                          fontFamily: 'PingFang TC',
-                                                                          fontWeight: FontWeight.w400,
-                                                                          letterSpacing: 0.70,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                              );
+                                                                );
+                                                              } else {
+                                                                return Container();
+                                                              }
                                                             } else {
-                                                              return SizedBox(
-                                                                width: 80,
-                                                                height: 80,
-                                                                child: ClipRRect(
-                                                                  borderRadius: BorderRadius.circular(3),
-                                                                  child: Image.file(
-                                                                    File(imgRoute[index]),
-                                                                    fit: BoxFit.cover,
+                                                              return Stack(
+                                                                children: [
+                                                                  SizedBox(
+                                                                    width: 80,
+                                                                    height: 80,
+                                                                    child: ClipRRect(
+                                                                      borderRadius: BorderRadius.circular(3),
+                                                                      child: Image.file(
+                                                                        File(imgRoute[index]),
+                                                                        fit: BoxFit.cover,
+                                                                      ),
+                                                                    ),
                                                                   ),
-                                                                ),
+                                                                  Positioned(
+                                                                    top: 3,
+                                                                    right: 4,
+                                                                    child: GestureDetector(
+                                                                      onTap: () {
+                                                                        setState(() {
+                                                                          imgRoute.removeAt(index);
+                                                                        });
+                                                                      },
+                                                                      child: SvgPicture.asset('assets/icons/contract_new/delete.svg'),
+                                                                    ),
+                                                                  ),
+                                                                ],
                                                               );
                                                             }
                                                           }),

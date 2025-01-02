@@ -80,6 +80,7 @@ flutter:
     - assets/icons/contract_new/customer_female.svg
     - assets/icons/contract_new/customer_male.svg
     - assets/icons/contract_new/trash.svg
+    - assets/icons/contract_new/delete.svg
 
     - assets/images/contract_new/item_0.png
     - assets/images/contract_new/item_1.png
