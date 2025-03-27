@@ -5,7 +5,7 @@ import 'package:mylo/modules/contract_new/widgets/contract_new_step1.dart';
 import 'package:mylo/modules/contract_new/widgets/contract_new_step2.dart';
 import 'package:mylo/modules/contract_new/widgets/contract_new_step3.dart';
 import 'package:mylo/modules/contract_new/widgets/contract_new_step4.dart';
-import 'package:timelines/timelines.dart';
+import 'package:timelines_plus/timelines_plus.dart';
 
 class ContractNew extends StatefulWidget {
   const ContractNew({super.key});

@@ -850,6 +850,25 @@ class _PageFrameState extends State<IndexPage> {
         onTap: () {
           setState(() {
             _selectedIndex = index;
+            if (index != 1) {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text('尚未開放'),
+                    content: Text('該功能尚未開放，敬請期待！'),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();  // 關閉對話框
+                        },
+                        child: Text('確定'),
+                      ),
+                    ],
+                  );
+                },
+              );
+            }
           });
         },
         child: Column(
