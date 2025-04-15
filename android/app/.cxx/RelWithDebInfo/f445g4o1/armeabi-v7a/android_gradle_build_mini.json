@@ -1,0 +1,20 @@
+{
+  "buildFiles": [
+    "/Users/yuchenghan/development/flutter/packages/flutter_tools/gradle/src/main/groovy/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/Users/yuchenghan/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/Users/yuchenghan/IdeaProjects/mylo-app/android/app/.cxx/RelWithDebInfo/f445g4o1/armeabi-v7a",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/Users/yuchenghan/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/Users/yuchenghan/IdeaProjects/mylo-app/android/app/.cxx/RelWithDebInfo/f445g4o1/armeabi-v7a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {}
+}
