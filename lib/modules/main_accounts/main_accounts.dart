@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:mylo/modules/main_accounts/widget/community_widget.dart';
-import 'package:mylo/modules/main_accounts/widget/landlord_widget.dart';
+import 'package:mylo/modules/main_accounts/widgets/community_widget.dart';
+import 'package:mylo/modules/main_accounts/widgets/landlord_widget.dart';
 
 class MainAccounts extends StatefulWidget {
   const MainAccounts({super.key});
@@ -62,7 +61,6 @@ class _MainAccountsState extends State<MainAccounts> {
               }),
             ),
             SizedBox(height: 8,),
-
             _buildContent(),
           ],
         ),
