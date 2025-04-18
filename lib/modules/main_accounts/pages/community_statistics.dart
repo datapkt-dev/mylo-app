@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mylo/modules/main_accounts/pages/monthly_statistics.dart';
 
 class CommunityStatisticsPage extends StatefulWidget {
   const CommunityStatisticsPage({super.key});
@@ -297,110 +298,115 @@ class _CommunityStatisticsPageState extends State<CommunityStatisticsPage> {
               child: SingleChildScrollView(
                 child: Column(
                   children: List.generate(6, (index) {
-                    return Container(
-                      width: double.infinity,
-                      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 10,),
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                      decoration: ShapeDecoration(
-                        color: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(
-                            width: 1,
-                            color: const Color(0xFFE3E7EA),
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => MonthlyStatisticsPage(),),);
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        margin: EdgeInsets.symmetric(horizontal: 16, vertical: 10,),
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                        decoration: ShapeDecoration(
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(
+                              width: 1,
+                              color: const Color(0xFFE3E7EA),
+                            ),
+                            borderRadius: BorderRadius.circular(4),
                           ),
-                          borderRadius: BorderRadius.circular(4),
                         ),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                width: 54,
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                decoration: ShapeDecoration(
-                                  color: const Color(0xFFFFE4E4),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  width: 54,
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                  decoration: ShapeDecoration(
+                                    color: const Color(0xFFFFE4E4),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                                  ),
+                                  child: Text(
+                                    '未完成',
+                                    style: TextStyle(
+                                      color: const Color(0xFFFF4444),
+                                      fontSize: 12,
+                                      fontFamily: 'PingFang SC',
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
                                 ),
-                                child: Text(
-                                  '未完成',
+                                Spacer(),
+                                Text(
+                                  '\$150,000',
                                   style: TextStyle(
                                     color: const Color(0xFFFF4444),
-                                    fontSize: 12,
-                                    fontFamily: 'PingFang SC',
+                                    fontSize: 15,
+                                    fontFamily: 'PingFang TC',
                                     fontWeight: FontWeight.w400,
                                   ),
                                 ),
-                              ),
-                              Spacer(),
-                              Text(
-                                '\$150,000',
-                                style: TextStyle(
-                                  color: const Color(0xFFFF4444),
-                                  fontSize: 15,
-                                  fontFamily: 'PingFang TC',
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 8,),
-                          Row(
-                            children: [
-                              Text(
-                                '3月帳單',
-                                style: TextStyle(
-                                  color: const Color(0xFF2B2F35),
-                                  fontSize: 15,
-                                  fontFamily: 'PingFang SC',
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              SizedBox(width: 8,),
-                              Container(
-                                width: 40,
-                                height: 20,
-                                alignment: Alignment.center,
-                                decoration: ShapeDecoration(
-                                  color: const Color(0xFFFF4444),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(13),
-                                  ),
-                                ),
-                                child: Text(
-                                  'New',
+                              ],
+                            ),
+                            SizedBox(height: 8,),
+                            Row(
+                              children: [
+                                Text(
+                                  '3月帳單',
                                   style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                    fontFamily: 'PingFang TC',
+                                    color: const Color(0xFF2B2F35),
+                                    fontSize: 15,
+                                    fontFamily: 'PingFang SC',
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 8,),
-                          Row(
-                            children: [
-                              SizedBox(
-                                width: 200,
-                                child: GradientProgressBar(progress: 0.2),
-                              ),
-                              SizedBox(width: 10,),
-                              Text(
-                                '20%',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: const Color(0xFF0A241E),
-                                  fontSize: 15,
-                                  fontFamily: 'PingFang SC',
-                                  fontWeight: FontWeight.w500,
+                                SizedBox(width: 8,),
+                                Container(
+                                  width: 40,
+                                  height: 20,
+                                  alignment: Alignment.center,
+                                  decoration: ShapeDecoration(
+                                    color: const Color(0xFFFF4444),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(13),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    'New',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                      fontFamily: 'PingFang TC',
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
+                              ],
+                            ),
+                            SizedBox(height: 8,),
+                            Row(
+                              children: [
+                                SizedBox(
+                                  width: 200,
+                                  child: GradientProgressBar(progress: 0.2),
+                                ),
+                                SizedBox(width: 10,),
+                                Text(
+                                  '20%',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: const Color(0xFF0A241E),
+                                    fontSize: 15,
+                                    fontFamily: 'PingFang SC',
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   }),
