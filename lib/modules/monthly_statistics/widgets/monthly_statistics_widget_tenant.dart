@@ -11,6 +11,7 @@ class MonthlyStatisticsWidgetTenant extends StatefulWidget {
 }
 
 class _MonthlyStatisticsWidgetTenantState extends State<MonthlyStatisticsWidgetTenant> {
+  bool paid = false;
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -218,48 +219,500 @@ class _MonthlyStatisticsWidgetTenantState extends State<MonthlyStatisticsWidgetT
                                       scrollDirection: Axis.horizontal,
                                       child: Row(
                                         children: [
-                                          Container(
-                                            margin: const EdgeInsets.only(right: 4),
-                                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                            decoration: ShapeDecoration(
-                                              shape: RoundedRectangleBorder(
-                                                side: BorderSide(
-                                                  width: 1,
-                                                  color: const Color(0xFFCCCCCC),
+                                          GestureDetector(
+                                            onTap: () {
+                                              showModalBottomSheet(
+                                                backgroundColor: Colors.white,
+                                                context: context,
+                                                builder: (BuildContext context) {
+                                                  return StatefulBuilder(
+                                                    builder: (BuildContext context, StateSetter setState) {
+                                                      return Container(
+                                                        width: double.infinity,
+                                                        padding: EdgeInsets.symmetric(horizontal: 16,),
+                                                        child: Column(
+                                                          mainAxisSize: MainAxisSize.min,
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            SizedBox(height: 30,),
+                                                            Center(
+                                                              child: Text(
+                                                                '應繳項目',
+                                                                style: TextStyle(
+                                                                  color: const Color(0xFF2B2F35),
+                                                                  fontSize: 16,
+                                                                  fontFamily: 'PingFang SC',
+                                                                  fontWeight: FontWeight.w500,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            SizedBox(height: 16,),
+                                                            Row(
+                                                              children: [
+                                                                Text(
+                                                                  '租約固定金',
+                                                                  style: TextStyle(
+                                                                    color: const Color(0xFF2B2F35),
+                                                                    fontSize: 15,
+                                                                    fontFamily: 'PingFang TC',
+                                                                    fontWeight: FontWeight.w400,
+                                                                  ),
+                                                                ),
+                                                                SizedBox(width: 8,),
+                                                                Text(
+                                                                  '\$14500',
+                                                                  style: TextStyle(
+                                                                    color: const Color(0xFFFF4444),
+                                                                    fontSize: 15,
+                                                                    fontFamily: 'PingFang TC',
+                                                                    fontWeight: FontWeight.w400,
+                                                                  ),
+                                                                ),
+                                                                Spacer(),
+                                                                Text(
+                                                                  '已繳費',
+                                                                  style: TextStyle(
+                                                                    color: const Color(0xFF2B2F35),
+                                                                    fontSize: 15,
+                                                                    fontFamily: 'PingFang TC',
+                                                                    fontWeight: FontWeight.w400,
+                                                                  ),
+                                                                ),
+                                                                Transform.scale(
+                                                                  scale: 0.8,
+                                                                  child: Switch(
+                                                                    value: paid,
+                                                                    activeColor: const Color(0xFF8C5F42),
+                                                                    onChanged: (bool value) async {
+                                                                      setState(() {
+                                                                        paid = !paid;
+                                                                      });
+                                                                    },
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            SizedBox(height: 5,),
+                                                            Row(
+                                                              children: [
+                                                                Text(
+                                                                  '水費(月)',
+                                                                  style: TextStyle(
+                                                                    color: const Color(0xFF5F6E7B),
+                                                                    fontSize: 15,
+                                                                    fontFamily: 'PingFang TC',
+                                                                    fontWeight: FontWeight.w400,
+                                                                  ),
+                                                                ),
+                                                                Spacer(),
+                                                                Text(
+                                                                  '\$5600',
+                                                                  style: TextStyle(
+                                                                    color: const Color(0xFF5F6E7B),
+                                                                    fontSize: 15,
+                                                                    fontFamily: 'PingFang TC',
+                                                                    fontWeight: FontWeight.w400,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            Row(
+                                                              children: [
+                                                                Text(
+                                                                  '水費(月)',
+                                                                  style: TextStyle(
+                                                                    color: const Color(0xFF5F6E7B),
+                                                                    fontSize: 15,
+                                                                    fontFamily: 'PingFang TC',
+                                                                    fontWeight: FontWeight.w400,
+                                                                  ),
+                                                                ),
+                                                                Spacer(),
+                                                                Text(
+                                                                  '\$5600',
+                                                                  style: TextStyle(
+                                                                    color: const Color(0xFF5F6E7B),
+                                                                    fontSize: 15,
+                                                                    fontFamily: 'PingFang TC',
+                                                                    fontWeight: FontWeight.w400,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            Row(
+                                                              children: [
+                                                                Text(
+                                                                  '水費(月)',
+                                                                  style: TextStyle(
+                                                                    color: const Color(0xFF5F6E7B),
+                                                                    fontSize: 15,
+                                                                    fontFamily: 'PingFang TC',
+                                                                    fontWeight: FontWeight.w400,
+                                                                  ),
+                                                                ),
+                                                                Spacer(),
+                                                                Text(
+                                                                  '\$5600',
+                                                                  style: TextStyle(
+                                                                    color: const Color(0xFF5F6E7B),
+                                                                    fontSize: 15,
+                                                                    fontFamily: 'PingFang TC',
+                                                                    fontWeight: FontWeight.w400,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            SizedBox(height: 24,),
+                                                            Row(
+                                                              children: [
+                                                                Expanded(
+                                                                  child: Container(
+                                                                    height: 40,
+                                                                    alignment: Alignment.center,
+                                                                    decoration: ShapeDecoration(
+                                                                      color: Colors.white,
+                                                                      shape: RoundedRectangleBorder(
+                                                                        side: BorderSide(
+                                                                          width: 1,
+                                                                          color: const Color(0xFFCBD2D6),
+                                                                        ),
+                                                                        borderRadius: BorderRadius.circular(4),
+                                                                      ),
+                                                                    ),
+                                                                    child: Text(
+                                                                      '返回',
+                                                                      textAlign: TextAlign.center,
+                                                                      style: TextStyle(
+                                                                        color: const Color(0xFF2B2F35),
+                                                                        fontSize: 14,
+                                                                        fontFamily: 'Poppins',
+                                                                        fontWeight: FontWeight.w500,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                SizedBox(width: 16,),
+                                                                Expanded(
+                                                                  child: Container(
+                                                                    height: 40,
+                                                                    alignment: Alignment.center,
+                                                                    decoration: ShapeDecoration(
+                                                                      color: const Color(0xFF319877),
+                                                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                                                                    ),
+                                                                    child: Text(
+                                                                      '確定',
+                                                                      textAlign: TextAlign.center,
+                                                                      style: TextStyle(
+                                                                        color: Colors.white,
+                                                                        fontSize: 14,
+                                                                        fontFamily: 'PingFang SC',
+                                                                        fontWeight: FontWeight.w500,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            SizedBox(height: 50,),
+                                                          ],
+                                                        ),
+                                                      );
+                                                    },
+                                                  );
+                                                },
+                                              );
+                                            },
+                                            child: Container(
+                                              margin: const EdgeInsets.only(right: 4),
+                                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                              decoration: ShapeDecoration(
+                                                shape: RoundedRectangleBorder(
+                                                  side: BorderSide(
+                                                    width: 1,
+                                                    color: const Color(0xFFCCCCCC),
+                                                  ),
+                                                  borderRadius: BorderRadius.circular(4),
                                                 ),
-                                                borderRadius: BorderRadius.circular(4),
                                               ),
-                                            ),
-                                            child: Text(
-                                              'M2-12A',
-                                              style: TextStyle(
-                                                color: const Color(0xFF333333),
-                                                fontSize: 12,
-                                                fontFamily: 'PingFang TC',
-                                                fontWeight: FontWeight.w400,
+                                              child: Text(
+                                                'M2-12A',
+                                                style: TextStyle(
+                                                  color: const Color(0xFF333333),
+                                                  fontSize: 12,
+                                                  fontFamily: 'PingFang TC',
+                                                  fontWeight: FontWeight.w400,
+                                                ),
                                               ),
                                             ),
                                           ),
-                                          Container(
-                                            margin: const EdgeInsets.only(right: 4),
-                                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                            decoration: ShapeDecoration(
-                                              color: const Color(0xFF319877),
-                                              shape: RoundedRectangleBorder(
-                                                side: BorderSide(
-                                                  width: 1,
-                                                  color: const Color(0xFFCCCCCC),
+                                          GestureDetector(
+                                            onTap: () {
+                                              showModalBottomSheet(
+                                                backgroundColor: Colors.white,
+                                                context: context,
+                                                builder: (BuildContext context) {
+                                                  return StatefulBuilder(
+                                                    builder: (BuildContext context, StateSetter setState) {
+                                                      return Container(
+                                                        width: double.infinity,
+                                                        padding: EdgeInsets.symmetric(horizontal: 16,),
+                                                        child: Column(
+                                                          mainAxisSize: MainAxisSize.min,
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            SizedBox(height: 30,),
+                                                            Center(
+                                                              child: Text(
+                                                                '應繳項目',
+                                                                style: TextStyle(
+                                                                  color: const Color(0xFF2B2F35),
+                                                                  fontSize: 16,
+                                                                  fontFamily: 'PingFang SC',
+                                                                  fontWeight: FontWeight.w500,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            SizedBox(height: 16,),
+                                                            Row(
+                                                              children: [
+                                                                Text(
+                                                                  'M3-12A電費',
+                                                                  style: TextStyle(
+                                                                    color: const Color(0xFF2B2F35),
+                                                                    fontSize: 15,
+                                                                    fontFamily: 'PingFang TC',
+                                                                    fontWeight: FontWeight.w500,
+                                                                  ),
+                                                                ),
+                                                                Spacer(),
+                                                                Transform.scale(
+                                                                  scale: 0.8,
+                                                                  child: Switch(
+                                                                    value: paid,
+                                                                    activeColor: const Color(0xFF8C5F42),
+                                                                    onChanged: (bool value) async {
+                                                                      setState(() {
+                                                                        paid = !paid;
+                                                                      });
+                                                                    },
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            SizedBox(height: 5,),
+                                                            Row(
+                                                              children: [
+                                                                Text(
+                                                                  '電費(度)',
+                                                                  style: TextStyle(
+                                                                    color: const Color(0xFF5F6E7B),
+                                                                    fontSize: 15,
+                                                                    fontFamily: 'PingFang TC',
+                                                                    fontWeight: FontWeight.w400,
+                                                                  ),
+                                                                ),
+                                                                SizedBox(width: 12,),
+                                                                Text(
+                                                                  '\$6/度',
+                                                                  style: TextStyle(
+                                                                    color: const Color(0xFF2B2F35),
+                                                                    fontSize: 15,
+                                                                    fontFamily: 'PingFang TC',
+                                                                    fontWeight: FontWeight.w400,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            SizedBox(height: 12,),
+                                                            Row(
+                                                              children: [
+                                                                Text(
+                                                                  '上期電度',
+                                                                  style: TextStyle(
+                                                                    color: const Color(0xFF5F6E7B),
+                                                                    fontSize: 15,
+                                                                    fontFamily: 'PingFang TC',
+                                                                    fontWeight: FontWeight.w400,
+                                                                  ),
+                                                                ),
+                                                                SizedBox(width: 12,),
+                                                                Text(
+                                                                  '150度',
+                                                                  style: TextStyle(
+                                                                    color: const Color(0xFF2B2F35),
+                                                                    fontSize: 15,
+                                                                    fontFamily: 'PingFang TC',
+                                                                    fontWeight: FontWeight.w400,
+                                                                  ),
+                                                                ),
+                                                                SizedBox(width: 12,),
+                                                                Text(
+                                                                  '\$900',
+                                                                  style: TextStyle(
+                                                                    color: const Color(0xFFFF4444),
+                                                                    fontSize: 15,
+                                                                    fontFamily: 'PingFang TC',
+                                                                    fontWeight: FontWeight.w400,
+                                                                  ),
+                                                                ),
+                                                                Spacer(),
+                                                                SizedBox(
+                                                                  height: 70,
+                                                                  width: 70,
+                                                                  child: Image.asset('assets/images/electricity_meter.png'),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            Divider(height: 16,),
+                                                            Row(
+                                                              children: [
+                                                                Text(
+                                                                  '本期電度',
+                                                                  style: TextStyle(
+                                                                    color: const Color(0xFF2B2F35),
+                                                                    fontSize: 15,
+                                                                    fontFamily: 'PingFang TC',
+                                                                    fontWeight: FontWeight.w400,
+                                                                  ),
+                                                                ),
+                                                                SizedBox(width: 12,),
+                                                                Container(
+                                                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3.5),
+                                                                  decoration: ShapeDecoration(
+                                                                    color: const Color(0xFFF4F6F7),
+                                                                    shape: RoundedRectangleBorder(
+                                                                      side: BorderSide(
+                                                                        width: 1,
+                                                                        color: const Color(0xFFF4F6F7),
+                                                                      ),
+                                                                      borderRadius: BorderRadius.circular(3),
+                                                                    ),
+                                                                  ),
+                                                                  child: Row(
+                                                                    children: [
+                                                                      Text(
+                                                                        '200',
+                                                                        style: TextStyle(
+                                                                          color: const Color(0xFF2B2F35),
+                                                                          fontSize: 15,
+                                                                          fontFamily: 'PingFang TC',
+                                                                          fontWeight: FontWeight.w400,
+                                                                        ),
+                                                                      ),
+                                                                      SizedBox(width: 10,),
+                                                                      Text(
+                                                                        '度',
+                                                                        style: TextStyle(
+                                                                          color: const Color(0xFF7B8A95),
+                                                                          fontSize: 15,
+                                                                          fontFamily: 'PingFang TC',
+                                                                          fontWeight: FontWeight.w400,
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                                SizedBox(width: 12,),
+                                                                Text(
+                                                                  '\$1200',
+                                                                  style: TextStyle(
+                                                                    color: const Color(0xFFFF4444),
+                                                                    fontSize: 15,
+                                                                    fontFamily: 'PingFang TC',
+                                                                    fontWeight: FontWeight.w400,
+                                                                  ),
+                                                                ),
+                                                                Spacer(),
+                                                                SizedBox(
+                                                                  height: 70,
+                                                                  width: 70,
+                                                                  child: Image.asset('assets/images/electricity_meter.png'),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            SizedBox(height: 24,),
+                                                            Row(
+                                                              children: [
+                                                                Expanded(
+                                                                  child: Container(
+                                                                    height: 40,
+                                                                    alignment: Alignment.center,
+                                                                    decoration: ShapeDecoration(
+                                                                      color: Colors.white,
+                                                                      shape: RoundedRectangleBorder(
+                                                                        side: BorderSide(
+                                                                          width: 1,
+                                                                          color: const Color(0xFFCBD2D6),
+                                                                        ),
+                                                                        borderRadius: BorderRadius.circular(4),
+                                                                      ),
+                                                                    ),
+                                                                    child: Text(
+                                                                      '返回',
+                                                                      textAlign: TextAlign.center,
+                                                                      style: TextStyle(
+                                                                        color: const Color(0xFF2B2F35),
+                                                                        fontSize: 14,
+                                                                        fontFamily: 'Poppins',
+                                                                        fontWeight: FontWeight.w500,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                SizedBox(width: 16,),
+                                                                Expanded(
+                                                                  child: Container(
+                                                                    height: 40,
+                                                                    alignment: Alignment.center,
+                                                                    decoration: ShapeDecoration(
+                                                                      color: const Color(0xFF319877),
+                                                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                                                                    ),
+                                                                    child: Text(
+                                                                      '確定',
+                                                                      textAlign: TextAlign.center,
+                                                                      style: TextStyle(
+                                                                        color: Colors.white,
+                                                                        fontSize: 14,
+                                                                        fontFamily: 'PingFang SC',
+                                                                        fontWeight: FontWeight.w500,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            SizedBox(height: 50,),
+                                                          ],
+                                                        ),
+                                                      );
+                                                    },
+                                                  );
+                                                },
+                                              );
+                                            },
+                                            child: Container(
+                                              margin: const EdgeInsets.only(right: 4),
+                                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                              decoration: ShapeDecoration(
+                                                color: const Color(0xFF319877),
+                                                shape: RoundedRectangleBorder(
+                                                  side: BorderSide(
+                                                    width: 1,
+                                                    color: const Color(0xFFCCCCCC),
+                                                  ),
+                                                  borderRadius: BorderRadius.circular(4),
                                                 ),
-                                                borderRadius: BorderRadius.circular(4),
                                               ),
-                                            ),
-                                            child: Text(
-                                              'M2-12A電費',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 12,
-                                                fontFamily: 'PingFang TC',
-                                                fontWeight: FontWeight.w400,
+                                              child: Text(
+                                                'M2-12A電費',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 12,
+                                                  fontFamily: 'PingFang TC',
+                                                  fontWeight: FontWeight.w400,
+                                                ),
                                               ),
                                             ),
                                           ),

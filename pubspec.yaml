@@ -93,6 +93,7 @@ flutter:
     - assets/images/user.png
     - assets/images/property.png
     - assets/images/property_internal.png
+    - assets/images/electricity_meter.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
