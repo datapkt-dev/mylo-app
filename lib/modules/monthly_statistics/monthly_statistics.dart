@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:mylo/modules/main_accounts/widgets/monthly_statistics_widget_property.dart';
-import 'package:mylo/modules/main_accounts/widgets/monthly_statistics_widget_tenant.dart';
+import 'package:mylo/modules/monthly_statistics/widgets/monthly_statistics_widget_property.dart';
+import 'package:mylo/modules/monthly_statistics/widgets/monthly_statistics_widget_tenant.dart';
 
 class MonthlyStatisticsPage extends StatefulWidget {
   const MonthlyStatisticsPage({super.key});

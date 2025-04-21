@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../pages/tenant_details.dart';
+
 class MonthlyStatisticsWidgetTenant extends StatefulWidget {
   const MonthlyStatisticsWidgetTenant({super.key});
 
@@ -91,7 +93,7 @@ class _MonthlyStatisticsWidgetTenantState extends State<MonthlyStatisticsWidgetT
                 children: List.generate(6, (index) {
                   return GestureDetector(
                     onTap: () {
-                      // Navigator.push(context, MaterialPageRoute(builder: (context) => CommunityStatisticsPage(),),);
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => TenantDetailsPage(),),);
                     },
                     child: Container(
                       width: double.infinity,

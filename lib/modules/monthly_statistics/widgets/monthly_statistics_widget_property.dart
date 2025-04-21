@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../pages/property_details.dart';
+
 class MonthlyStatisticsWidgetProperty extends StatefulWidget {
   const MonthlyStatisticsWidgetProperty({super.key});
 
@@ -91,7 +93,7 @@ class _MonthlyStatisticsWidgetPropertyState extends State<MonthlyStatisticsWidge
                 children: List.generate(6, (index) {
                   return GestureDetector(
                     onTap: () {
-                      // Navigator.push(context, MaterialPageRoute(builder: (context) => CommunityStatisticsPage(),),);
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => PropertyDetailsPage(),),);
                     },
                     child: Container(
                       width: double.infinity,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:mylo/modules/main_accounts/pages/community_statistics.dart';
+import 'package:mylo/modules/community_statistics/community_statistics.dart';
 
 class CommunityWidget extends StatefulWidget {
   const CommunityWidget({super.key});

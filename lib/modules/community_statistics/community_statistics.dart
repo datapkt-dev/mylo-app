@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:mylo/modules/main_accounts/pages/monthly_statistics.dart';
+import 'package:mylo/modules/monthly_statistics/monthly_statistics.dart';
 
 class CommunityStatisticsPage extends StatefulWidget {
   const CommunityStatisticsPage({super.key});
@@ -33,7 +33,8 @@ class _CommunityStatisticsPageState extends State<CommunityStatisticsPage> {
               ),
               SizedBox(width: 10,),
               Text(
-                '台北市大安區和平東路88號',
+                '台北市大安區和平東路88號＋'
+                    '',
                 style: TextStyle(
                   color: const Color(0xFF5F6E7B),
                   fontSize: 14,
