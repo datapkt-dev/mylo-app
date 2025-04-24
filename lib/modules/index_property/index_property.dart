@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mylo/modules/index_property/widgets/widget_community.dart';
+import 'package:mylo/modules/index_property/widgets/widget_property.dart';
 
 class MainProperty extends StatefulWidget {
   const MainProperty({super.key});
@@ -11,6 +12,50 @@ class MainProperty extends StatefulWidget {
 class _MainPropertyState extends State<MainProperty> {
   int selectedTab = 0;
   List<String> tab = ['社區', '物件',];
+
+  Future<Map<String, dynamic>> fetchData() async {
+    try {
+      String urlString = 'https://rencoo.com.tw/api/v1/properties?community_id=1';
+      final url = Uri.parse(urlString);
+      final response = await http.get(
+        url,
+        //headers: {
+        //  'Authorization': 'Bearer $token',
+        //},
+      );
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> dataJson = json.decode(response.body);
+        print(dataJson);
+
+        // if (dataJson['image_url'] != null) {
+        //   try {
+        //     String urlString = '$_baseUrl/upload/view';
+        //     final url = Uri.parse('$urlString?gcs_url=${dataJson['image_url']}');
+        //     final response = await http.get(
+        //       url,
+        //       headers: {
+        //         'Authorization': 'Bearer $token',
+        //       },
+        //     );
+        //     if (response.statusCode == 200) {
+        //       img = json.decode(response.body)['preview_url'];
+        //     }
+        //
+        //   } catch (e) {
+        //     print('Error fetching image: $e');
+        //   }
+        // }
+
+        return dataJson;
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (e) {
+      print('Error fetching data: $e');
+      return {};
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,9 +117,7 @@ class _MainPropertyState extends State<MainProperty> {
       case 0:
         return WidgetCommunity();
       case 1:
-        return Center(
-          child: Text('尚未開放'),
-        );
+        return WidgetProperty();
       default:
         return const Center(child: Text("未知層級"));
     }

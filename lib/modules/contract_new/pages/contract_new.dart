@@ -55,86 +55,80 @@ class _ContractNewState extends State<ContractNew> {
       ),
       body: Column(
         children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Container(
-                    height: 70,
-                    margin: const EdgeInsets.symmetric(horizontal: 10,),
-                    alignment: Alignment.topCenter,
-                    child: Timeline.tileBuilder(
-                      shrinkWrap: true,
-                      padding: EdgeInsets.zero,
-                      theme: TimelineThemeData(
-                        direction: Axis.horizontal,
-                        connectorTheme: const ConnectorThemeData(space: 8.0, thickness: 1.0),
-                      ),
-                      builder: TimelineTileBuilder.connected(
-                        connectionDirection: ConnectionDirection.before,
-                        itemCount: _totalStages,
-                        itemExtentBuilder: (_, __) {
-                          return (MediaQuery.of(context).size.width - 30) / _totalStages;
-                        },
-                        oppositeContentsBuilder: (context, index) {
-                          return Container();
-                        },
-                        contentsBuilder: (context, index) {
-                          return Container(
-                            padding: const EdgeInsets.only(top: 10,),
-                            child: Text(
-                              '${_processes[index]}',
-                              style: const TextStyle(
-                                color: Color(0xFF2B2F35),
-                                fontSize: 14,
-                                fontFamily: 'PingFang TC',
-                                fontWeight: FontWeight.w400,
-                                letterSpacing: 0.70,
-                              ),
-                            ),
-                          );
-                        },
-                        indicatorBuilder: (_, index) {
-                          if (index <= _currentStep) {
-                            // 完成的節點
-                            if (index == _currentStep) {
-                              return const DotIndicator(
-                                size: 16,
-                                color: Color(0xFFB6E4D0),
-                                child: DotIndicator(
-                                  size: 8,
-                                  color: Color(0xFF248568),
-                                ),
-                              );
-                            } else {
-                              return const DotIndicator(
-                                size: 10,
-                                color: Color(0xFF248568),
-                              );
-                            }
-                          } else {
-                            // 未完成的節點
-                            return const DotIndicator(
-                              size: 10.0,
-                              color: Color(0xFFE3E7EA),
-                            );
-                          }
-                        },
-                        connectorBuilder: (_, index, type) {
-                          return const SolidLineConnector(
-                            color: Color(0xFFE3E7EA),
-                            thickness: 1.0,
-                          );
-
-                        },
+          Container(
+            height: 70,
+            margin: const EdgeInsets.symmetric(horizontal: 10,),
+            alignment: Alignment.topCenter,
+            child: Timeline.tileBuilder(
+              shrinkWrap: true,
+              padding: EdgeInsets.zero,
+              theme: TimelineThemeData(
+                direction: Axis.horizontal,
+                connectorTheme: const ConnectorThemeData(space: 8.0, thickness: 1.0),
+              ),
+              builder: TimelineTileBuilder.connected(
+                connectionDirection: ConnectionDirection.before,
+                itemCount: _totalStages,
+                itemExtentBuilder: (_, __) {
+                  return (MediaQuery.of(context).size.width - 30) / _totalStages;
+                },
+                oppositeContentsBuilder: (context, index) {
+                  return Container();
+                },
+                contentsBuilder: (context, index) {
+                  return Container(
+                    padding: const EdgeInsets.only(top: 10,),
+                    child: Text(
+                      '${_processes[index]}',
+                      style: const TextStyle(
+                        color: Color(0xFF2B2F35),
+                        fontSize: 14,
+                        fontFamily: 'PingFang TC',
+                        fontWeight: FontWeight.w400,
+                        letterSpacing: 0.70,
                       ),
                     ),
-                  ),
-                  const Gap(10),
-                  _steps[_currentStep],
-                ],
+                  );
+                },
+                indicatorBuilder: (_, index) {
+                  if (index <= _currentStep) {
+                    // 完成的節點
+                    if (index == _currentStep) {
+                      return const DotIndicator(
+                        size: 16,
+                        color: Color(0xFFB6E4D0),
+                        child: DotIndicator(
+                          size: 8,
+                          color: Color(0xFF248568),
+                        ),
+                      );
+                    } else {
+                      return const DotIndicator(
+                        size: 10,
+                        color: Color(0xFF248568),
+                      );
+                    }
+                  } else {
+                    // 未完成的節點
+                    return const DotIndicator(
+                      size: 10.0,
+                      color: Color(0xFFE3E7EA),
+                    );
+                  }
+                },
+                connectorBuilder: (_, index, type) {
+                  return const SolidLineConnector(
+                    color: Color(0xFFE3E7EA),
+                    thickness: 1.0,
+                  );
+
+                },
               ),
             ),
+          ),
+          SizedBox(height: 10,),
+          Expanded(
+            child: _steps[_currentStep],
           ),
           Align(
             alignment: Alignment.bottomCenter,

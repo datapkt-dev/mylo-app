@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class ContractNewStep4 extends StatefulWidget {
   const ContractNewStep4({super.key});
@@ -12,24 +13,31 @@ class _ContractNewStep4State extends State<ContractNewStep4> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(16),
-        decoration: ShapeDecoration(
-          shape: RoundedRectangleBorder(
-            side: const BorderSide(width: 1, color: Color(0xFFCBD2D6)),
-            borderRadius: BorderRadius.circular(10),
+      child: Column(
+        children: [
+          const Text(
+            '合約名稱ＯＯＯＯＯＯＯ',
+            style: TextStyle(
+              color: Color(0xFF2B2F35),
+              fontSize: 15,
+              fontFamily: 'PingFang TC',
+              fontWeight: FontWeight.w500,
+            ),
           ),
-        ),
-        child: const Text(
-          '合約名稱ＯＯＯＯＯＯＯ',
-          style: TextStyle(
-            color: Color(0xFF2B2F35),
-            fontSize: 15,
-            fontFamily: 'PingFang TC',
-            fontWeight: FontWeight.w500,
+          Expanded(
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              decoration: ShapeDecoration(
+                shape: RoundedRectangleBorder(
+                  side: const BorderSide(width: 1, color: Color(0xFFCBD2D6)),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: SfPdfViewer.network('https://rencoo.com.tw/images/contract.pdf'),
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
