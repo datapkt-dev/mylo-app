@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mylo/modules/community_statistics/community_statistics.dart';
 
-class CommunityWidget extends StatefulWidget {
-  const CommunityWidget({super.key});
+class IndexAccountsWidgetCommunity extends StatefulWidget {
+  const IndexAccountsWidgetCommunity({super.key});
 
   @override
-  State<CommunityWidget> createState() => _CommunityWidgetState();
+  State<IndexAccountsWidgetCommunity> createState() => _CommunityWidgetState();
 }
 
-class _CommunityWidgetState extends State<CommunityWidget> {
+class _CommunityWidgetState extends State<IndexAccountsWidgetCommunity> {
   int selectedType = 0;
   List<String> types = ['全部', '包租', '代管'];
 

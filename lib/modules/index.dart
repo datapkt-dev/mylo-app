@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:mylo/modules/main_accounts/main_accounts.dart';
-import 'package:mylo/modules/main_contract/main_contract.dart';
+import 'package:mylo/modules/index_accounts/index_accounts.dart';
+import 'package:mylo/modules/index_contract/index_contract.dart';
+import 'package:mylo/modules/index_property/index_property.dart';
 import 'contract_new/pages/contract_new.dart';
 
-class IndexPage extends StatefulWidget {
-  const IndexPage({super.key});
+class IndexFrame extends StatefulWidget {
+  const IndexFrame({super.key});
 
   @override
-  State<IndexPage> createState() => _PageFrameState();
+  State<IndexFrame> createState() => _PageFrameState();
 }
 
-class _PageFrameState extends State<IndexPage> {
+class _PageFrameState extends State<IndexFrame> {
   int content = 1;
 
   int _selectedIndex = 0;
@@ -81,8 +82,8 @@ class _PageFrameState extends State<IndexPage> {
             children: [
               _buildBottomNavigationBarItem(
                 0,
-                'assets/icons/frame/index.svg',
-                '首頁',),
+                'assets/icons/frame/property.svg',
+                '物件',),
               _buildBottomNavigationBarItem(
                 1,
                 'assets/icons/frame/contract.svg',
@@ -222,7 +223,7 @@ class _PageFrameState extends State<IndexPage> {
           setState(() {
             _selectedIndex = index;
             content = index;
-            if (index == 0 || index == 3) {
+            if (index == 3) {
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
@@ -262,10 +263,12 @@ class _PageFrameState extends State<IndexPage> {
 
   Widget _buildContent() {
     switch (content) {
+      case 0:
+        return MainProperty();
       case 1:
         return MainContract();
       case 2:
-        return MainAccounts();
+        return IndexAccounts();
       default:
         return const Center(child: Text("未知層級"));
     }

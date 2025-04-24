@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:mylo/modules/main_accounts/widgets/community_widget.dart';
+import 'package:mylo/modules/index_accounts/widgets/index_accounts_widget_community.dart';
 
-class LandlordWidget extends StatefulWidget {
-  const LandlordWidget({super.key});
+class IndexAccountsWidgetLandlord extends StatefulWidget {
+  const IndexAccountsWidgetLandlord({super.key});
 
   @override
-  State<LandlordWidget> createState() => _LandlordWidgetState();
+  State<IndexAccountsWidgetLandlord> createState() => _LandlordWidgetState();
 }
 
-class _LandlordWidgetState extends State<LandlordWidget> {
+class _LandlordWidgetState extends State<IndexAccountsWidgetLandlord> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -117,7 +117,7 @@ class _LandlordWidgetState extends State<LandlordWidget> {
                                     )
                                 ),
                                 SizedBox(height: 20,),
-                                CommunityWidget(),
+                                IndexAccountsWidgetCommunity(),
                               ],
                             ),
                           );
