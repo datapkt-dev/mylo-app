@@ -94,7 +94,23 @@ class _MonthlyStatisticsWidgetTenantState extends State<MonthlyStatisticsWidgetT
                 children: List.generate(6, (index) {
                   return GestureDetector(
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => TenantDetailsPage(),),);
+                      // Navigator.push(context, MaterialPageRoute(builder: (context) => TenantDetailsPage(),),);
+                      Navigator.of(context).push(
+                        PageRouteBuilder(
+                          pageBuilder: (context, animation, secondaryAnimation) => TenantDetailsPage(),
+                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                            const begin = Offset(0.0, 1.0); // 從下往上
+                            const end = Offset.zero;
+                            const curve = Curves.ease;
+
+                            var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                            return SlideTransition(
+                              position: animation.drive(tween),
+                              child: child,
+                            );
+                          },
+                        ),
+                      );
                     },
                     child: Container(
                       width: double.infinity,

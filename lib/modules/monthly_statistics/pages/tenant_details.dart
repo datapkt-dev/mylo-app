@@ -22,7 +22,7 @@ class _TenantDetailsPageState extends State<TenantDetailsPage> {
           scrolledUnderElevation: 0,
           centerTitle: false,
           title: Text(
-            '帳務詳情',
+            '房客帳務詳情',
             style: TextStyle(
               color: const Color(0xFF2B2F35),
               fontSize: 16,
