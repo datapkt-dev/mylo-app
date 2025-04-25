@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 import 'package:mylo/modules/contract_new/pages/contract_new_complete.dart';
 import 'package:mylo/modules/contract_new/widgets/contract_new_step1.dart';
 import 'package:mylo/modules/contract_new/widgets/contract_new_step2.dart';
@@ -19,7 +18,6 @@ class _ContractNewState extends State<ContractNew> {
   final List<String> _processes = ['選擇物件', '填寫資料', '屋況點交', '預覽合約', '完成合約',];
   final List<Widget> _steps = [const ContractNewStep1(), const ContractNewStep2(), const ContractNewStep3(), const ContractNewStep4(), Container(),];
   int _currentStep = 0;
-
 
   @override
   Widget build(BuildContext context) {

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:mylo/units/upload_image_widget.dart';
+import '../data/api.dart';
 
 class ContractNewCustomer extends StatefulWidget {
   final List<dynamic> dataPass;
@@ -13,11 +14,12 @@ class ContractNewCustomer extends StatefulWidget {
 }
 
 class _ContractNewCustomerState extends State<ContractNewCustomer> {
+  final String baseUrl = 'https://rencoo.com.tw';
+
   List<String> imgId = ['', '',];
   List<dynamic> customerData = [false, '', '', '', '', '', '', '',];
   DateTime birthday = DateTime.now();
   bool native = true;
-  // [false, '團團', 'H123456789', '2005/12/01', '0912345678', '台中市大雅區民生路三段315號']
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController idController = TextEditingController();
@@ -26,9 +28,22 @@ class _ContractNewCustomerState extends State<ContractNewCustomer> {
   final TextEditingController districtController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
 
+  String? selectedCity;
+  List<dynamic> cityList = [];
+  String? selectedDistrict;
+  List<dynamic> districtList = [];
+
+  late final ApiService apiService;
+  late Future<List<dynamic>> futureData;
+  late List<dynamic> dataList;
+
   @override
   void initState() {
     super.initState();
+
+    apiService = ApiService(baseUrl: baseUrl);
+    futureData = apiService.fetchData();
+
     if (widget.dataPass[0]) {
       nameController.text = widget.dataPass[1];
       idController.text = widget.dataPass[2];
@@ -212,7 +227,7 @@ class _ContractNewCustomerState extends State<ContractNewCustomer> {
                           borderRadius: BorderRadius.circular(3),
                         ),
                       ),
-                      child: Text('${DateFormat('yyyy/MM/dd').format(birthday)}'),
+                      child: Text(DateFormat('yyyy/MM/dd').format(birthday)),
                     ),
                   ),
                   const Gap(24),
@@ -263,64 +278,109 @@ class _ContractNewCustomerState extends State<ContractNewCustomer> {
                     ),
                   ),
                   const Gap(8),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
-                          decoration: ShapeDecoration(
-                            color: const Color(0xFFF4F6F7),
-                            shape: RoundedRectangleBorder(
-                              side: const BorderSide(width: 1, color: Color(0xFFF4F6F7)),
-                              borderRadius: BorderRadius.circular(3),
-                            ),
+                  FutureBuilder(
+                    future: futureData,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (snapshot.hasError) {
+                        return Center(
+                          child: Text(
+                            '發生錯誤: ${snapshot.error}',
+                            style: const TextStyle(color: Colors.red, fontSize: 16),
                           ),
-                          child: TextField(
-                            controller: cityController,
-                            maxLines: 1,
-                            decoration: const InputDecoration(
-                              hintText: '縣市',
-                              hintStyle: TextStyle(
-                                color: Color(0xFF7B8A95),
-                                fontSize: 15,
-                                fontFamily: 'PingFang TC',
-                                fontWeight: FontWeight.w400,
+                        );
+                      }
+                      if (snapshot.hasData) {
+                        dataList = snapshot.data!;
+                        cityList = dataList;
+                      }
+                      return Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                              decoration: ShapeDecoration(
+                                color: const Color(0xFFF4F6F7),
+                                shape: RoundedRectangleBorder(
+                                  side: const BorderSide(width: 1, color: Color(0xFFF4F6F7)),
+                                  borderRadius: BorderRadius.circular(3),
+                                ),
                               ),
-                              border: InputBorder.none,
-                            ),
-                            onChanged: (value) {},
-                          ),
-                        ),
-                      ),
-                      const Gap(8),
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
-                          decoration: ShapeDecoration(
-                            color: const Color(0xFFF4F6F7),
-                            shape: RoundedRectangleBorder(
-                              side: const BorderSide(width: 1, color: Color(0xFFF4F6F7)),
-                              borderRadius: BorderRadius.circular(3),
-                            ),
-                          ),
-                          child: TextField(
-                            controller: districtController,
-                            maxLines: 1,
-                            decoration: const InputDecoration(
-                              hintText: '區域',
-                              hintStyle: TextStyle(
-                                color: Color(0xFF7B8A95),
-                                fontSize: 15,
-                                fontFamily: 'PingFang TC',
-                                fontWeight: FontWeight.w400,
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton<String>(
+                                  isExpanded: true,
+                                  // 如果目前還沒有資料或還沒選擇，就顯示 null
+                                  value: selectedCity,
+                                  icon: const Icon(Icons.arrow_drop_down),
+                                  hint: const Text("請選擇縣市"), // 當還沒選擇時的顯示
+                                  // 下拉選單內容 (items)
+                                  items: cityList.map((city) {
+                                    return DropdownMenuItem<String>(
+                                      value: city['city_name'],  // 實際的 value 是 student_id
+                                      child: Text(city['city_name']), // 顯示的文字是學生名稱
+                                    );
+                                  }).toList(),
+                                  // 當使用者選擇某個選項時
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      selectedDistrict = null;
+                                      selectedCity = newValue;
+                                      // 從 cityList 找到選中的 city 對象
+                                      final selectedCityData = cityList.firstWhere(
+                                            (city) => city['city_name'] == newValue,
+                                        orElse: () => {},
+                                      );
+
+                                      // 從選中的 city 資料取得對應的 district
+                                      districtList = selectedCityData['district'] ?? [];
+                                    });
+                                  },
+                                ),
                               ),
-                              border: InputBorder.none,
                             ),
-                            onChanged: (value) {},
                           ),
-                        ),
-                      ),
-                    ],
+                          const Gap(8),
+                          Expanded(
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                              decoration: ShapeDecoration(
+                                color: const Color(0xFFF4F6F7),
+                                shape: RoundedRectangleBorder(
+                                  side: const BorderSide(width: 1, color: Color(0xFFF4F6F7)),
+                                  borderRadius: BorderRadius.circular(3),
+                                ),
+                              ),
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton<String>(
+                                  isExpanded: true,
+                                  // 如果目前還沒有資料或還沒選擇，就顯示 null
+                                  value: selectedDistrict,
+                                  icon: const Icon(Icons.arrow_drop_down),
+                                  hint: const Text("請選擇行政區"), // 當還沒選擇時的顯示
+                                  // 下拉選單內容 (items)
+                                  items: districtList.map((district) {
+                                    return DropdownMenuItem<String>(
+                                      value: district['district_name'],  // 實際的 value 是 student_id
+                                      child: Text(district['district_name']), // 顯示的文字是學生名稱
+                                    );
+                                  }).toList(),
+                                  onTap: () {
+                                  },
+                                  // 當使用者選擇某個選項時
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      selectedDistrict = newValue;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
                   ),
                   const Gap(8),
                   Container(

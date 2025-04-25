@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mylo/modules/index_property/widgets/widget_bill.dart';
+import 'package:mylo/modules/index_property/widgets/widget_contract.dart';
+import '../widgets/widget_data.dart';
 import '../widgets/widget_donut_chart.dart';
 
 class PropertyCommunityStatisticsPage extends StatefulWidget {
@@ -12,8 +15,6 @@ class PropertyCommunityStatisticsPage extends StatefulWidget {
 class _PropertyCommunityStatisticsPageState extends State<PropertyCommunityStatisticsPage> {
   int selectedTab = 0;
   List<String> tab = ['數據', '帳單', '合約'];
-
-  double percentage = 60;
 
   @override
   Widget build(BuildContext context) {
@@ -273,101 +274,7 @@ class _PropertyCommunityStatisticsPageState extends State<PropertyCommunityStati
               child: SingleChildScrollView(
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16,),
-                  child: Column(
-                    children: [
-                      SizedBox(height: 10,),
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(20),
-                        decoration: ShapeDecoration(
-                          color: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            side: BorderSide(
-                              width: 1,
-                              color: const Color(0xFFDEE2E6),
-                            ),
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                        ),
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                SvgPicture.asset('assets/icons/pie_chart.svg'),
-                                SizedBox(width: 10,),
-                                Text(
-                                  '入住率',
-                                  style: TextStyle(
-                                    color: const Color(0xFF2B2F35),
-                                    fontSize: 16,
-                                    fontFamily: 'PingFang SC',
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 226,
-                              child: WidgetDonutChart(
-                                data: [
-                                  DonutData(value: percentage, color: Color(0xFF319877)),
-                                  DonutData(value: 100-percentage, color: Color(0xFFE3E7EA)),
-                                ],
-                                centerText: '$percentage%',
-                                commentText: '入住率',
-                              ),
-                            ),
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Container(
-                                  width: 20,
-                                  height: 4,
-                                  decoration: ShapeDecoration(
-                                    color: const Color(0xFF319877),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(33),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: 10,),
-                                Text(
-                                  '入住率',
-                                  style: TextStyle(
-                                    color: const Color(0xFF2B2F35),
-                                    fontSize: 14,
-                                    fontFamily: 'PingFang TC',
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                                SizedBox(width: 20,),
-                                Container(
-                                  width: 20,
-                                  height: 4,
-                                  decoration: ShapeDecoration(
-                                    color: const Color(0xFFE3E7EA),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(33),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: 10,),
-                                Text(
-                                  '入住率',
-                                  style: TextStyle(
-                                    color: const Color(0xFF2B2F35),
-                                    fontSize: 14,
-                                    fontFamily: 'PingFang TC',
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                  child: _buildContent(),
                 ),
               ),
             ),
@@ -375,6 +282,19 @@ class _PropertyCommunityStatisticsPageState extends State<PropertyCommunityStati
         ),
       ),
     );
+  }
+
+  Widget _buildContent() {
+    switch (selectedTab) {
+      case 0:
+        return WidgetData();
+      case 1:
+        return WidgetBill();
+      case 2:
+        return WidgetContract();
+      default:
+        return const Center(child: Text("未知層級"));
+    }
   }
 }
 

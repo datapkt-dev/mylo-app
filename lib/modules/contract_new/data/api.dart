@@ -1,5 +1,4 @@
 import 'dart:convert';
-// import 'model.dart';
 import 'package:http/http.dart' as http;
 
 class ApiService {
@@ -9,7 +8,7 @@ class ApiService {
 
   Future<List<dynamic>> fetchData() async {
     try {
-      String urlString = '$baseUrl/api/v1/properties?community_id=1&status=2';
+      String urlString = '$baseUrl/api/v1/divisionsTW';
       final url = Uri.parse(urlString);
       final response = await http.get(
         url,

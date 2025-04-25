@@ -184,7 +184,6 @@ class _MainPropertyState extends State<IndexPropertyPage> {
                 }
                 if (snapshot.hasData) {
                   dataList = snapshot.data!;
-                  print(dataList);
                 }
                 return Expanded(
                   child: SingleChildScrollView(

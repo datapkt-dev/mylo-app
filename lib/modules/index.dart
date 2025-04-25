@@ -3,7 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:mylo/modules/index_accounts/index_accounts.dart';
 import 'package:mylo/modules/index_contract/index_contract.dart';
 import 'package:mylo/modules/index_property/index_property.dart';
-import 'contract_new/pages/contract_new.dart';
+import 'contract_new/contract_new.dart';
 
 class IndexFrame extends StatefulWidget {
   const IndexFrame({super.key});
