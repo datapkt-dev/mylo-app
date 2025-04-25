@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:mylo/modules/index_accounts/widgets/index_accounts_widget_community.dart';
 import 'package:mylo/modules/index_accounts/widgets/index_accounts_widget_landlord.dart';
 
-class IndexAccounts extends StatefulWidget {
-  const IndexAccounts({super.key});
+class IndexAccountPage extends StatefulWidget {
+  const IndexAccountPage({super.key});
 
   @override
-  State<IndexAccounts> createState() => _MainAccountsState();
+  State<IndexAccountPage> createState() => _MainAccountsState();
 }
 
-class _MainAccountsState extends State<IndexAccounts> {
+class _MainAccountsState extends State<IndexAccountPage> {
   int _selectedTab = 0;
   List<String> tab = ['房東', '社區',];
 

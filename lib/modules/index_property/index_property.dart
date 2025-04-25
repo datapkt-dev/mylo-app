@@ -1,60 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:mylo/modules/index_property/widgets/widget_community.dart';
-import 'package:mylo/modules/index_property/widgets/widget_property.dart';
+import 'package:flutter_svg/svg.dart';
+import 'data/api.dart';
+// import 'data/model.dart';
+import 'package:mylo/modules/index_property/pages/property_community_statistics.dart';
 
-class MainProperty extends StatefulWidget {
-  const MainProperty({super.key});
+class IndexPropertyPage extends StatefulWidget {
+  const IndexPropertyPage({super.key});
 
   @override
-  State<MainProperty> createState() => _MainPropertyState();
+  State<IndexPropertyPage> createState() => _MainPropertyState();
 }
 
-class _MainPropertyState extends State<MainProperty> {
-  int selectedTab = 0;
-  List<String> tab = ['社區', '物件',];
+class _MainPropertyState extends State<IndexPropertyPage> {
+  final String baseUrl = 'https://rencoo.com.tw';
 
-  Future<Map<String, dynamic>> fetchData() async {
-    try {
-      String urlString = 'https://rencoo.com.tw/api/v1/properties?community_id=1';
-      final url = Uri.parse(urlString);
-      final response = await http.get(
-        url,
-        //headers: {
-        //  'Authorization': 'Bearer $token',
-        //},
-      );
+  int selectedType = 0;
+  List<String> types = ['全部', '未出租', '已出租'];
 
-      if (response.statusCode == 200) {
-        Map<String, dynamic> dataJson = json.decode(response.body);
-        print(dataJson);
+  late final ApiService apiService;
+  late Future<List<dynamic>> futureData;
+  late List<dynamic> dataList;
 
-        // if (dataJson['image_url'] != null) {
-        //   try {
-        //     String urlString = '$_baseUrl/upload/view';
-        //     final url = Uri.parse('$urlString?gcs_url=${dataJson['image_url']}');
-        //     final response = await http.get(
-        //       url,
-        //       headers: {
-        //         'Authorization': 'Bearer $token',
-        //       },
-        //     );
-        //     if (response.statusCode == 200) {
-        //       img = json.decode(response.body)['preview_url'];
-        //     }
-        //
-        //   } catch (e) {
-        //     print('Error fetching image: $e');
-        //   }
-        // }
+  @override
+  void initState() {
+    super.initState();
 
-        return dataJson;
-      } else {
-        throw Exception('Failed to load data');
-      }
-    } catch (e) {
-      print('Error fetching data: $e');
-      return {};
-    }
+    apiService = ApiService(baseUrl: baseUrl);
+
+    futureData = apiService.fetchData();
   }
 
   @override
@@ -64,62 +37,289 @@ class _MainPropertyState extends State<MainProperty> {
       child: SafeArea(
         child: Column(
           children: [
+            AppBar(
+              scrolledUnderElevation: 0,
+              centerTitle: false,
+              title: const Text(
+                '好好住社區',
+                style: TextStyle(
+                  color: Color(0xFF603E33),
+                  fontSize: 20,
+                  fontFamily: 'PingFang TC',
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+            ),
             Row(
-              children: List.generate(tab.length, (index) {
-                return Expanded(
-                  child: Container(
-                    height: 40,
-                    alignment: Alignment.center,
-                    child: IntrinsicWidth(
-                      child: InkWell(
-                        onTap: () {
+              children: [
+                SizedBox(width: 16,),
+                Row(
+                  children: List.generate(types.length, (index) {
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
                           setState(() {
-                            selectedTab = index;
+                            selectedType = index;
                           });
-                        },
-                        child: Container(
-                          height: double.infinity,
-                          alignment: Alignment.center,
-                          decoration: selectedTab == index ? const BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(
-                                width: 2,
-                                color: Color(0xFF986E49),
-                              ),
+                        });
+                      },
+                      child: Container(
+                        width: 70,
+                        height: 32,
+                        alignment: Alignment.center,
+                        margin: EdgeInsets.only(right: 8,),
+                        decoration: ShapeDecoration(
+                          color: selectedType == index ? const Color(0xFFD9F2E5) :const Color(0xFFF4F6F7),
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(
+                              width: 1,
+                              color: selectedType == index ? const Color(0xFF319877) : const Color(0xFFCBD2D6),
                             ),
-                          ) : null,
-                          child: Text(
-                            tab[index],
-                            style: TextStyle(
-                              color: selectedTab == index ? const Color(0xFF986E49) : const Color(0xFF2B2F35),
-                              fontSize: 15,
-                              fontFamily: 'PingFang SC',
-                              fontWeight: FontWeight.w500,
-                            ),
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        child: Text(
+                          types[index],
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: selectedType == index ? const Color(0xFF319877) : const Color(0xFFA6B1BA),
+                            fontSize: 15,
+                            fontFamily: 'PingFang TC',
+                            fontWeight: FontWeight.w400,
                           ),
                         ),
                       ),
+                    );
+                  }),
+                ),
+                SizedBox(width: 16,),
+              ],
+            ),
+            SizedBox(height: 10,),
+            Row(
+              children: [
+                SizedBox(width: 16,),
+                Text(
+                  '6個物件',
+                  style: TextStyle(
+                    color: const Color(0xFF5F6E7B),
+                    fontSize: 14,
+                    fontFamily: 'PingFang TC',
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                Spacer(),
+                Row(
+                  children: [
+                    SvgPicture.asset(
+                      'assets/icons/index/filter.svg',
+                      color: Colors.black,
+                    ),
+                    SizedBox(width: 4,),
+                    Text(
+                      '篩選',
+                      style: TextStyle(
+                        color: const Color(0xFF2B2F35),
+                        fontSize: 14,
+                        fontFamily: 'PingFang TC',
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(width: 16,),
+                Row(
+                  children: [
+                    SvgPicture.asset(
+                      'assets/icons/index/sort.svg',
+                      color: Colors.black,
+                    ),
+                    SizedBox(width: 4,),
+                    Text(
+                      '排序',
+                      style: TextStyle(
+                        color: const Color(0xFF2B2F35),
+                        fontSize: 14,
+                        fontFamily: 'PingFang TC',
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(width: 16,),
+                Row(
+                  children: [
+                    Icon(Icons.search_rounded,size: 18,),
+                    SizedBox(width: 4,),
+                    Text(
+                      '搜尋',
+                      style: TextStyle(
+                        color: const Color(0xFF2B2F35),
+                        fontSize: 14,
+                        fontFamily: 'PingFang TC',
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(width: 16,),
+              ],
+            ),
+            SizedBox(height: 8,),
+            FutureBuilder(
+              future: futureData,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text(
+                      '發生錯誤: ${snapshot.error}',
+                      style: const TextStyle(color: Colors.red, fontSize: 16),
+                    ),
+                  );
+                }
+                if (snapshot.hasData) {
+                  dataList = snapshot.data!;
+                  print(dataList);
+                }
+                return Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: List.generate(dataList.length, (index) {
+                        return Container(
+                          margin: EdgeInsets.symmetric(horizontal: 16,),
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => PropertyCommunityStatisticsPage(),
+                                ),
+                              );
+                            },
+                            child: Container(
+                              margin: EdgeInsets.only(bottom: 10),
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                              decoration: ShapeDecoration(
+                                color: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  side: BorderSide(
+                                    width: 1,
+                                    color: const Color(0xFFE3E7EA),
+                                  ),
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                                    decoration: ShapeDecoration(
+                                      color: const Color(0xFFFFE4E4),
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                                    ),
+                                    child: Text(
+                                      '未出租',
+                                      style: TextStyle(
+                                        color: const Color(0xFFFF4444),
+                                        fontSize: 12,
+                                        fontFamily: 'PingFang SC',
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(height: 8,),
+                                  Row(
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            '${dataList[index]['community_name']}',
+                                            style: TextStyle(
+                                              color: const Color(0xFF2B2F35),
+                                              fontSize: 16,
+                                              fontFamily: 'PingFang SC',
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          SizedBox(height: 4,),
+                                          Text(
+                                            '${dataList[index]['address']}',
+                                            style: TextStyle(
+                                              color: const Color(0xFF5F6E7B),
+                                              fontSize: 15,
+                                              fontFamily: 'PingFang TC',
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                          SizedBox(height: 4,),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                '租約固定金',
+                                                style: TextStyle(
+                                                  color: const Color(0xFF525D68),
+                                                  fontSize: 14,
+                                                  fontFamily: 'PingFang TC',
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                              ),
+                                              SizedBox(width: 10,),
+                                              Text(
+                                                '\$${dataList[index]['default_rent']}',
+                                                style: TextStyle(
+                                                  color: const Color(0xFFFF4444),
+                                                  fontSize: 14,
+                                                  fontFamily: 'PingFang TC',
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      Spacer(),
+                                      Container(
+                                        width: 72,
+                                        height: 72,
+                                        decoration: ShapeDecoration(
+                                          shape: RoundedRectangleBorder(
+                                            side: BorderSide(
+                                              width: 1,
+                                              color: const Color(0xFFDEE2E6),
+                                            ),
+                                            borderRadius: BorderRadius.circular(4),
+                                          ),
+                                        ),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(4), // 圓角要跟外層一樣
+                                          child: Image.asset(
+                                            'assets/images/property.png',
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
                     ),
                   ),
                 );
-              }),
+              },
             ),
-            SizedBox(height: 8,),
-            _buildContent(),
           ],
         ),
       ),
     );
-  }
-
-  Widget _buildContent() {
-    switch (selectedTab) {
-      case 0:
-        return WidgetCommunity();
-      case 1:
-        return WidgetProperty();
-      default:
-        return const Center(child: Text("未知層級"));
-    }
   }
 }

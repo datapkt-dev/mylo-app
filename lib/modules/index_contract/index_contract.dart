@@ -3,14 +3,14 @@ import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 import '../contract_detail/pages/contract_detail.dart';
 
-class MainContract extends StatefulWidget {
-  const MainContract({super.key});
+class IndexContractPage extends StatefulWidget {
+  const IndexContractPage({super.key});
 
   @override
-  State<MainContract> createState() => _MainContractState();
+  State<IndexContractPage> createState() => _MainContractState();
 }
 
-class _MainContractState extends State<MainContract> {
+class _MainContractState extends State<IndexContractPage> {
   int _selectedTab = 0;
   List<String> tab = ['全部', '待辦', '執行中', '歷史',];
   List<String> status = ['待簽約', '執行中', '已過期',];
