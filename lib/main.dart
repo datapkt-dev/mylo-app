@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mylo/modules/index.dart';
+import 'package:mylo/modules/index_frame.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 

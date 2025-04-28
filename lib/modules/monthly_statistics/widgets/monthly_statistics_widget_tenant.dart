@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../../../temp/longpresslab.dart';
 import '../pages/tenant_details.dart';
 
 class MonthlyStatisticsWidgetTenant extends StatefulWidget {
@@ -93,6 +94,9 @@ class _MonthlyStatisticsWidgetTenantState extends State<MonthlyStatisticsWidgetT
               child: Column(
                 children: List.generate(6, (index) {
                   return GestureDetector(
+                    onLongPress: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => UpgradedMailListPage(),),);
+                    },
                     onTap: () {
                       // Navigator.push(context, MaterialPageRoute(builder: (context) => TenantDetailsPage(),),);
                       Navigator.of(context).push(

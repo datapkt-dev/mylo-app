@@ -147,11 +147,20 @@ class _UpgradedMailListPageState extends State<UpgradedMailListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
+        centerTitle: false,
         title: Text(
           isSelecting
               ? '${selectedItems.length} 封已選取'
-              : 'Gmail 風格信件列表',
+              : '選取發送對象',
+          style: TextStyle(
+            color: const Color(0xFF2B2F35),
+            fontSize: 16,
+            fontFamily: 'PingFang SC',
+            fontWeight: FontWeight.w500,
+          ),
         ),
         leading: isSelecting
             ? IconButton(
@@ -186,34 +195,285 @@ class _UpgradedMailListPageState extends State<UpgradedMailListPage> {
             onPressed: selectedItems.isEmpty ? null : _deleteSelected,
           ),
         ]
-            : null,
+            : [
+              Text(
+          '2025 年 01 月帳單',
+          style: TextStyle(
+            color: const Color(0xFF986E49),
+            fontSize: 16,
+            fontFamily: 'PingFang SC',
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+          SizedBox(width: 16,),
+        ],
       ),
       body: ListView.builder(
         itemCount: mails.length,
         itemBuilder: (context, index) {
           final isSelected = selectedItems.contains(index);
-          return ListTile(
-            leading: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 300),
-              transitionBuilder: (child, anim) => FadeTransition(
-                opacity: anim,
-                child: child,
-              ),
-              child: isSelecting
-                  ? Checkbox(
-                key: ValueKey('cb_$index'),
-                value: isSelected,
-                onChanged: (_) => _toggleItem(index),
-              )
-                  : Icon(
-                Icons.mark_email_unread,
-                key: ValueKey('icon_$index'),
-                size: 32,
-              ),
-            ),
-            title: Text(mails[index]),
+          return GestureDetector(
             onLongPress: () => _enterSelection(index),
             onTap: () => _toggleItem(index),
+            child: Container(
+              width: double.infinity,
+              margin: EdgeInsets.symmetric(horizontal: 16, vertical: 10,),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              decoration: ShapeDecoration(
+                color: Colors.white,
+                shape: RoundedRectangleBorder(
+                  side: BorderSide(
+                    width: 1,
+                    color: const Color(0xFFE3E7EA),
+                  ),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        width: 54,
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        decoration: ShapeDecoration(
+                          color: const Color(0xFFFFE4E4),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                        ),
+                        child: Text(
+                          '未繳款',
+                          style: TextStyle(
+                            color: const Color(0xFFFF4444),
+                            fontSize: 12,
+                            fontFamily: 'PingFang SC',
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ),
+                      Spacer(),
+                      Text(
+                        '\$12,000',
+                        style: TextStyle(
+                          color: const Color(0xFFFF4444),
+                          fontSize: 15,
+                          fontFamily: 'PingFang TC',
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 8,),
+                  Row(
+                    children: [
+                      Stack(
+                        children: [
+                          Container(
+                            width: 72,
+                            height: 72,
+                            decoration: ShapeDecoration(
+                              color: const Color(0xFFB6E4D0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                            ),
+                          ),
+                          if (isSelecting && isSelected) // <= 加上 isSelected
+                            Positioned(
+                              top: 0,
+                              left: 0,
+                              child: Container(
+                                width: 14,
+                                height: 12,
+                                alignment: Alignment.center,
+                                decoration: const ShapeDecoration(
+                                  color: Color(0xFF319877),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(4),
+                                      bottomRight: Radius.circular(4),
+                                    ),
+                                  ),
+                                ),
+                                child: const Icon(
+                                  Icons.check_rounded,
+                                  color: Colors.white,
+                                  size: 8,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                      SizedBox(width: 12,),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '林房客',
+                              style: TextStyle(
+                                color: const Color(0xFF2B2F35),
+                                fontSize: 16,
+                                fontFamily: 'PingFang SC',
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            SizedBox(height: 5,),
+                            Row(
+                              children: [
+                                Text(
+                                  '租約固定金',
+                                  style: TextStyle(
+                                    color: const Color(0xFF525D68),
+                                    fontSize: 14,
+                                    fontFamily: 'PingFang TC',
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                                SizedBox(width: 8,),
+                                Text(
+                                  '\$16,000',
+                                  style: TextStyle(
+                                    color: const Color(0xFFFF4444),
+                                    fontSize: 14,
+                                    fontFamily: 'PingFang TC',
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                                SizedBox(width: 8,),
+                                Text(
+                                  '扣除金',
+                                  style: TextStyle(
+                                    color: const Color(0xFF525D68),
+                                    fontSize: 14,
+                                    fontFamily: 'PingFang TC',
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                                SizedBox(width: 8,),
+                                Text(
+                                  '\$4,000',
+                                  style: TextStyle(
+                                    color: const Color(0xFFFF4444),
+                                    fontSize: 14,
+                                    fontFamily: 'PingFang TC',
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                )
+                              ],
+                            ),
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                    },
+                                    child: Container(
+                                      margin: const EdgeInsets.only(right: 4),
+                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                      decoration: ShapeDecoration(
+                                        shape: RoundedRectangleBorder(
+                                          side: BorderSide(
+                                            width: 1,
+                                            color: const Color(0xFFCCCCCC),
+                                          ),
+                                          borderRadius: BorderRadius.circular(4),
+                                        ),
+                                      ),
+                                      child: Text(
+                                        'M2-12A',
+                                        style: TextStyle(
+                                          color: const Color(0xFF333333),
+                                          fontSize: 12,
+                                          fontFamily: 'PingFang TC',
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                    },
+                                    child: Container(
+                                      margin: const EdgeInsets.only(right: 4),
+                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                      decoration: ShapeDecoration(
+                                        color: const Color(0xFF319877),
+                                        shape: RoundedRectangleBorder(
+                                          side: BorderSide(
+                                            width: 1,
+                                            color: const Color(0xFFCCCCCC),
+                                          ),
+                                          borderRadius: BorderRadius.circular(4),
+                                        ),
+                                      ),
+                                      child: Text(
+                                        'M2-12A電費',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                          fontFamily: 'PingFang TC',
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: const EdgeInsets.only(right: 4),
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                    decoration: ShapeDecoration(
+                                      shape: RoundedRectangleBorder(
+                                        side: BorderSide(
+                                          width: 1,
+                                          color: const Color(0xFFCCCCCC),
+                                        ),
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      '車位C88',
+                                      style: TextStyle(
+                                        color: const Color(0xFF333333),
+                                        fontSize: 12,
+                                        fontFamily: 'PingFang TC',
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: const EdgeInsets.only(right: 4),
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                    decoration: ShapeDecoration(
+                                      shape: RoundedRectangleBorder(
+                                        side: BorderSide(
+                                          width: 1,
+                                          color: const Color(0xFFCCCCCC),
+                                        ),
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      '車位C88',
+                                      style: TextStyle(
+                                        color: const Color(0xFF333333),
+                                        fontSize: 12,
+                                        fontFamily: 'PingFang TC',
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
           );
         },
       ),
