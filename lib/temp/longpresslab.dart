@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class UpgradedMailListPage extends StatefulWidget {
-  const UpgradedMailListPage({Key? key}) : super(key: key);
+  const UpgradedMailListPage({super.key});
 
   @override
   State<UpgradedMailListPage> createState() => _UpgradedMailListPageState();
@@ -150,11 +150,10 @@ class _UpgradedMailListPageState extends State<UpgradedMailListPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
+        scrolledUnderElevation: 0,
         centerTitle: false,
         title: Text(
-          isSelecting
-              ? '${selectedItems.length} 封已選取'
-              : '選取發送對象',
+          '選取發送對象',
           style: TextStyle(
             color: const Color(0xFF2B2F35),
             fontSize: 16,
@@ -173,29 +172,29 @@ class _UpgradedMailListPageState extends State<UpgradedMailListPage> {
           },
         )
             : null,
-        actions: isSelecting
-            ? [
-          IconButton(
-            tooltip: '全選／取消全選',
-            icon: Icon(
-              selectedItems.length == mails.length
-                  ? Icons.select_all_outlined
-                  : Icons.select_all,
-            ),
-            onPressed: _selectAllToggle,
-          ),
-          IconButton(
-            tooltip: '分享',
-            icon: const Icon(Icons.share),
-            onPressed: selectedItems.isEmpty ? null : _onSharePressed,
-          ),
-          IconButton(
-            tooltip: '刪除',
-            icon: const Icon(Icons.delete),
-            onPressed: selectedItems.isEmpty ? null : _deleteSelected,
-          ),
-        ]
-            : [
+        actions: //isSelecting
+        //     ? [
+        //   IconButton(
+        //     tooltip: '全選／取消全選',
+        //     icon: Icon(
+        //       selectedItems.length == mails.length
+        //           ? Icons.select_all_outlined
+        //           : Icons.select_all,
+        //     ),
+        //     onPressed: _selectAllToggle,
+        //   ),
+        //   IconButton(
+        //     tooltip: '分享',
+        //     icon: const Icon(Icons.share),
+        //     onPressed: selectedItems.isEmpty ? null : _onSharePressed,
+        //   ),
+        //   IconButton(
+        //     tooltip: '刪除',
+        //     icon: const Icon(Icons.delete),
+        //     onPressed: selectedItems.isEmpty ? null : _deleteSelected,
+        //   ),
+        // ] :
+        [
               Text(
           '2025 年 01 月帳單',
           style: TextStyle(
@@ -476,6 +475,337 @@ class _UpgradedMailListPageState extends State<UpgradedMailListPage> {
             ),
           );
         },
+      ),
+      bottomNavigationBar: Padding(
+        padding: EdgeInsets.only(top: 10,right: 16, left: 16, bottom: 45,),
+        child: Row(
+          children: [
+            Expanded(
+              child: Row(
+                children: [
+                  Checkbox(
+                    value: true,
+                    onChanged: (bool? value) {},
+                    activeColor: Color(0xFF319877),
+                  ),
+                  Text(
+                    '全選',
+                    style: TextStyle(
+                      color: const Color(0xFF2B2F35),
+                      fontSize: 15,
+                      fontFamily: 'PingFang TC',
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(width: 16,),
+            Expanded(
+              child: Container(
+                height: 40,
+                alignment: Alignment.center,
+                decoration: ShapeDecoration(
+                  color: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide(
+                      width: 1,
+                      color: const Color(0xFFCBD2D6),
+                    ),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+                child: Text(
+                  '返回',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: const Color(0xFF2B2F35),
+                    fontSize: 14,
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(width: 16,),
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  showModalBottomSheet(
+                    backgroundColor: Colors.white,
+                    context: context,
+                    builder: (BuildContext context) {
+                      return StatefulBuilder(
+                        builder: (BuildContext context, StateSetter setState) {
+                          return Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 16,),
+                            child: SingleChildScrollView(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Center(
+                                    child: Text(
+                                      '發送訊息',
+                                      style: TextStyle(
+                                        color: const Color(0xFF2B2F35),
+                                        fontSize: 16,
+                                        fontFamily: 'PingFang SC',
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(height: 16,),
+                                  Text(
+                                    '發送方式',
+                                    style: TextStyle(
+                                      color: const Color(0xFF2B2F35),
+                                      fontSize: 15,
+                                      fontFamily: 'PingFang TC',
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                  SizedBox(height: 10,),
+                                  Container(
+                                    width: double.infinity,
+                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                                    alignment: AlignmentDirectional.centerStart,
+                                    decoration: ShapeDecoration(
+                                      color: const Color(0xFFF4F6F7),
+                                      shape: RoundedRectangleBorder(
+                                        side: BorderSide(
+                                          width: 1,
+                                          color: const Color(0xFFF4F6F7),
+                                        ),
+                                        borderRadius: BorderRadius.circular(3),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      '選擇發送方式',
+                                      style: TextStyle(
+                                        color: const Color(0xFF7B8A95),
+                                        fontSize: 15,
+                                        fontFamily: 'PingFang TC',
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(height: 10,),
+                                  Container(
+                                    width: double.infinity,
+                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                                    alignment: AlignmentDirectional.centerStart,
+                                    decoration: ShapeDecoration(
+                                      color: const Color(0xFFF4F6F7),
+                                      shape: RoundedRectangleBorder(
+                                        side: BorderSide(
+                                          width: 1,
+                                          color: const Color(0xFFF4F6F7),
+                                        ),
+                                        borderRadius: BorderRadius.circular(3),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      '選擇範本',
+                                      style: TextStyle(
+                                        color: const Color(0xFF7B8A95),
+                                        fontSize: 15,
+                                        fontFamily: 'PingFang TC',
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(height: 10,),
+                                  Container(
+                                    width: double.infinity,
+                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                                    alignment: AlignmentDirectional.centerStart,
+                                    decoration: ShapeDecoration(
+                                      color: const Color(0xFFF4F6F7),
+                                      shape: RoundedRectangleBorder(
+                                        side: BorderSide(
+                                          width: 1,
+                                          color: const Color(0xFFF4F6F7),
+                                        ),
+                                        borderRadius: BorderRadius.circular(3),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      '訊息內容',
+                                      style: TextStyle(
+                                        color: const Color(0xFF7B8A95),
+                                        fontSize: 15,
+                                        fontFamily: 'PingFang TC',
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(height: 10,),
+                                  Row(
+                                    children: [
+                                      Checkbox(
+                                        value: true,
+                                        onChanged: (bool? value) {},
+                                        activeColor: Color(0xFF319877),
+                                      ),
+                                      Text(
+                                        '存為範本',
+                                        style: TextStyle(
+                                          color: const Color(0xFF323232),
+                                          fontSize: 14,
+                                          fontFamily: 'PingFang TC',
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
+                                      SizedBox(width: 12,),
+                                      Expanded(
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                                          alignment: AlignmentDirectional.centerStart,
+                                          decoration: ShapeDecoration(
+                                            color: const Color(0xFFF4F6F7),
+                                            shape: RoundedRectangleBorder(
+                                              side: BorderSide(
+                                                width: 1,
+                                                color: const Color(0xFFF4F6F7),
+                                              ),
+                                              borderRadius: BorderRadius.circular(3),
+                                            ),
+                                          ),
+                                          child: Text(
+                                            '範本名稱',
+                                            style: TextStyle(
+                                              color: const Color(0xFF7B8A95),
+                                              fontSize: 15,
+                                              fontFamily: 'PingFang TC',
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 10,),
+                                  Text(
+                                    '發送時間',
+                                    style: TextStyle(
+                                      color: const Color(0xFF2B2F35),
+                                      fontSize: 15,
+                                      fontFamily: 'PingFang TC',
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                  SizedBox(height: 10,),
+                                  Container(
+                                    width: double.infinity,
+                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                                    alignment: AlignmentDirectional.centerStart,
+                                    decoration: ShapeDecoration(
+                                      color: const Color(0xFFF4F6F7),
+                                      shape: RoundedRectangleBorder(
+                                        side: BorderSide(
+                                          width: 1,
+                                          color: const Color(0xFFF4F6F7),
+                                        ),
+                                        borderRadius: BorderRadius.circular(3),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      '立即發送',
+                                      style: TextStyle(
+                                        color: const Color(0xFF2B2F35),
+                                        fontSize: 15,
+                                        fontFamily: 'PingFang TC',
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(height: 16,),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Container(
+                                          height: 40,
+                                          alignment: Alignment.center,
+                                          decoration: ShapeDecoration(
+                                            color: Colors.white,
+                                            shape: RoundedRectangleBorder(
+                                              side: BorderSide(
+                                                width: 1,
+                                                color: const Color(0xFFCBD2D6),
+                                              ),
+                                              borderRadius: BorderRadius.circular(4),
+                                            ),
+                                          ),
+                                          child: Text(
+                                            '返回',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              color: const Color(0xFF2B2F35),
+                                              fontSize: 14,
+                                              fontFamily: 'Poppins',
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(width: 16,),
+                                      Expanded(
+                                        child: Container(
+                                          height: 40,
+                                          alignment: Alignment.center,
+                                          decoration: ShapeDecoration(
+                                            color: const Color(0xFF319877),
+                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                                          ),
+                                          child: Text(
+                                            '發送',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 14,
+                                              fontFamily: 'PingFang SC',
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            )
+                          );
+                        },
+                      );
+                    },
+                  );
+                },
+                child: Container(
+                  height: 40,
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  clipBehavior: Clip.antiAlias,
+                  decoration: ShapeDecoration(
+                    color: const Color(0xFF319877),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                  ),
+                  child: Text(
+                    '選取 ${selectedItems.length}',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontFamily: 'PingFang SC',
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              )
+            ),
+          ],
+        ),
       ),
     );
   }
