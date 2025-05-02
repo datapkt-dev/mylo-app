@@ -20,6 +20,15 @@ class _PageFrameState extends State<IndexFrame> {
     return selectedIndex == index ? const Color(0xFF8C5F42) : const Color(0x4C222222);
   }
 
+  final Set<int> selectedIndices = {};
+
+  final List<Map<String, String>> items = [
+    {'title': '好好住社區', 'subtitle': '台北市大安區敦化南路88號', 'tag': '部分代管'},
+    {'title': '勤美學', 'subtitle': '台北市大安區敦化南路88號', 'tag': '部分包租'},
+    {'title': '富田ㄧ號', 'subtitle': '台北市大安區敦化南路88號', 'tag': '部分代管'},
+    {'title': '好好睡社區', 'subtitle': '台北市大安區敦化南路88號', 'tag': '部分代管'},
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,893 +67,697 @@ class _PageFrameState extends State<IndexFrame> {
                           fontWeight: FontWeight.w400,
                         ),
                       ),
-                      tilePadding: EdgeInsets.zero,         // 取消標題區的 padding
-                      childrenPadding: EdgeInsets.zero,     // 取消展開內容的 padding
-                      children: [
-                        ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: Stack(
-                            children: [
-                              Container(
-                                width: 40,
-                                height: 40,
-                                decoration: ShapeDecoration(
-                                  shape: RoundedRectangleBorder(
-                                    side: BorderSide(
-                                      width: 1,
-                                      color: const Color(0xFFDEE2E6),
+                      tilePadding: EdgeInsets.zero,
+                      childrenPadding: EdgeInsets.zero,
+                      children: List.generate(items.length, (index) {
+                        final item = items[index];
+                        final isSelected = selectedIndices.contains(index);
+
+                        return GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              if (isSelected) {
+                                selectedIndices.remove(index);
+                              } else {
+                                selectedIndices.add(index);
+                              }
+                            });
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(bottom: 10),
+                            padding: EdgeInsets.symmetric(horizontal: 4,),
+                            decoration: ShapeDecoration(
+                              color: isSelected ? Color(0xFFF6F6F6) : Colors.transparent,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                            ),
+                            child: ListTile(
+                              contentPadding: EdgeInsets.zero,
+                              leading: Stack(
+                                children: [
+                                  Container(
+                                    width: 40,
+                                    height: 40,
+                                    decoration: ShapeDecoration(
+                                      shape: RoundedRectangleBorder(
+                                        side: BorderSide(width: 1, color: const Color(0xFFDEE2E6)),
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
                                     ),
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(4),
-                                  child: Image.asset(
-                                    'assets/images/property.png',
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                bottom: 0,
-                                child: Container(
-                                  width: 40,
-                                  height: 11,
-                                  alignment: Alignment.center,
-                                  decoration: ShapeDecoration(
-                                    color: Color(0xFF319877),
-                                    shape: RoundedRectangleBorder(
+                                    child: ClipRRect(
                                       borderRadius: BorderRadius.circular(4),
+                                      child: Image.asset(
+                                        'assets/images/property.png',
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
                                   ),
-                                  child: Text(
-                                    '部分代管',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 8,
-                                      fontFamily: 'PingFang TC',
-                                      fontWeight: FontWeight.w400,
+                                  Positioned(
+                                    bottom: 0,
+                                    child: Container(
+                                      width: 40,
+                                      height: 11,
+                                      alignment: Alignment.center,
+                                      decoration: ShapeDecoration(
+                                        color: item['tag'] == '部分包租' ? Color(0xFFB3885C) : Color(0xFF319877),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(4),
+                                        ),
+                                      ),
+                                      child: Text(
+                                        item['tag']!,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 8,
+                                          fontFamily: 'PingFang TC',
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
                                     ),
                                   ),
+                                ],
+                              ),
+                              title: Text(
+                                item['title']!,
+                                style: TextStyle(
+                                  color: const Color(0xFF2B2F35),
+                                  fontSize: 14,
+                                  fontFamily: 'PingFang TC',
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
-                            ],
-                          ),
-                          title: Text(
-                            '好好住社區',
-                            style: TextStyle(
-                              color: const Color(0xFF2B2F35),
-                              fontSize: 14,
-                              fontFamily: 'PingFang TC',
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          subtitle: Text(
-                            '台北市大安區敦化南路88號',
-                            style: TextStyle(
-                              color: const Color(0xFF5F6E7B),
-                              fontSize: 12,
-                              fontFamily: 'PingFang TC',
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          onTap: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                        ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: Stack(
-                            children: [
-                              Container(
-                                width: 40,
-                                height: 40,
-                                decoration: ShapeDecoration(
-                                  shape: RoundedRectangleBorder(
-                                    side: BorderSide(
-                                      width: 1,
-                                      color: const Color(0xFFDEE2E6),
-                                    ),
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(4),
-                                  child: Image.asset(
-                                    'assets/images/property.png',
-                                    fit: BoxFit.cover,
-                                  ),
+                              subtitle: Text(
+                                item['subtitle']!,
+                                style: TextStyle(
+                                  color: const Color(0xFF5F6E7B),
+                                  fontSize: 12,
+                                  fontFamily: 'PingFang TC',
+                                  fontWeight: FontWeight.w400,
                                 ),
                               ),
-                              Positioned(
-                                bottom: 0,
-                                child: Container(
-                                  width: 40,
-                                  height: 11,
-                                  alignment: Alignment.center,
-                                  decoration: ShapeDecoration(
-                                    color: Color(0xFFB3885C),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(4),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    '部分包租',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 8,
-                                      fontFamily: 'PingFang TC',
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          title: Text(
-                            '勤美學',
-                            style: TextStyle(
-                              color: const Color(0xFF2B2F35),
-                              fontSize: 14,
-                              fontFamily: 'PingFang TC',
-                              fontWeight: FontWeight.w500,
+                              // no trailing
                             ),
                           ),
-                          subtitle: Text(
-                            '台北市大安區敦化南路88號',
-                            style: TextStyle(
-                              color: const Color(0xFF5F6E7B),
-                              fontSize: 12,
-                              fontFamily: 'PingFang TC',
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          onTap: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                        ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: Stack(
-                            children: [
-                              Container(
-                                width: 40,
-                                height: 40,
-                                decoration: ShapeDecoration(
-                                  shape: RoundedRectangleBorder(
-                                    side: BorderSide(
-                                      width: 1,
-                                      color: const Color(0xFFDEE2E6),
-                                    ),
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(4),
-                                  child: Image.asset(
-                                    'assets/images/property.png',
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                bottom: 0,
-                                child: Container(
-                                  width: 40,
-                                  height: 11,
-                                  alignment: Alignment.center,
-                                  decoration: ShapeDecoration(
-                                    color: Color(0xFF319877),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(4),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    '部分代管',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 8,
-                                      fontFamily: 'PingFang TC',
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          title: Text(
-                            '富田ㄧ號',
-                            style: TextStyle(
-                              color: const Color(0xFF2B2F35),
-                              fontSize: 14,
-                              fontFamily: 'PingFang TC',
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          subtitle: Text(
-                            '台北市大安區敦化南路88號',
-                            style: TextStyle(
-                              color: const Color(0xFF5F6E7B),
-                              fontSize: 12,
-                              fontFamily: 'PingFang TC',
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          onTap: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                        ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: Stack(
-                            children: [
-                              Container(
-                                width: 40,
-                                height: 40,
-                                decoration: ShapeDecoration(
-                                  shape: RoundedRectangleBorder(
-                                    side: BorderSide(
-                                      width: 1,
-                                      color: const Color(0xFFDEE2E6),
-                                    ),
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(4),
-                                  child: Image.asset(
-                                    'assets/images/property.png',
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                bottom: 0,
-                                child: Container(
-                                  width: 40,
-                                  height: 11,
-                                  alignment: Alignment.center,
-                                  decoration: ShapeDecoration(
-                                    color: Color(0xFF319877),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(4),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    '部分代管',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 8,
-                                      fontFamily: 'PingFang TC',
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          title: Text(
-                            '好好睡社區',
-                            style: TextStyle(
-                              color: const Color(0xFF2B2F35),
-                              fontSize: 14,
-                              fontFamily: 'PingFang TC',
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          subtitle: Text(
-                            '台北市大安區敦化南路88號',
-                            style: TextStyle(
-                              color: const Color(0xFF5F6E7B),
-                              fontSize: 12,
-                              fontFamily: 'PingFang TC',
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          onTap: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ],
+                        );
+                      }),
                     ),
-                  ),
-                  Theme(
-                    data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-                    child: ExpansionTile(
-                      leading: Image.asset(
-                        width: 24,
-                        height: 24,
-                        'assets/images/contract_new/customer_male.png',
-                      ),
-                      title: const Text(
-                        '林小閔 (4)',
-                        style: TextStyle(
-                          color: Color(0xFF2B2F35),
-                          fontSize: 14,
-                          fontFamily: 'PingFang TC',
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      tilePadding: EdgeInsets.zero,         // 取消標題區的 padding
-                      childrenPadding: EdgeInsets.zero,     // 取消展開內容的 padding
-                      children: [
-                        ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: Container(
-                            width: 40,
-                            height: 40,
-                            decoration: ShapeDecoration(
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                  width: 1,
-                                  color: const Color(0xFFDEE2E6),
-                                ),
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(4),
-                              child: Image.asset(
-                                'assets/images/property.png',
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          title: Text(
-                            '好好住社區',
-                            style: TextStyle(
-                              color: const Color(0xFF2B2F35),
-                              fontSize: 14,
-                              fontFamily: 'PingFang TC',
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          subtitle: Text(
-                            '台北市大安區敦化南路88號',
-                            style: TextStyle(
-                              color: const Color(0xFF5F6E7B),
-                              fontSize: 12,
-                              fontFamily: 'PingFang TC',
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          onTap: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                        ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: Container(
-                            width: 40,
-                            height: 40,
-                            decoration: ShapeDecoration(
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                  width: 1,
-                                  color: const Color(0xFFDEE2E6),
-                                ),
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(4),
-                              child: Image.asset(
-                                'assets/images/property.png',
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          title: Text(
-                            '勤美學',
-                            style: TextStyle(
-                              color: const Color(0xFF2B2F35),
-                              fontSize: 14,
-                              fontFamily: 'PingFang TC',
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          subtitle: Text(
-                            '台北市大安區敦化南路88號',
-                            style: TextStyle(
-                              color: const Color(0xFF5F6E7B),
-                              fontSize: 12,
-                              fontFamily: 'PingFang TC',
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          onTap: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                        ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: Container(
-                            width: 40,
-                            height: 40,
-                            decoration: ShapeDecoration(
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                  width: 1,
-                                  color: const Color(0xFFDEE2E6),
-                                ),
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(4),
-                              child: Image.asset(
-                                'assets/images/property.png',
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          title: Text(
-                            '富田ㄧ號',
-                            style: TextStyle(
-                              color: const Color(0xFF2B2F35),
-                              fontSize: 14,
-                              fontFamily: 'PingFang TC',
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          subtitle: Text(
-                            '台北市大安區敦化南路88號',
-                            style: TextStyle(
-                              color: const Color(0xFF5F6E7B),
-                              fontSize: 12,
-                              fontFamily: 'PingFang TC',
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          onTap: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                        ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: Container(
-                            width: 40,
-                            height: 40,
-                            decoration: ShapeDecoration(
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                  width: 1,
-                                  color: const Color(0xFFDEE2E6),
-                                ),
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(4),
-                              child: Image.asset(
-                                'assets/images/property.png',
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          title: Text(
-                            '好好睡社區',
-                            style: TextStyle(
-                              color: const Color(0xFF2B2F35),
-                              fontSize: 14,
-                              fontFamily: 'PingFang TC',
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          subtitle: Text(
-                            '台北市大安區敦化南路88號',
-                            style: TextStyle(
-                              color: const Color(0xFF5F6E7B),
-                              fontSize: 12,
-                              fontFamily: 'PingFang TC',
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          onTap: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                  Theme(
-                    data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-                    child: ExpansionTile(
-                      leading: Image.asset(
-                        width: 24,
-                        height: 24,
-                        'assets/images/contract_new/customer_male.png',
-                      ),
-                      title: const Text(
-                        '林小閔 (4)',
-                        style: TextStyle(
-                          color: Color(0xFF2B2F35),
-                          fontSize: 14,
-                          fontFamily: 'PingFang TC',
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      tilePadding: EdgeInsets.zero,         // 取消標題區的 padding
-                      childrenPadding: EdgeInsets.zero,     // 取消展開內容的 padding
-                      children: [
-                        ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: Container(
-                            width: 40,
-                            height: 40,
-                            decoration: ShapeDecoration(
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                  width: 1,
-                                  color: const Color(0xFFDEE2E6),
-                                ),
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(4),
-                              child: Image.asset(
-                                'assets/images/property.png',
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          title: Text(
-                            '好好住社區',
-                            style: TextStyle(
-                              color: const Color(0xFF2B2F35),
-                              fontSize: 14,
-                              fontFamily: 'PingFang TC',
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          subtitle: Text(
-                            '台北市大安區敦化南路88號',
-                            style: TextStyle(
-                              color: const Color(0xFF5F6E7B),
-                              fontSize: 12,
-                              fontFamily: 'PingFang TC',
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          onTap: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                        ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: Container(
-                            width: 40,
-                            height: 40,
-                            decoration: ShapeDecoration(
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                  width: 1,
-                                  color: const Color(0xFFDEE2E6),
-                                ),
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(4),
-                              child: Image.asset(
-                                'assets/images/property.png',
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          title: Text(
-                            '勤美學',
-                            style: TextStyle(
-                              color: const Color(0xFF2B2F35),
-                              fontSize: 14,
-                              fontFamily: 'PingFang TC',
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          subtitle: Text(
-                            '台北市大安區敦化南路88號',
-                            style: TextStyle(
-                              color: const Color(0xFF5F6E7B),
-                              fontSize: 12,
-                              fontFamily: 'PingFang TC',
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          onTap: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                        ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: Container(
-                            width: 40,
-                            height: 40,
-                            decoration: ShapeDecoration(
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                  width: 1,
-                                  color: const Color(0xFFDEE2E6),
-                                ),
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(4),
-                              child: Image.asset(
-                                'assets/images/property.png',
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          title: Text(
-                            '富田ㄧ號',
-                            style: TextStyle(
-                              color: const Color(0xFF2B2F35),
-                              fontSize: 14,
-                              fontFamily: 'PingFang TC',
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          subtitle: Text(
-                            '台北市大安區敦化南路88號',
-                            style: TextStyle(
-                              color: const Color(0xFF5F6E7B),
-                              fontSize: 12,
-                              fontFamily: 'PingFang TC',
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          onTap: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                        ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: Container(
-                            width: 40,
-                            height: 40,
-                            decoration: ShapeDecoration(
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                  width: 1,
-                                  color: const Color(0xFFDEE2E6),
-                                ),
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(4),
-                              child: Image.asset(
-                                'assets/images/property.png',
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          title: Text(
-                            '好好睡社區',
-                            style: TextStyle(
-                              color: const Color(0xFF2B2F35),
-                              fontSize: 14,
-                              fontFamily: 'PingFang TC',
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          subtitle: Text(
-                            '台北市大安區敦化南路88號',
-                            style: TextStyle(
-                              color: const Color(0xFF5F6E7B),
-                              fontSize: 12,
-                              fontFamily: 'PingFang TC',
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          onTap: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                  Theme(
-                    data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-                    child: ExpansionTile(
-                      leading: Image.asset(
-                        width: 24,
-                        height: 24,
-                        'assets/images/contract_new/customer_male.png',
-                      ),
-                      title: const Text(
-                        '林小閔 (4)',
-                        style: TextStyle(
-                          color: Color(0xFF2B2F35),
-                          fontSize: 14,
-                          fontFamily: 'PingFang TC',
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      tilePadding: EdgeInsets.zero,         // 取消標題區的 padding
-                      childrenPadding: EdgeInsets.zero,     // 取消展開內容的 padding
-                      children: [
-                        ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: Container(
-                            width: 40,
-                            height: 40,
-                            decoration: ShapeDecoration(
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                  width: 1,
-                                  color: const Color(0xFFDEE2E6),
-                                ),
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(4),
-                              child: Image.asset(
-                                'assets/images/property.png',
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          title: Text(
-                            '好好住社區',
-                            style: TextStyle(
-                              color: const Color(0xFF2B2F35),
-                              fontSize: 14,
-                              fontFamily: 'PingFang TC',
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          subtitle: Text(
-                            '台北市大安區敦化南路88號',
-                            style: TextStyle(
-                              color: const Color(0xFF5F6E7B),
-                              fontSize: 12,
-                              fontFamily: 'PingFang TC',
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          onTap: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                        ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: Container(
-                            width: 40,
-                            height: 40,
-                            decoration: ShapeDecoration(
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                  width: 1,
-                                  color: const Color(0xFFDEE2E6),
-                                ),
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(4),
-                              child: Image.asset(
-                                'assets/images/property.png',
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          title: Text(
-                            '勤美學',
-                            style: TextStyle(
-                              color: const Color(0xFF2B2F35),
-                              fontSize: 14,
-                              fontFamily: 'PingFang TC',
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          subtitle: Text(
-                            '台北市大安區敦化南路88號',
-                            style: TextStyle(
-                              color: const Color(0xFF5F6E7B),
-                              fontSize: 12,
-                              fontFamily: 'PingFang TC',
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          onTap: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                        ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: Container(
-                            width: 40,
-                            height: 40,
-                            decoration: ShapeDecoration(
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                  width: 1,
-                                  color: const Color(0xFFDEE2E6),
-                                ),
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(4),
-                              child: Image.asset(
-                                'assets/images/property.png',
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          title: Text(
-                            '富田ㄧ號',
-                            style: TextStyle(
-                              color: const Color(0xFF2B2F35),
-                              fontSize: 14,
-                              fontFamily: 'PingFang TC',
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          subtitle: Text(
-                            '台北市大安區敦化南路88號',
-                            style: TextStyle(
-                              color: const Color(0xFF5F6E7B),
-                              fontSize: 12,
-                              fontFamily: 'PingFang TC',
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          onTap: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                        ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: Container(
-                            width: 40,
-                            height: 40,
-                            decoration: ShapeDecoration(
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                  width: 1,
-                                  color: const Color(0xFFDEE2E6),
-                                ),
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(4),
-                              child: Image.asset(
-                                'assets/images/property.png',
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          title: Text(
-                            '好好睡社區',
-                            style: TextStyle(
-                              color: const Color(0xFF2B2F35),
-                              fontSize: 14,
-                              fontFamily: 'PingFang TC',
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          subtitle: Text(
-                            '台北市大安區敦化南路88號',
-                            style: TextStyle(
-                              color: const Color(0xFF5F6E7B),
-                              fontSize: 12,
-                              fontFamily: 'PingFang TC',
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          onTap: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
+                  )
+                  // Theme(
+                  //   data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                  //   child: ExpansionTile(
+                  //     leading: Image.asset(
+                  //       width: 24,
+                  //       height: 24,
+                  //       'assets/images/contract_new/customer_male.png',
+                  //     ),
+                  //     title: const Text(
+                  //       '林小閔 (4)',
+                  //       style: TextStyle(
+                  //         color: Color(0xFF2B2F35),
+                  //         fontSize: 14,
+                  //         fontFamily: 'PingFang TC',
+                  //         fontWeight: FontWeight.w400,
+                  //       ),
+                  //     ),
+                  //     tilePadding: EdgeInsets.zero,         // 取消標題區的 padding
+                  //     childrenPadding: EdgeInsets.zero,     // 取消展開內容的 padding
+                  //     children: [
+                  //       ListTile(
+                  //         contentPadding: EdgeInsets.zero,
+                  //         leading: Container(
+                  //           width: 40,
+                  //           height: 40,
+                  //           decoration: ShapeDecoration(
+                  //             shape: RoundedRectangleBorder(
+                  //               side: BorderSide(
+                  //                 width: 1,
+                  //                 color: const Color(0xFFDEE2E6),
+                  //               ),
+                  //               borderRadius: BorderRadius.circular(4),
+                  //             ),
+                  //           ),
+                  //           child: ClipRRect(
+                  //             borderRadius: BorderRadius.circular(4),
+                  //             child: Image.asset(
+                  //               'assets/images/property.png',
+                  //               fit: BoxFit.cover,
+                  //             ),
+                  //           ),
+                  //         ),
+                  //         title: Text(
+                  //           '好好住社區',
+                  //           style: TextStyle(
+                  //             color: const Color(0xFF2B2F35),
+                  //             fontSize: 14,
+                  //             fontFamily: 'PingFang TC',
+                  //             fontWeight: FontWeight.w500,
+                  //           ),
+                  //         ),
+                  //         subtitle: Text(
+                  //           '台北市大安區敦化南路88號',
+                  //           style: TextStyle(
+                  //             color: const Color(0xFF5F6E7B),
+                  //             fontSize: 12,
+                  //             fontFamily: 'PingFang TC',
+                  //             fontWeight: FontWeight.w400,
+                  //           ),
+                  //         ),
+                  //         onTap: () {
+                  //           Navigator.of(context).pop();
+                  //         },
+                  //       ),
+                  //       ListTile(
+                  //         contentPadding: EdgeInsets.zero,
+                  //         leading: Container(
+                  //           width: 40,
+                  //           height: 40,
+                  //           decoration: ShapeDecoration(
+                  //             shape: RoundedRectangleBorder(
+                  //               side: BorderSide(
+                  //                 width: 1,
+                  //                 color: const Color(0xFFDEE2E6),
+                  //               ),
+                  //               borderRadius: BorderRadius.circular(4),
+                  //             ),
+                  //           ),
+                  //           child: ClipRRect(
+                  //             borderRadius: BorderRadius.circular(4),
+                  //             child: Image.asset(
+                  //               'assets/images/property.png',
+                  //               fit: BoxFit.cover,
+                  //             ),
+                  //           ),
+                  //         ),
+                  //         title: Text(
+                  //           '勤美學',
+                  //           style: TextStyle(
+                  //             color: const Color(0xFF2B2F35),
+                  //             fontSize: 14,
+                  //             fontFamily: 'PingFang TC',
+                  //             fontWeight: FontWeight.w500,
+                  //           ),
+                  //         ),
+                  //         subtitle: Text(
+                  //           '台北市大安區敦化南路88號',
+                  //           style: TextStyle(
+                  //             color: const Color(0xFF5F6E7B),
+                  //             fontSize: 12,
+                  //             fontFamily: 'PingFang TC',
+                  //             fontWeight: FontWeight.w400,
+                  //           ),
+                  //         ),
+                  //         onTap: () {
+                  //           Navigator.of(context).pop();
+                  //         },
+                  //       ),
+                  //       ListTile(
+                  //         contentPadding: EdgeInsets.zero,
+                  //         leading: Container(
+                  //           width: 40,
+                  //           height: 40,
+                  //           decoration: ShapeDecoration(
+                  //             shape: RoundedRectangleBorder(
+                  //               side: BorderSide(
+                  //                 width: 1,
+                  //                 color: const Color(0xFFDEE2E6),
+                  //               ),
+                  //               borderRadius: BorderRadius.circular(4),
+                  //             ),
+                  //           ),
+                  //           child: ClipRRect(
+                  //             borderRadius: BorderRadius.circular(4),
+                  //             child: Image.asset(
+                  //               'assets/images/property.png',
+                  //               fit: BoxFit.cover,
+                  //             ),
+                  //           ),
+                  //         ),
+                  //         title: Text(
+                  //           '富田ㄧ號',
+                  //           style: TextStyle(
+                  //             color: const Color(0xFF2B2F35),
+                  //             fontSize: 14,
+                  //             fontFamily: 'PingFang TC',
+                  //             fontWeight: FontWeight.w500,
+                  //           ),
+                  //         ),
+                  //         subtitle: Text(
+                  //           '台北市大安區敦化南路88號',
+                  //           style: TextStyle(
+                  //             color: const Color(0xFF5F6E7B),
+                  //             fontSize: 12,
+                  //             fontFamily: 'PingFang TC',
+                  //             fontWeight: FontWeight.w400,
+                  //           ),
+                  //         ),
+                  //         onTap: () {
+                  //           Navigator.of(context).pop();
+                  //         },
+                  //       ),
+                  //       ListTile(
+                  //         contentPadding: EdgeInsets.zero,
+                  //         leading: Container(
+                  //           width: 40,
+                  //           height: 40,
+                  //           decoration: ShapeDecoration(
+                  //             shape: RoundedRectangleBorder(
+                  //               side: BorderSide(
+                  //                 width: 1,
+                  //                 color: const Color(0xFFDEE2E6),
+                  //               ),
+                  //               borderRadius: BorderRadius.circular(4),
+                  //             ),
+                  //           ),
+                  //           child: ClipRRect(
+                  //             borderRadius: BorderRadius.circular(4),
+                  //             child: Image.asset(
+                  //               'assets/images/property.png',
+                  //               fit: BoxFit.cover,
+                  //             ),
+                  //           ),
+                  //         ),
+                  //         title: Text(
+                  //           '好好睡社區',
+                  //           style: TextStyle(
+                  //             color: const Color(0xFF2B2F35),
+                  //             fontSize: 14,
+                  //             fontFamily: 'PingFang TC',
+                  //             fontWeight: FontWeight.w500,
+                  //           ),
+                  //         ),
+                  //         subtitle: Text(
+                  //           '台北市大安區敦化南路88號',
+                  //           style: TextStyle(
+                  //             color: const Color(0xFF5F6E7B),
+                  //             fontSize: 12,
+                  //             fontFamily: 'PingFang TC',
+                  //             fontWeight: FontWeight.w400,
+                  //           ),
+                  //         ),
+                  //         onTap: () {
+                  //           Navigator.of(context).pop();
+                  //         },
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
+                  // Theme(
+                  //   data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                  //   child: ExpansionTile(
+                  //     leading: Image.asset(
+                  //       width: 24,
+                  //       height: 24,
+                  //       'assets/images/contract_new/customer_male.png',
+                  //     ),
+                  //     title: const Text(
+                  //       '林小閔 (4)',
+                  //       style: TextStyle(
+                  //         color: Color(0xFF2B2F35),
+                  //         fontSize: 14,
+                  //         fontFamily: 'PingFang TC',
+                  //         fontWeight: FontWeight.w400,
+                  //       ),
+                  //     ),
+                  //     tilePadding: EdgeInsets.zero,         // 取消標題區的 padding
+                  //     childrenPadding: EdgeInsets.zero,     // 取消展開內容的 padding
+                  //     children: [
+                  //       ListTile(
+                  //         contentPadding: EdgeInsets.zero,
+                  //         leading: Container(
+                  //           width: 40,
+                  //           height: 40,
+                  //           decoration: ShapeDecoration(
+                  //             shape: RoundedRectangleBorder(
+                  //               side: BorderSide(
+                  //                 width: 1,
+                  //                 color: const Color(0xFFDEE2E6),
+                  //               ),
+                  //               borderRadius: BorderRadius.circular(4),
+                  //             ),
+                  //           ),
+                  //           child: ClipRRect(
+                  //             borderRadius: BorderRadius.circular(4),
+                  //             child: Image.asset(
+                  //               'assets/images/property.png',
+                  //               fit: BoxFit.cover,
+                  //             ),
+                  //           ),
+                  //         ),
+                  //         title: Text(
+                  //           '好好住社區',
+                  //           style: TextStyle(
+                  //             color: const Color(0xFF2B2F35),
+                  //             fontSize: 14,
+                  //             fontFamily: 'PingFang TC',
+                  //             fontWeight: FontWeight.w500,
+                  //           ),
+                  //         ),
+                  //         subtitle: Text(
+                  //           '台北市大安區敦化南路88號',
+                  //           style: TextStyle(
+                  //             color: const Color(0xFF5F6E7B),
+                  //             fontSize: 12,
+                  //             fontFamily: 'PingFang TC',
+                  //             fontWeight: FontWeight.w400,
+                  //           ),
+                  //         ),
+                  //         onTap: () {
+                  //           Navigator.of(context).pop();
+                  //         },
+                  //       ),
+                  //       ListTile(
+                  //         contentPadding: EdgeInsets.zero,
+                  //         leading: Container(
+                  //           width: 40,
+                  //           height: 40,
+                  //           decoration: ShapeDecoration(
+                  //             shape: RoundedRectangleBorder(
+                  //               side: BorderSide(
+                  //                 width: 1,
+                  //                 color: const Color(0xFFDEE2E6),
+                  //               ),
+                  //               borderRadius: BorderRadius.circular(4),
+                  //             ),
+                  //           ),
+                  //           child: ClipRRect(
+                  //             borderRadius: BorderRadius.circular(4),
+                  //             child: Image.asset(
+                  //               'assets/images/property.png',
+                  //               fit: BoxFit.cover,
+                  //             ),
+                  //           ),
+                  //         ),
+                  //         title: Text(
+                  //           '勤美學',
+                  //           style: TextStyle(
+                  //             color: const Color(0xFF2B2F35),
+                  //             fontSize: 14,
+                  //             fontFamily: 'PingFang TC',
+                  //             fontWeight: FontWeight.w500,
+                  //           ),
+                  //         ),
+                  //         subtitle: Text(
+                  //           '台北市大安區敦化南路88號',
+                  //           style: TextStyle(
+                  //             color: const Color(0xFF5F6E7B),
+                  //             fontSize: 12,
+                  //             fontFamily: 'PingFang TC',
+                  //             fontWeight: FontWeight.w400,
+                  //           ),
+                  //         ),
+                  //         onTap: () {
+                  //           Navigator.of(context).pop();
+                  //         },
+                  //       ),
+                  //       ListTile(
+                  //         contentPadding: EdgeInsets.zero,
+                  //         leading: Container(
+                  //           width: 40,
+                  //           height: 40,
+                  //           decoration: ShapeDecoration(
+                  //             shape: RoundedRectangleBorder(
+                  //               side: BorderSide(
+                  //                 width: 1,
+                  //                 color: const Color(0xFFDEE2E6),
+                  //               ),
+                  //               borderRadius: BorderRadius.circular(4),
+                  //             ),
+                  //           ),
+                  //           child: ClipRRect(
+                  //             borderRadius: BorderRadius.circular(4),
+                  //             child: Image.asset(
+                  //               'assets/images/property.png',
+                  //               fit: BoxFit.cover,
+                  //             ),
+                  //           ),
+                  //         ),
+                  //         title: Text(
+                  //           '富田ㄧ號',
+                  //           style: TextStyle(
+                  //             color: const Color(0xFF2B2F35),
+                  //             fontSize: 14,
+                  //             fontFamily: 'PingFang TC',
+                  //             fontWeight: FontWeight.w500,
+                  //           ),
+                  //         ),
+                  //         subtitle: Text(
+                  //           '台北市大安區敦化南路88號',
+                  //           style: TextStyle(
+                  //             color: const Color(0xFF5F6E7B),
+                  //             fontSize: 12,
+                  //             fontFamily: 'PingFang TC',
+                  //             fontWeight: FontWeight.w400,
+                  //           ),
+                  //         ),
+                  //         onTap: () {
+                  //           Navigator.of(context).pop();
+                  //         },
+                  //       ),
+                  //       ListTile(
+                  //         contentPadding: EdgeInsets.zero,
+                  //         leading: Container(
+                  //           width: 40,
+                  //           height: 40,
+                  //           decoration: ShapeDecoration(
+                  //             shape: RoundedRectangleBorder(
+                  //               side: BorderSide(
+                  //                 width: 1,
+                  //                 color: const Color(0xFFDEE2E6),
+                  //               ),
+                  //               borderRadius: BorderRadius.circular(4),
+                  //             ),
+                  //           ),
+                  //           child: ClipRRect(
+                  //             borderRadius: BorderRadius.circular(4),
+                  //             child: Image.asset(
+                  //               'assets/images/property.png',
+                  //               fit: BoxFit.cover,
+                  //             ),
+                  //           ),
+                  //         ),
+                  //         title: Text(
+                  //           '好好睡社區',
+                  //           style: TextStyle(
+                  //             color: const Color(0xFF2B2F35),
+                  //             fontSize: 14,
+                  //             fontFamily: 'PingFang TC',
+                  //             fontWeight: FontWeight.w500,
+                  //           ),
+                  //         ),
+                  //         subtitle: Text(
+                  //           '台北市大安區敦化南路88號',
+                  //           style: TextStyle(
+                  //             color: const Color(0xFF5F6E7B),
+                  //             fontSize: 12,
+                  //             fontFamily: 'PingFang TC',
+                  //             fontWeight: FontWeight.w400,
+                  //           ),
+                  //         ),
+                  //         onTap: () {
+                  //           Navigator.of(context).pop();
+                  //         },
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
+                  // Theme(
+                  //   data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                  //   child: ExpansionTile(
+                  //     leading: Image.asset(
+                  //       width: 24,
+                  //       height: 24,
+                  //       'assets/images/contract_new/customer_male.png',
+                  //     ),
+                  //     title: const Text(
+                  //       '林小閔 (4)',
+                  //       style: TextStyle(
+                  //         color: Color(0xFF2B2F35),
+                  //         fontSize: 14,
+                  //         fontFamily: 'PingFang TC',
+                  //         fontWeight: FontWeight.w400,
+                  //       ),
+                  //     ),
+                  //     tilePadding: EdgeInsets.zero,         // 取消標題區的 padding
+                  //     childrenPadding: EdgeInsets.zero,     // 取消展開內容的 padding
+                  //     children: [
+                  //       ListTile(
+                  //         contentPadding: EdgeInsets.zero,
+                  //         leading: Container(
+                  //           width: 40,
+                  //           height: 40,
+                  //           decoration: ShapeDecoration(
+                  //             shape: RoundedRectangleBorder(
+                  //               side: BorderSide(
+                  //                 width: 1,
+                  //                 color: const Color(0xFFDEE2E6),
+                  //               ),
+                  //               borderRadius: BorderRadius.circular(4),
+                  //             ),
+                  //           ),
+                  //           child: ClipRRect(
+                  //             borderRadius: BorderRadius.circular(4),
+                  //             child: Image.asset(
+                  //               'assets/images/property.png',
+                  //               fit: BoxFit.cover,
+                  //             ),
+                  //           ),
+                  //         ),
+                  //         title: Text(
+                  //           '好好住社區',
+                  //           style: TextStyle(
+                  //             color: const Color(0xFF2B2F35),
+                  //             fontSize: 14,
+                  //             fontFamily: 'PingFang TC',
+                  //             fontWeight: FontWeight.w500,
+                  //           ),
+                  //         ),
+                  //         subtitle: Text(
+                  //           '台北市大安區敦化南路88號',
+                  //           style: TextStyle(
+                  //             color: const Color(0xFF5F6E7B),
+                  //             fontSize: 12,
+                  //             fontFamily: 'PingFang TC',
+                  //             fontWeight: FontWeight.w400,
+                  //           ),
+                  //         ),
+                  //         onTap: () {
+                  //           Navigator.of(context).pop();
+                  //         },
+                  //       ),
+                  //       ListTile(
+                  //         contentPadding: EdgeInsets.zero,
+                  //         leading: Container(
+                  //           width: 40,
+                  //           height: 40,
+                  //           decoration: ShapeDecoration(
+                  //             shape: RoundedRectangleBorder(
+                  //               side: BorderSide(
+                  //                 width: 1,
+                  //                 color: const Color(0xFFDEE2E6),
+                  //               ),
+                  //               borderRadius: BorderRadius.circular(4),
+                  //             ),
+                  //           ),
+                  //           child: ClipRRect(
+                  //             borderRadius: BorderRadius.circular(4),
+                  //             child: Image.asset(
+                  //               'assets/images/property.png',
+                  //               fit: BoxFit.cover,
+                  //             ),
+                  //           ),
+                  //         ),
+                  //         title: Text(
+                  //           '勤美學',
+                  //           style: TextStyle(
+                  //             color: const Color(0xFF2B2F35),
+                  //             fontSize: 14,
+                  //             fontFamily: 'PingFang TC',
+                  //             fontWeight: FontWeight.w500,
+                  //           ),
+                  //         ),
+                  //         subtitle: Text(
+                  //           '台北市大安區敦化南路88號',
+                  //           style: TextStyle(
+                  //             color: const Color(0xFF5F6E7B),
+                  //             fontSize: 12,
+                  //             fontFamily: 'PingFang TC',
+                  //             fontWeight: FontWeight.w400,
+                  //           ),
+                  //         ),
+                  //         onTap: () {
+                  //           Navigator.of(context).pop();
+                  //         },
+                  //       ),
+                  //       ListTile(
+                  //         contentPadding: EdgeInsets.zero,
+                  //         leading: Container(
+                  //           width: 40,
+                  //           height: 40,
+                  //           decoration: ShapeDecoration(
+                  //             shape: RoundedRectangleBorder(
+                  //               side: BorderSide(
+                  //                 width: 1,
+                  //                 color: const Color(0xFFDEE2E6),
+                  //               ),
+                  //               borderRadius: BorderRadius.circular(4),
+                  //             ),
+                  //           ),
+                  //           child: ClipRRect(
+                  //             borderRadius: BorderRadius.circular(4),
+                  //             child: Image.asset(
+                  //               'assets/images/property.png',
+                  //               fit: BoxFit.cover,
+                  //             ),
+                  //           ),
+                  //         ),
+                  //         title: Text(
+                  //           '富田ㄧ號',
+                  //           style: TextStyle(
+                  //             color: const Color(0xFF2B2F35),
+                  //             fontSize: 14,
+                  //             fontFamily: 'PingFang TC',
+                  //             fontWeight: FontWeight.w500,
+                  //           ),
+                  //         ),
+                  //         subtitle: Text(
+                  //           '台北市大安區敦化南路88號',
+                  //           style: TextStyle(
+                  //             color: const Color(0xFF5F6E7B),
+                  //             fontSize: 12,
+                  //             fontFamily: 'PingFang TC',
+                  //             fontWeight: FontWeight.w400,
+                  //           ),
+                  //         ),
+                  //         onTap: () {
+                  //           Navigator.of(context).pop();
+                  //         },
+                  //       ),
+                  //       ListTile(
+                  //         contentPadding: EdgeInsets.zero,
+                  //         leading: Container(
+                  //           width: 40,
+                  //           height: 40,
+                  //           decoration: ShapeDecoration(
+                  //             shape: RoundedRectangleBorder(
+                  //               side: BorderSide(
+                  //                 width: 1,
+                  //                 color: const Color(0xFFDEE2E6),
+                  //               ),
+                  //               borderRadius: BorderRadius.circular(4),
+                  //             ),
+                  //           ),
+                  //           child: ClipRRect(
+                  //             borderRadius: BorderRadius.circular(4),
+                  //             child: Image.asset(
+                  //               'assets/images/property.png',
+                  //               fit: BoxFit.cover,
+                  //             ),
+                  //           ),
+                  //         ),
+                  //         title: Text(
+                  //           '好好睡社區',
+                  //           style: TextStyle(
+                  //             color: const Color(0xFF2B2F35),
+                  //             fontSize: 14,
+                  //             fontFamily: 'PingFang TC',
+                  //             fontWeight: FontWeight.w500,
+                  //           ),
+                  //         ),
+                  //         subtitle: Text(
+                  //           '台北市大安區敦化南路88號',
+                  //           style: TextStyle(
+                  //             color: const Color(0xFF5F6E7B),
+                  //             fontSize: 12,
+                  //             fontFamily: 'PingFang TC',
+                  //             fontWeight: FontWeight.w400,
+                  //           ),
+                  //         ),
+                  //         onTap: () {
+                  //           Navigator.of(context).pop();
+                  //         },
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
                 ],
               ),
             )
@@ -974,137 +787,141 @@ class _PageFrameState extends State<IndexFrame> {
             children: [
               _buildBottomNavigationBarItem(
                 0,
-                'assets/icons/frame/property.svg',
+                'assets/icons/frame/index.svg',
                 '物件',),
               _buildBottomNavigationBarItem(
                 1,
+                'assets/icons/frame/property.svg',
+                '物件',),
+              _buildBottomNavigationBarItem(
+                2,
                 'assets/icons/frame/contract.svg',
                 '合約',
               ),
-              const SizedBox(width: 25),
-              Container(
-                margin: const EdgeInsets.only(top: 28),
-                // child: Text(
-                //   '靜坐',
-                //   style: TextStyle(color: Color(0xFFFF6160),),
-                // ),
-              ),
-              const SizedBox(width: 25),
+              // const SizedBox(width: 25),
+              // Container(
+              //   margin: const EdgeInsets.only(top: 28),
+              //   // child: Text(
+              //   //   '靜坐',
+              //   //   style: TextStyle(color: Color(0xFFFF6160),),
+              //   // ),
+              // ),
+              // const SizedBox(width: 25),
               _buildBottomNavigationBarItem(
-                2,
+                3,
                 'assets/icons/frame/accounts.svg',
                 '帳務',
               ),
               _buildBottomNavigationBarItem(
-                3,
-                'assets/icons/frame/index.svg',
+                4,
+                'assets/icons/frame/profile.svg',
                 '我的',
               ),
             ],
           ),
         ),
       ),
-      floatingActionButton: InkWell(
-        onTap: () {
-          showModalBottomSheet(
-            backgroundColor: Colors.white,
-            context: context,
-            builder: (BuildContext context) {
-              return Container(
-                width: double.infinity,
-                height: 200,
-                padding: const EdgeInsets.only(top: 48, left: 16, right: 16,),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const ContractNew()),
-                        );
-                      },
-                      child: const SizedBox(
-                        height: 40,
-                        child: Text(
-                          '新增合約',
-                          style: TextStyle(
-                            color: Color(0xFF222222),
-                            fontSize: 16,
-                            fontFamily: 'PingFang TC',
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 40,
-                      child: Text(
-                        '上傳合約',
-                        style: TextStyle(
-                          color: Color(0xFF2B2F35),
-                          fontSize: 15,
-                          fontFamily: 'PingFang TC',
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 40,
-                      child: Text(
-                        '自訂合約',
-                        style: TextStyle(
-                          color: Color(0xFF2B2F35),
-                          fontSize: 15,
-                          fontFamily: 'PingFang TC',
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          );
-          setState(() {
-            selectedIndex = 4;
-          });
-        },
-        child: Container(
-          width: 68,
-          height: 68,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(34),
-            boxShadow: const [
-              BoxShadow(
-                blurRadius: 10,
-                offset: Offset(0, 0),
-                color: Color(0x11000000),
-              ),
-            ],
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(4),
-            child: Container(
-              decoration: BoxDecoration(
-                color: const Color(0xFF8C5F42),
-                borderRadius: BorderRadius.circular(30),
-              ),
-              child: Center(
-                child: SvgPicture.asset(
-                  'assets/icons/frame/auction.svg',
-                  width: 40,
-                  height: 40,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      // floatingActionButton: InkWell(
+      //   onTap: () {
+      //     showModalBottomSheet(
+      //       backgroundColor: Colors.white,
+      //       context: context,
+      //       builder: (BuildContext context) {
+      //         return Container(
+      //           width: double.infinity,
+      //           height: 200,
+      //           padding: const EdgeInsets.only(top: 48, left: 16, right: 16,),
+      //           child: Column(
+      //             crossAxisAlignment: CrossAxisAlignment.start,
+      //             mainAxisSize: MainAxisSize.min,
+      //             children: [
+      //               GestureDetector(
+      //                 onTap: () {
+      //                   Navigator.push(
+      //                     context,
+      //                     MaterialPageRoute(builder: (context) => const ContractNew()),
+      //                   );
+      //                 },
+      //                 child: const SizedBox(
+      //                   height: 40,
+      //                   child: Text(
+      //                     '新增合約',
+      //                     style: TextStyle(
+      //                       color: Color(0xFF222222),
+      //                       fontSize: 16,
+      //                       fontFamily: 'PingFang TC',
+      //                       fontWeight: FontWeight.w500,
+      //                     ),
+      //                   ),
+      //                 ),
+      //               ),
+      //               const SizedBox(
+      //                 height: 40,
+      //                 child: Text(
+      //                   '上傳合約',
+      //                   style: TextStyle(
+      //                     color: Color(0xFF2B2F35),
+      //                     fontSize: 15,
+      //                     fontFamily: 'PingFang TC',
+      //                     fontWeight: FontWeight.w400,
+      //                   ),
+      //                 ),
+      //               ),
+      //               const SizedBox(
+      //                 height: 40,
+      //                 child: Text(
+      //                   '自訂合約',
+      //                   style: TextStyle(
+      //                     color: Color(0xFF2B2F35),
+      //                     fontSize: 15,
+      //                     fontFamily: 'PingFang TC',
+      //                     fontWeight: FontWeight.w400,
+      //                   ),
+      //                 ),
+      //               ),
+      //             ],
+      //           ),
+      //         );
+      //       },
+      //     );
+      //     setState(() {
+      //       selectedIndex = 4;
+      //     });
+      //   },
+      //   child: Container(
+      //     width: 68,
+      //     height: 68,
+      //     decoration: BoxDecoration(
+      //       color: Colors.white,
+      //       borderRadius: BorderRadius.circular(34),
+      //       boxShadow: const [
+      //         BoxShadow(
+      //           blurRadius: 10,
+      //           offset: Offset(0, 0),
+      //           color: Color(0x11000000),
+      //         ),
+      //       ],
+      //     ),
+      //     child: Padding(
+      //       padding: const EdgeInsets.all(4),
+      //       child: Container(
+      //         decoration: BoxDecoration(
+      //           color: const Color(0xFF8C5F42),
+      //           borderRadius: BorderRadius.circular(30),
+      //         ),
+      //         child: Center(
+      //           child: SvgPicture.asset(
+      //             'assets/icons/frame/auction.svg',
+      //             width: 40,
+      //             height: 40,
+      //             color: Colors.white,
+      //           ),
+      //         ),
+      //       ),
+      //     ),
+      //   ),
+      // ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 
@@ -1136,12 +953,18 @@ class _PageFrameState extends State<IndexFrame> {
   Widget _buildContent() {
     switch (selectedIndex) {
       case 0:
-        return IndexPropertyPage();
+        return Container(
+          child: Center(
+            child: Text('data'),
+          ),
+        );
       case 1:
-        return IndexContractPage();
+        return IndexPropertyPage();
       case 2:
-        return IndexAccountPage();
+        return IndexContractPage();
       case 3:
+        return IndexAccountPage();
+      case 4:
         return UpgradedMailListPage();
       default:
         return const Center(child: Text("未知層級"));

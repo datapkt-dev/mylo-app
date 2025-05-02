@@ -284,8 +284,7 @@ class _WidgetBillState extends State<WidgetBill> {
               isScrollControlled: true,
               context: context,
               builder: (BuildContext context) {
-                String? selectedExpense; // 記錄目前選擇的是哪個支出
-
+                // String? selectedExpense; // 記錄目前選擇的是哪個支出
                 return StatefulBuilder(
                   builder: (BuildContext context, StateSetter setModalState) {
                     return Padding(
@@ -302,7 +301,7 @@ class _WidgetBillState extends State<WidgetBill> {
                             children: [
                               Center(
                                 child: Text(
-                                  '新增支出',
+                                  '新增報修',
                                   style: TextStyle(
                                     color: Color(0xFF2B2F35),
                                     fontSize: 16,
@@ -312,319 +311,264 @@ class _WidgetBillState extends State<WidgetBill> {
                                 ),
                               ),
                               SizedBox(height: 16),
-                              if (selectedExpense == null) ...[
-                                Text(
-                                  '支出類型',
-                                  style: TextStyle(
-                                    color: Color(0xFF2B2F35),
-                                    fontSize: 15,
-                                    fontFamily: 'PingFang TC',
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                                SizedBox(height: 20),
-                                InkWell(
-                                  onTap: () {
-                                    setModalState(() {
-                                      selectedExpense = '電費';
-                                    });
-                                  },
-                                  child: Row(
-                                    children: [
-                                      SizedBox(
-                                        height: 20,
-                                        width: 20,
-                                        child: Image.asset('assets/images/electricity.png'),
-                                      ),
-                                      SizedBox(width: 4),
-                                      Text(
-                                        '電費',
-                                        style: TextStyle(
-                                          color: Color(0xFF2B2F35),
-                                          fontSize: 14,
-                                          fontFamily: 'PingFang TC',
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                      Spacer(),
-                                      Icon(Icons.arrow_forward_ios_rounded),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(height: 20),
-                                InkWell(
-                                  onTap: () {
-                                    setModalState(() {
-                                      selectedExpense = '水費';
-                                    });
-                                  },
-                                  child: Row(
-                                    children: [
-                                      SizedBox(
-                                        height: 20,
-                                        width: 20,
-                                        child: Image.asset('assets/images/water.png'),
-                                      ),
-                                      SizedBox(width: 4),
-                                      Text(
-                                        '水費',
-                                        style: TextStyle(
-                                          color: Color(0xFF2B2F35),
-                                          fontSize: 14,
-                                          fontFamily: 'PingFang TC',
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                      Spacer(),
-                                      Icon(Icons.arrow_forward_ios_rounded),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(height: 20),
-                                InkWell(
-                                  onTap: () {
-                                    setModalState(() {
-                                      selectedExpense = '維修';
-                                    });
-                                  },
-                                  child: Row(
-                                    children: [
-                                      SizedBox(
-                                        height: 20,
-                                        width: 20,
-                                        child: Image.asset('assets/images/fix.png'),
-                                      ),
-                                      SizedBox(width: 4),
-                                      Text(
-                                        '維修',
-                                        style: TextStyle(
-                                          color: Color(0xFF2B2F35),
-                                          fontSize: 14,
-                                          fontFamily: 'PingFang TC',
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                      Spacer(),
-                                      Icon(Icons.arrow_forward_ios_rounded),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(height: 16,),
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Container(
-                                    width: double.infinity,
-                                    height: 40,
-                                    alignment: Alignment.center,
-                                    decoration: ShapeDecoration(
-                                      color: Colors.white,
-                                      shape: RoundedRectangleBorder(
-                                        side: BorderSide(
-                                          width: 1,
-                                          color: const Color(0xFFCBD2D6),
-                                        ),
-                                        borderRadius: BorderRadius.circular(4),
-                                      ),
-                                    ),
-                                    child: Text(
-                                      '取消',
-                                      style: TextStyle(
-                                        color: const Color(0xFF2B2F35),
-                                        fontSize: 14,
-                                        fontFamily: 'Poppins',
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 45,),
-                              ] else ...[
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            height: 78,
-                                            padding: const EdgeInsets.all(10),
-                                            decoration: ShapeDecoration(
-                                              color: const Color(0xFFF3F3F3),
-                                              shape: RoundedRectangleBorder(
-                                                side: BorderSide(
-                                                  width: 1,
-                                                  strokeAlign: BorderSide.strokeAlignCenter,
-                                                  color: const Color(0xFFE3E7EA),
-                                                ),
-                                                borderRadius: BorderRadius.circular(4),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(height: 10,),
-                                          Container(
-                                            height: 78,
-                                            padding: const EdgeInsets.all(10),
-                                            decoration: ShapeDecoration(
-                                              color: const Color(0xFFF3F3F3),
-                                              shape: RoundedRectangleBorder(
-                                                side: BorderSide(
-                                                  width: 1,
-                                                  strokeAlign: BorderSide.strokeAlignCenter,
-                                                  color: const Color(0xFFE3E7EA),
-                                                ),
-                                                borderRadius: BorderRadius.circular(4),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    SizedBox(width: 10,),
-                                    Expanded(
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            height: 78,
-                                            padding: const EdgeInsets.all(10),
-                                            decoration: ShapeDecoration(
-                                              color: const Color(0xFFF3F3F3),
-                                              shape: RoundedRectangleBorder(
-                                                side: BorderSide(
-                                                  width: 1,
-                                                  strokeAlign: BorderSide.strokeAlignCenter,
-                                                  color: const Color(0xFFE3E7EA),
-                                                ),
-                                                borderRadius: BorderRadius.circular(4),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(height: 10,),
-                                          Container(
-                                            height: 78,
-                                            padding: const EdgeInsets.all(10),
-                                            decoration: ShapeDecoration(
-                                              color: const Color(0xFFF3F3F3),
-                                              shape: RoundedRectangleBorder(
-                                                side: BorderSide(
-                                                  width: 1,
-                                                  strokeAlign: BorderSide.strokeAlignCenter,
-                                                  color: const Color(0xFFE3E7EA),
-                                                ),
-                                                borderRadius: BorderRadius.circular(4),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    SizedBox(width: 10,),
-                                    Expanded(
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            height: 78,
-                                            padding: const EdgeInsets.all(10),
-                                            decoration: ShapeDecoration(
-                                              color: const Color(0xFFF3F3F3),
-                                              shape: RoundedRectangleBorder(
-                                                side: BorderSide(
-                                                  width: 1,
-                                                  strokeAlign: BorderSide.strokeAlignCenter,
-                                                  color: const Color(0xFFE3E7EA),
-                                                ),
-                                                borderRadius: BorderRadius.circular(4),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(height: 10,),
-                                          Container(
-                                            height: 78,
-                                            padding: const EdgeInsets.all(10),
-                                            decoration: ShapeDecoration(
-                                              color: const Color(0xFFF3F3F3),
-                                              shape: RoundedRectangleBorder(
-                                                side: BorderSide(
-                                                  width: 1,
-                                                  strokeAlign: BorderSide.strokeAlignCenter,
-                                                  color: const Color(0xFFE3E7EA),
-                                                ),
-                                                borderRadius: BorderRadius.circular(4),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 20),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          setModalState(() {
-                                            selectedExpense = null; // 點返回，回到支出列表
-                                          });
-                                        },
-                                        child: Container(
-                                          height: 40,
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          height: 78,
                                           alignment: Alignment.center,
+                                          padding: const EdgeInsets.all(10),
+                                          decoration: ShapeDecoration(
+                                            color: const Color(0xFFF3F3F3),
+                                            shape: RoundedRectangleBorder(
+                                              side: BorderSide(
+                                                width: 1,
+                                                strokeAlign: BorderSide.strokeAlignCenter,
+                                                color: const Color(0xFFE3E7EA),
+                                              ),
+                                              borderRadius: BorderRadius.circular(4),
+                                            ),
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              Image.asset('assets/images/repair/toilet.png'),
+                                              Text(
+                                                '馬桶',
+                                                style: TextStyle(
+                                                  color: const Color(0xFF5F6E7B),
+                                                  fontSize: 16,
+                                                  fontFamily: 'PingFang SC',
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        SizedBox(height: 10,),
+                                        Container(
+                                          height: 78,
+                                          alignment: Alignment.center,
+                                          padding: const EdgeInsets.all(10),
+                                          decoration: ShapeDecoration(
+                                            color: const Color(0xFFF3F3F3),
+                                            shape: RoundedRectangleBorder(
+                                              side: BorderSide(
+                                                width: 1,
+                                                strokeAlign: BorderSide.strokeAlignCenter,
+                                                color: const Color(0xFFE3E7EA),
+                                              ),
+                                              borderRadius: BorderRadius.circular(4),
+                                            ),
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              Image.asset('assets/images/repair/wall.png'),
+                                              Text(
+                                                '牆壁',
+                                                style: TextStyle(
+                                                  color: const Color(0xFF5F6E7B),
+                                                  fontSize: 16,
+                                                  fontFamily: 'PingFang SC',
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(width: 10,),
+                                  Expanded(
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          height: 78,
+                                          alignment: Alignment.center,
+                                          padding: const EdgeInsets.all(10),
+                                          decoration: ShapeDecoration(
+                                            color: const Color(0xFFF3F3F3),
+                                            shape: RoundedRectangleBorder(
+                                              side: BorderSide(
+                                                width: 1,
+                                                strokeAlign: BorderSide.strokeAlignCenter,
+                                                color: const Color(0xFFE3E7EA),
+                                              ),
+                                              borderRadius: BorderRadius.circular(4),
+                                            ),
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              Image.asset('assets/images/repair/ceiling.png'),
+                                              Text(
+                                                '天花板',
+                                                style: TextStyle(
+                                                  color: const Color(0xFF5F6E7B),
+                                                  fontSize: 16,
+                                                  fontFamily: 'PingFang SC',
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        SizedBox(height: 10,),
+                                        Container(
+                                          height: 78,
+                                          alignment: Alignment.center,
+                                          padding: const EdgeInsets.all(10),
+                                          decoration: ShapeDecoration(
+                                            color: const Color(0xFFF3F3F3),
+                                            shape: RoundedRectangleBorder(
+                                              side: BorderSide(
+                                                width: 1,
+                                                strokeAlign: BorderSide.strokeAlignCenter,
+                                                color: const Color(0xFFE3E7EA),
+                                              ),
+                                              borderRadius: BorderRadius.circular(4),
+                                            ),
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              Image.asset('assets/images/repair/window.png'),
+                                              Text(
+                                                '窗戶',
+                                                style: TextStyle(
+                                                  color: const Color(0xFF5F6E7B),
+                                                  fontSize: 16,
+                                                  fontFamily: 'PingFang SC',
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(width: 10,),
+                                  Expanded(
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          height: 78,
+                                          alignment: Alignment.center,
+                                          padding: const EdgeInsets.all(10),
+                                          decoration: ShapeDecoration(
+                                            color: const Color(0xFFF3F3F3),
+                                            shape: RoundedRectangleBorder(
+                                              side: BorderSide(
+                                                width: 1,
+                                                strokeAlign: BorderSide.strokeAlignCenter,
+                                                color: const Color(0xFFE3E7EA),
+                                              ),
+                                              borderRadius: BorderRadius.circular(4),
+                                            ),
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              Image.asset('assets/images/repair/door.png'),
+                                              Text(
+                                                '門',
+                                                style: TextStyle(
+                                                  color: const Color(0xFF5F6E7B),
+                                                  fontSize: 16,
+                                                  fontFamily: 'PingFang SC',
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        SizedBox(height: 10,),
+                                        Container(
+                                          height: 78,
+                                          padding: const EdgeInsets.all(10),
                                           decoration: ShapeDecoration(
                                             color: Colors.white,
                                             shape: RoundedRectangleBorder(
                                               side: BorderSide(
                                                 width: 1,
-                                                color: const Color(0xFFCBD2D6),
+                                                strokeAlign: BorderSide.strokeAlignCenter,
+                                                color: Colors.white,
                                               ),
                                               borderRadius: BorderRadius.circular(4),
                                             ),
                                           ),
-                                          child: Text(
-                                            '返回',
-                                            style: TextStyle(
-                                              color: const Color(0xFF2B2F35),
-                                              fontSize: 14,
-                                              fontFamily: 'Poppins',
-                                              fontWeight: FontWeight.w500,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 20),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        setModalState(() {
+                                          // selectedExpense = null; // 點返回，回到支出列表
+                                        });
+                                      },
+                                      child: Container(
+                                        height: 40,
+                                        alignment: Alignment.center,
+                                        decoration: ShapeDecoration(
+                                          color: Colors.white,
+                                          shape: RoundedRectangleBorder(
+                                            side: BorderSide(
+                                              width: 1,
+                                              color: const Color(0xFFCBD2D6),
                                             ),
+                                            borderRadius: BorderRadius.circular(4),
+                                          ),
+                                        ),
+                                        child: Text(
+                                          '返回',
+                                          style: TextStyle(
+                                            color: const Color(0xFF2B2F35),
+                                            fontSize: 14,
+                                            fontFamily: 'Poppins',
+                                            fontWeight: FontWeight.w500,
                                           ),
                                         ),
                                       ),
                                     ),
-                                    SizedBox(width: 16,),
-                                    Expanded(
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: Container(
-                                          height: 40,
-                                          alignment: Alignment.center,
-                                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                                          clipBehavior: Clip.antiAlias,
-                                          decoration: ShapeDecoration(
-                                            color: const Color(0xFF319877),
-                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                                          ),
-                                          child: Text(
-                                            '下一步',
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 14,
-                                              fontFamily: 'PingFang SC',
-                                              fontWeight: FontWeight.w500,
-                                            ),
+                                  ),
+                                  SizedBox(width: 16,),
+                                  Expanded(
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Container(
+                                        height: 40,
+                                        alignment: Alignment.center,
+                                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                                        clipBehavior: Clip.antiAlias,
+                                        decoration: ShapeDecoration(
+                                          color: const Color(0xFF319877),
+                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                                        ),
+                                        child: Text(
+                                          '下一步',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontFamily: 'PingFang SC',
+                                            fontWeight: FontWeight.w500,
                                           ),
                                         ),
-                                      )
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 45,),
-                              ],
+                                      ),
+                                    )
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 45,),
                             ],
                           ),
                         ),
@@ -665,7 +609,7 @@ class _WidgetBillState extends State<WidgetBill> {
                   color: Color(0xFF319877),
                 ),
                 Text(
-                  '新增支出',
+                  '新增報修',
                   style: TextStyle(
                     color: const Color(0xFF2B2F35),
                     fontSize: 14,
