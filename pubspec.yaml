@@ -85,6 +85,7 @@ flutter:
     - assets/icons/contract_new/trash.svg
     - assets/icons/contract_new/delete.svg
     - assets/icons/user.svg
+    - assets/icons/logo_google.svg
 
     - assets/images/repair/
     - assets/images/contract_new/item_0.png

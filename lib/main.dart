@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mylo/modules/index_frame.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:mylo/modules/login/login.dart';
 
 
 void main() {
@@ -44,6 +45,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return const IndexFrame();
+    return const LoginPage();
   }
 }

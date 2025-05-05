@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mylo/modules/index_accounts/index_accounts.dart';
 import 'package:mylo/modules/index_contract/index_contract.dart';
+import 'package:mylo/modules/index_page/index_page.dart';
 import 'package:mylo/modules/index_property/index_property.dart';
 import '../temp/longpresslab.dart';
 import 'contract_new/contract_new.dart';
@@ -788,11 +789,13 @@ class _PageFrameState extends State<IndexFrame> {
               _buildBottomNavigationBarItem(
                 0,
                 'assets/icons/frame/index.svg',
-                '物件',),
+                '首頁',
+              ),
               _buildBottomNavigationBarItem(
                 1,
                 'assets/icons/frame/property.svg',
-                '物件',),
+                '物件',
+              ),
               _buildBottomNavigationBarItem(
                 2,
                 'assets/icons/frame/contract.svg',
@@ -953,11 +956,10 @@ class _PageFrameState extends State<IndexFrame> {
   Widget _buildContent() {
     switch (selectedIndex) {
       case 0:
-        return Container(
-          child: Center(
-            child: Text('data'),
-          ),
-        );
+        return IndexPage();
+        // return Center(
+        //   child: Text('尚未開放'),
+        // );
       case 1:
         return IndexPropertyPage();
       case 2:

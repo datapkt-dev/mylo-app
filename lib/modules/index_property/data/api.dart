@@ -1,5 +1,6 @@
 import 'dart:convert';
 // import 'model.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
 class ApiService {
@@ -7,15 +8,21 @@ class ApiService {
 
   ApiService({required this.baseUrl});
 
-  Future<List<dynamic>> fetchData() async {
+  Future<List<dynamic>> fetchData({int? status}) async {
     try {
-      String urlString = '$baseUrl/api/v1/properties?community_id=1&status=2';
+      String urlString = '$baseUrl/api/v1/properties?community_id=1&page_size=10&page=1';
+      if (status != 0 && status != null) {
+        if (status == 1) {
+          urlString += '&status=3';
+        }
+        if (status == 2) {
+          urlString += '&status=4';
+        }
+      }
+      print(urlString);
       final url = Uri.parse(urlString);
       final response = await http.get(
         url,
-        //headers: {
-        //  'Authorization': 'Bearer $token',
-        //},
       );
 
       if (response.statusCode == 200) {
