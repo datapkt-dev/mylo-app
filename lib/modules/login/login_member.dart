@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mylo/modules/login/login_member.dart';
+
 import '../index_frame.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class LoginMember extends StatefulWidget {
+  const LoginMember({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<LoginMember> createState() => _LoginMemberState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-  List<String> countryCodes = ['TW +886', 'NA +1'];
-  int selectedCode = 0;
+class _LoginMemberState extends State<LoginMember> {
+  bool obscure = true;
+  bool rememberMe = false;
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +109,7 @@ class _LoginPageState extends State<LoginPage> {
                         child: const TextField(
                           maxLines: 1,
                           decoration: InputDecoration(
-                            hintText: '輸入身分證字號',
+                            hintText: '輸入帳號',
                             hintStyle: TextStyle(
                               color: Color(0xFFB0B0B0),
                               fontSize: 16,
@@ -130,12 +129,99 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ],
                 ),
+                SizedBox(height: 20,),
+                Container(
+                  height: 44,
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4,),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(
+                      color: const Color(0xFFEEEEEE),
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          obscureText: obscure,
+                          maxLines: 1,
+                          decoration: InputDecoration(
+                            hintText: '請輸入密碼',
+                            hintStyle: TextStyle(
+                              color: Color(0xFFB0B0B0),
+                              fontSize: 16,
+                              fontFamily: 'PingFang TC',
+                              fontWeight: FontWeight.w400,
+                            ),
+                            border: InputBorder.none,
+                          ),
+                          style: TextStyle(
+                            color: Color(0xFF454545),
+                            fontSize: 16,
+                            fontFamily: 'PingFang TC',
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            obscure = !obscure;
+                          });
+                        },
+                        child: obscure ? const Icon(Icons.visibility_outlined) : const Icon(Icons.visibility_off_outlined),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 20,),
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: Checkbox(
+                        value: rememberMe,
+                        activeColor: Color(0xFFF55572),
+                        onChanged: (bool? value) {
+                          setState(() {
+                            rememberMe = value ?? false;
+                          });
+                        },
+                      ),
+                    ),
+                    SizedBox(width: 4,),
+                    Text(
+                      '記住我',
+                      style: TextStyle(
+                        color: const Color(0xFF454545),
+                        fontSize: 14,
+                        fontFamily: 'Noto Sans TC',
+                        fontWeight: FontWeight.w400,
+                        letterSpacing: 1,
+                      ),
+                    ),
+                    Spacer(),
+                    Text(
+                      '忘記密碼',
+                      style: TextStyle(
+                        color: const Color(0xFFF55572),
+                        fontSize: 14,
+                        fontFamily: 'Noto Sans TC',
+                        fontWeight: FontWeight.w400,
+                        letterSpacing: 1,
+                      ),
+                    ),
+                  ],
+                ),
                 const SizedBox(height: 40,),
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const LoginMember()),
+                      MaterialPageRoute(builder: (context) => const IndexFrame()),
                     );
                   },
                   child: Container(
@@ -155,7 +241,7 @@ class _LoginPageState extends State<LoginPage> {
                       ],
                     ),
                     child: const Text(
-                      '下一步',
+                      '登入',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,

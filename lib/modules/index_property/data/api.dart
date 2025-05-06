@@ -19,7 +19,6 @@ class ApiService {
           urlString += '&status=4';
         }
       }
-      print(urlString);
       final url = Uri.parse(urlString);
       final response = await http.get(
         url,
