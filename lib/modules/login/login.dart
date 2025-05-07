@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mylo/modules/login/login_member.dart';
-import '../index_frame.dart';
+import 'data/api.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -11,8 +9,24 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  List<String> countryCodes = ['TW +886', 'NA +1'];
-  int selectedCode = 0;
+  final String baseUrl = 'https://rencoo.com.tw';
+
+  late final ApiService apiService;
+  late Future<List<dynamic>> futureData;
+  late List<dynamic> dataList;
+
+  final TextEditingController controller = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  bool obscure = true;
+  bool rememberMe = false;
+  bool pass = false;
+
+  @override
+  void initState() {
+    super.initState();
+    apiService = ApiService(baseUrl: baseUrl);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,46 +69,6 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(height: 38,),
                 Row(
                   children: [
-                    // Container(
-                    //   width: 124,
-                    //   height: 44,
-                    //   padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 4),
-                    //   alignment: Alignment.center,
-                    //   decoration: ShapeDecoration(
-                    //     color: Colors.white,
-                    //     shape: RoundedRectangleBorder(
-                    //       side: const BorderSide(
-                    //         width: 1,
-                    //         color: Color(0xFFEEEEEE),),
-                    //       borderRadius: BorderRadius.circular(8),
-                    //     ),
-                    //   ),
-                    //   child: DropdownButtonHideUnderline(
-                    //     child: DropdownButton<int>(
-                    //       isExpanded: true,
-                    //       value: selectedCode,
-                    //       icon: const Icon(Icons.arrow_drop_down),
-                    //       style: const TextStyle(
-                    //         color: Color(0xFF333333),
-                    //         fontSize: 12,
-                    //         fontFamily: 'PingFang TC',
-                    //         fontWeight: FontWeight.w400,
-                    //       ),
-                    //       items: List.generate(countryCodes.length, (index) {
-                    //         return DropdownMenuItem<int>(
-                    //           value: index, // 設定 value 為索引
-                    //           child: Text(countryCodes[index]), // 顯示對應的模式名稱
-                    //         );
-                    //       }),
-                    //       onChanged: (int? newValue) {
-                    //         setState(() {
-                    //           selectedCode = newValue!;
-                    //         });
-                    //       },
-                    //     ),
-                    //   ),
-                    // ),
-                    // const SizedBox(width: 8,),
                     Expanded(
                       child: Container(
                         height: 44,
@@ -107,8 +81,9 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: const TextField(
+                        child: TextField(
                           maxLines: 1,
+                          controller: controller,
                           decoration: InputDecoration(
                             hintText: '輸入身分證字號',
                             hintStyle: TextStyle(
@@ -130,13 +105,116 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ],
                 ),
+
+                if(pass) ...[
+                  SizedBox(height: 20,),
+                  Container(
+                    height: 44,
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4,),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(
+                        color: const Color(0xFFEEEEEE),
+                        width: 1,
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: passwordController,
+                            obscureText: obscure,
+                            maxLines: 1,
+                            decoration: InputDecoration(
+                              hintText: '請輸入密碼',
+                              hintStyle: TextStyle(
+                                color: Color(0xFFB0B0B0),
+                                fontSize: 16,
+                                fontFamily: 'PingFang TC',
+                                fontWeight: FontWeight.w400,
+                              ),
+                              border: InputBorder.none,
+                            ),
+                            style: TextStyle(
+                              color: Color(0xFF454545),
+                              fontSize: 16,
+                              fontFamily: 'PingFang TC',
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              obscure = !obscure;
+                            });
+                          },
+                          child: obscure ? const Icon(Icons.visibility_outlined) : const Icon(Icons.visibility_off_outlined),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 20,),
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: Checkbox(
+                          value: rememberMe,
+                          activeColor: Color(0xFFF55572),
+                          onChanged: (bool? value) {
+                            setState(() {
+                              rememberMe = value ?? false;
+                            });
+                          },
+                        ),
+                      ),
+                      SizedBox(width: 4,),
+                      Text(
+                        '記住我',
+                        style: TextStyle(
+                          color: const Color(0xFF454545),
+                          fontSize: 14,
+                          fontFamily: 'Noto Sans TC',
+                          fontWeight: FontWeight.w400,
+                          letterSpacing: 1,
+                        ),
+                      ),
+                      Spacer(),
+                      Text(
+                        '忘記密碼',
+                        style: TextStyle(
+                          color: const Color(0xFFF55572),
+                          fontSize: 14,
+                          fontFamily: 'Noto Sans TC',
+                          fontWeight: FontWeight.w400,
+                          letterSpacing: 1,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+
                 const SizedBox(height: 40,),
                 GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const LoginMember()),
-                    );
+                    if (controller.text != '') {
+                      apiService.getOTP(context ,controller.text).then((result) {
+                        print('回傳結果: $result');
+
+                        if (result == 'pass') {
+                          setState(() {
+                            pass = true;
+                          });
+                        } else if (result == 'verifying') {
+                          // 進入驗證頁
+                        } else if (result == 'error') {
+                          // 錯誤處理
+                        }
+                      });;
+                    }
                   },
                   child: Container(
                     height: 46,
@@ -179,13 +257,16 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     SizedBox(width: 4,),
-                    Text(
-                      '興達LINE官方',
-                      style: TextStyle(
-                        color: const Color(0xFFF55572),
-                        fontSize: 14,
-                        fontFamily: 'PingFang TC',
-                        fontWeight: FontWeight.w500,
+                    GestureDetector(
+                      onTap: () {},
+                      child: Text(
+                        '興達LINE官方',
+                        style: TextStyle(
+                          color: const Color(0xFFF55572),
+                          fontSize: 14,
+                          fontFamily: 'PingFang TC',
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
                   ],

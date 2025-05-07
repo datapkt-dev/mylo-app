@@ -1,17 +1,31 @@
 import 'package:flutter/material.dart';
-
 import '../index_frame.dart';
+import 'data/api.dart';
 
 class LoginMember extends StatefulWidget {
-  const LoginMember({super.key});
+  final String id;
+  const LoginMember({super.key, required this.id});
 
   @override
   State<LoginMember> createState() => _LoginMemberState();
 }
 
 class _LoginMemberState extends State<LoginMember> {
+  final String baseUrl = 'https://rencoo.com.tw';
+  late final ApiService apiService;
+
+  final TextEditingController _accountController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
   bool obscure = true;
   bool rememberMe = false;
+
+  @override
+  void initState() {
+    super.initState();
+    apiService = ApiService(baseUrl: baseUrl);
+    _accountController.text = widget.id;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,46 +68,6 @@ class _LoginMemberState extends State<LoginMember> {
                 const SizedBox(height: 38,),
                 Row(
                   children: [
-                    // Container(
-                    //   width: 124,
-                    //   height: 44,
-                    //   padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 4),
-                    //   alignment: Alignment.center,
-                    //   decoration: ShapeDecoration(
-                    //     color: Colors.white,
-                    //     shape: RoundedRectangleBorder(
-                    //       side: const BorderSide(
-                    //         width: 1,
-                    //         color: Color(0xFFEEEEEE),),
-                    //       borderRadius: BorderRadius.circular(8),
-                    //     ),
-                    //   ),
-                    //   child: DropdownButtonHideUnderline(
-                    //     child: DropdownButton<int>(
-                    //       isExpanded: true,
-                    //       value: selectedCode,
-                    //       icon: const Icon(Icons.arrow_drop_down),
-                    //       style: const TextStyle(
-                    //         color: Color(0xFF333333),
-                    //         fontSize: 12,
-                    //         fontFamily: 'PingFang TC',
-                    //         fontWeight: FontWeight.w400,
-                    //       ),
-                    //       items: List.generate(countryCodes.length, (index) {
-                    //         return DropdownMenuItem<int>(
-                    //           value: index, // 設定 value 為索引
-                    //           child: Text(countryCodes[index]), // 顯示對應的模式名稱
-                    //         );
-                    //       }),
-                    //       onChanged: (int? newValue) {
-                    //         setState(() {
-                    //           selectedCode = newValue!;
-                    //         });
-                    //       },
-                    //     ),
-                    //   ),
-                    // ),
-                    // const SizedBox(width: 8,),
                     Expanded(
                       child: Container(
                         height: 44,
@@ -106,8 +80,10 @@ class _LoginMemberState extends State<LoginMember> {
                           ),
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: const TextField(
+                        child: TextField(
+                          enabled: false,
                           maxLines: 1,
+                          controller: _accountController,
                           decoration: InputDecoration(
                             hintText: '輸入帳號',
                             hintStyle: TextStyle(
@@ -145,6 +121,7 @@ class _LoginMemberState extends State<LoginMember> {
                     children: [
                       Expanded(
                         child: TextField(
+                          controller: _passwordController,
                           obscureText: obscure,
                           maxLines: 1,
                           decoration: InputDecoration(
@@ -219,10 +196,7 @@ class _LoginMemberState extends State<LoginMember> {
                 const SizedBox(height: 40,),
                 GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const IndexFrame()),
-                    );
+                    apiService.login(context, _accountController.text, _passwordController.text);
                   },
                   child: Container(
                     height: 46,

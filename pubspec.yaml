@@ -46,6 +46,7 @@ dependencies:
   syncfusion_flutter_pdfviewer: ^29.1.39
   flutter_pdfview: ^1.4.0+1
   shimmer: ^3.0.0
+  fluttertoast: ^8.2.12
 
 dev_dependencies:
   flutter_test:
@@ -87,6 +88,7 @@ flutter:
     - assets/icons/contract_new/delete.svg
     - assets/icons/user.svg
     - assets/icons/logo_google.svg
+    - assets/icons/complete.svg
 
     - assets/images/repair/
     - assets/images/contract_new/item_0.png
