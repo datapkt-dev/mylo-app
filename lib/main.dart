@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:mylo/modules/index_frame.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:mylo/modules/login/login.dart';
+import 'package:mylo/units/auth_service.dart';
 
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -43,8 +45,44 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final AuthService _authService = AuthService();
+  @override
+  void initState() {
+    super.initState();
+    _checkToken();
+  }
+
+  Future<void> _checkToken() async {
+    String? token = await _authService.getToken();
+
+
+    if (token != null) {
+      startPage = const IndexFrame();
+    }else{
+      startPage = const LoginPage();
+    }
+    setState(() {});
+  }
+
+  Widget startPage = const Scaffold(
+    body: Center(
+      child: CircularProgressIndicator(),
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
-    return const LoginPage();
+    return MaterialApp(
+      // localizationsDelegates: const [
+      //   GlobalMaterialLocalizations.delegate,
+      //   GlobalWidgetsLocalizations.delegate,
+      //   GlobalCupertinoLocalizations.delegate,
+      // ],
+      // supportedLocales: const [
+      //   Locale('en', 'US'),
+      //   Locale('zh', 'TW'),
+      // ],
+      home: startPage,
+    );
   }
 }

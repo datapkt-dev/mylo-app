@@ -9,12 +9,15 @@ import 'package:mylo/modules/index_frame.dart';
 import 'package:mylo/modules/login/changing_password.dart';
 import 'package:mylo/modules/login/login_member.dart';
 import 'package:mylo/modules/login/login_verifying.dart';
+import '../../../units/auth_service.dart';
 import '../login.dart';
 
 class ApiService {
   final String baseUrl;
 
   ApiService({required this.baseUrl});
+
+  final AuthService authStorage = AuthService();
 
   Future<String> getOTP(BuildContext context, String id) async {
     String urlString = '$baseUrl/api/v1/auth/validate?staff_no=$id';
@@ -46,7 +49,7 @@ class ApiService {
     }
   }
 
-  void login(BuildContext context, String account, String password) async {
+  Future<String> login(BuildContext context, String account, String password) async {
     String url = '$baseUrl/api/v1/login';
 
     final headers = {'Content-Type': 'application/json'};
@@ -63,17 +66,21 @@ class ApiService {
       );
 
       if (response.statusCode == 200) {
-        final decoded = jsonDecode(response.body);
-        print('登入成功: $decoded');
+        Map<String, dynamic> responseData = jsonDecode(response.body);
+        await authStorage.saveToken(responseData['data']['token']);
+        print('登入成功: $responseData');
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const IndexFrame()),
         );
+        return 'login success';
       } else {
         print('登入失敗: ${response.statusCode}, ${response.body}');
+        return 'login failed';
       }
     } catch (e) {
       print('發生錯誤: $e');
+      return 'error';
     }
   }
 

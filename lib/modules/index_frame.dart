@@ -3,9 +3,9 @@ import 'package:flutter_svg/svg.dart';
 import 'package:mylo/modules/index_accounts/index_accounts.dart';
 import 'package:mylo/modules/index_contract/index_contract.dart';
 import 'package:mylo/modules/index_page/index_page.dart';
+import 'package:mylo/modules/index_profile/index_profile.dart';
 import 'package:mylo/modules/index_property/index_property.dart';
 import '../temp/longpresslab.dart';
-import 'contract_new/contract_new.dart';
 
 class IndexFrame extends StatefulWidget {
   const IndexFrame({super.key});
@@ -967,7 +967,7 @@ class _PageFrameState extends State<IndexFrame> {
       case 3:
         return IndexAccountPage();
       case 4:
-        return UpgradedMailListPage();
+        return IndexProfilePage();
       default:
         return const Center(child: Text("未知層級"));
     }

@@ -21,6 +21,8 @@ class _LoginPageState extends State<LoginPage> {
   bool obscure = true;
   bool rememberMe = false;
   bool pass = false;
+  bool accountError = false;
+  bool passwordError = false;
 
   @override
   void initState() {
@@ -67,44 +69,56 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 const SizedBox(height: 38,),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        height: 44,
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4,),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(
-                            color: const Color(0xFFEEEEEE),
-                            width: 1,
-                          ),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: TextField(
-                          maxLines: 1,
-                          controller: controller,
-                          decoration: InputDecoration(
-                            hintText: '輸入身分證字號',
-                            hintStyle: TextStyle(
-                              color: Color(0xFFB0B0B0),
-                              fontSize: 16,
-                              fontFamily: 'PingFang TC',
-                              fontWeight: FontWeight.w400,
-                            ),
-                            border: InputBorder.none,
-                          ),
-                          style: TextStyle(
-                            color: Color(0xFF454545),
-                            fontSize: 16,
-                            fontFamily: 'PingFang TC',
-                            fontWeight: FontWeight.w400,
-                          ),
+                Container(
+                  height: 44,
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4,),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(
+                      color: accountError ? const Color(0xFFF55572) : const Color(0xFFEEEEEE),
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: TextField(
+                    maxLines: 1,
+                    controller: controller,
+                    decoration: InputDecoration(
+                      hintText: '輸入身分證字號',
+                      hintStyle: TextStyle(
+                        color: Color(0xFFB0B0B0),
+                        fontSize: 16,
+                        fontFamily: 'PingFang TC',
+                        fontWeight: FontWeight.w400,
+                      ),
+                      border: InputBorder.none,
+                    ),
+                    style: TextStyle(
+                      color: Color(0xFF454545),
+                      fontSize: 16,
+                      fontFamily: 'PingFang TC',
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ),
+                if(accountError) ...[
+                  Row(
+                    children: [
+                      SizedBox(height: 4,),
+                      Text(
+                        '帳號錯誤',
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          color: const Color(0xFFF3482A),
+                          fontSize: 14,
+                          fontFamily: 'Noto Sans TC',
+                          fontWeight: FontWeight.w400,
                         ),
                       ),
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
+                ],
 
                 if(pass) ...[
                   SizedBox(height: 20,),
@@ -114,7 +128,7 @@ class _LoginPageState extends State<LoginPage> {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       border: Border.all(
-                        color: const Color(0xFFEEEEEE),
+                        color: passwordError ? const Color(0xFFF55572) : const Color(0xFFEEEEEE),
                         width: 1,
                       ),
                       borderRadius: BorderRadius.circular(8),
@@ -155,6 +169,23 @@ class _LoginPageState extends State<LoginPage> {
                       ],
                     ),
                   ),
+                  if(passwordError) ...[
+                    Row(
+                      children: [
+                        SizedBox(height: 4,),
+                        Text(
+                          '密碼錯誤',
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            color: const Color(0xFFF3482A),
+                            fontSize: 14,
+                            fontFamily: 'Noto Sans TC',
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                   SizedBox(height: 20,),
                   Row(
                     children: [
@@ -201,12 +232,26 @@ class _LoginPageState extends State<LoginPage> {
                 GestureDetector(
                   onTap: () {
                     if (pass) {
-                      apiService.login(context, controller.text, passwordController.text);
+                      setState(() {
+                        accountError = false;
+                        passwordError = false;
+                      });
+                      apiService.login(context, controller.text, passwordController.text).then((result) {
+                        print(result);
+                        if (result == 'login failed') {
+                          setState(() {
+                            passwordError = true;
+                          });
+                        }
+                      });
                     } else {
+                      setState(() {
+                        accountError = false;
+                        passwordError = false;
+                      });
                       if (controller.text != '') {
                         apiService.getOTP(context ,controller.text).then((result) {
                           print('回傳結果: $result');
-
                           if (result == 'pass') {
                             setState(() {
                               pass = true;
@@ -214,9 +259,11 @@ class _LoginPageState extends State<LoginPage> {
                           } else if (result == 'verifying') {
                             // 進入驗證頁
                           } else if (result == 'error') {
-                            // 錯誤處理
+                            setState(() {
+                              accountError = true;
+                            });
                           }
-                        });;
+                        });
                       }
                     }
                   },
