@@ -200,20 +200,24 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(height: 40,),
                 GestureDetector(
                   onTap: () {
-                    if (controller.text != '') {
-                      apiService.getOTP(context ,controller.text).then((result) {
-                        print('回傳結果: $result');
+                    if (pass) {
+                      apiService.login(context, controller.text, passwordController.text);
+                    } else {
+                      if (controller.text != '') {
+                        apiService.getOTP(context ,controller.text).then((result) {
+                          print('回傳結果: $result');
 
-                        if (result == 'pass') {
-                          setState(() {
-                            pass = true;
-                          });
-                        } else if (result == 'verifying') {
-                          // 進入驗證頁
-                        } else if (result == 'error') {
-                          // 錯誤處理
-                        }
-                      });;
+                          if (result == 'pass') {
+                            setState(() {
+                              pass = true;
+                            });
+                          } else if (result == 'verifying') {
+                            // 進入驗證頁
+                          } else if (result == 'error') {
+                            // 錯誤處理
+                          }
+                        });;
+                      }
                     }
                   },
                   child: Container(
@@ -232,8 +236,8 @@ class _LoginPageState extends State<LoginPage> {
                         )
                       ],
                     ),
-                    child: const Text(
-                      '下一步',
+                    child: Text(
+                      pass ? '登入' : '下一步',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,
