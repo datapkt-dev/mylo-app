@@ -42,7 +42,7 @@ class _ContractNewCustomerState extends State<ContractNewCustomer> {
     super.initState();
 
     apiService = ApiService(baseUrl: baseUrl);
-    futureData = apiService.fetchData();
+    futureData = apiService.fetchCity();
 
     if (widget.dataPass[0]) {
       nameController.text = widget.dataPass[1];

@@ -33,7 +33,7 @@ class _ProfilePageState extends State<IndexProfilePage> {
                       shape: OvalBorder(
                         side: BorderSide(
                           width: 2,
-                          color: Colors.grey,
+                          color: Color(0xFF8C5F42),
                         ),
                       ),
                     ),
@@ -51,7 +51,7 @@ class _ProfilePageState extends State<IndexProfilePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '蠟筆小新',
+                        '業務',
                         style: TextStyle(
                           color: Color(0xFF333333),
                           fontSize: 18,
@@ -61,7 +61,7 @@ class _ProfilePageState extends State<IndexProfilePage> {
                       ),
                       SizedBox(height: 4,),
                       Text(
-                        '0912345678',
+                        '0966182738',
                         style: TextStyle(
                           color: Color(0xFF454545),
                           fontSize: 16,
@@ -186,7 +186,7 @@ class _ProfilePageState extends State<IndexProfilePage> {
                   padding: const EdgeInsets.all(10),
                   alignment: Alignment.center,
                   decoration: ShapeDecoration(
-                    color: const Color(0xFFF55572),
+                    color: const Color(0xFF8C5F42),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
                     shadows: [
                       BoxShadow(

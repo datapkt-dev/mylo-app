@@ -8,6 +8,28 @@ class ApiService {
 
   Future<List<dynamic>> fetchData() async {
     try {
+      String urlString = '$baseUrl/api/v1/properties?community_id=1&page_size=10&page=1&status=3';
+      final url = Uri.parse(urlString);
+      final response = await http.get(
+        url,
+      );
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> dataJson = json.decode(response.body);
+        List<dynamic> dataList = dataJson['data'];
+
+        return dataList;
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (e) {
+      print('Error fetching data: $e');
+      return [];
+    }
+  }
+
+  Future<List<dynamic>> fetchCity() async {
+    try {
       String urlString = '$baseUrl/api/v1/divisionsTW';
       final url = Uri.parse(urlString);
       final response = await http.get(

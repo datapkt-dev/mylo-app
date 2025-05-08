@@ -46,23 +46,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final AuthService _authService = AuthService();
-  @override
-  void initState() {
-    super.initState();
-    _checkToken();
-  }
-
-  Future<void> _checkToken() async {
-    String? token = await _authService.getToken();
-
-
-    if (token != null) {
-      startPage = const IndexFrame();
-    }else{
-      startPage = const LoginPage();
-    }
-    setState(() {});
-  }
 
   Widget startPage = const Scaffold(
     body: Center(
@@ -71,18 +54,26 @@ class _MyHomePageState extends State<MyHomePage> {
   );
 
   @override
+  void initState() {
+    super.initState();
+    _checkToken();
+  }
+
+  Future<void> _checkToken() async {
+    String? token = await _authService.getToken();
+    if (token != null) {
+      setState(() {
+        startPage = const IndexFrame();
+      });
+    } else {
+      setState(() {
+        startPage = const LoginPage();
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      // localizationsDelegates: const [
-      //   GlobalMaterialLocalizations.delegate,
-      //   GlobalWidgetsLocalizations.delegate,
-      //   GlobalCupertinoLocalizations.delegate,
-      // ],
-      // supportedLocales: const [
-      //   Locale('en', 'US'),
-      //   Locale('zh', 'TW'),
-      // ],
-      home: startPage,
-    );
+    return startPage;
   }
 }

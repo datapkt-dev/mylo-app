@@ -194,7 +194,7 @@ class _LoginPageState extends State<LoginPage> {
                         height: 16,
                         child: Checkbox(
                           value: rememberMe,
-                          activeColor: Color(0xFFF55572),
+                          activeColor: Color(0xFF8C5F42),
                           onChanged: (bool? value) {
                             setState(() {
                               rememberMe = value ?? false;
@@ -217,7 +217,7 @@ class _LoginPageState extends State<LoginPage> {
                       Text(
                         '忘記密碼',
                         style: TextStyle(
-                          color: const Color(0xFFF55572),
+                          color: const Color(0xFF8C5F42),
                           fontSize: 14,
                           fontFamily: 'Noto Sans TC',
                           fontWeight: FontWeight.w400,
@@ -272,7 +272,7 @@ class _LoginPageState extends State<LoginPage> {
                     width: double.infinity,
                     alignment: Alignment.center,
                     decoration: ShapeDecoration(
-                      color: const Color(0xFFF55572),
+                      color: const Color(0xFF8C5F42),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
                       shadows: const [
                         BoxShadow(
@@ -294,34 +294,6 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 42,),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      '如有借款需求請ＯＯLine官方',
-                      style: TextStyle(
-                        color: const Color(0xFF454545),
-                        fontSize: 14,
-                        fontFamily: 'PingFang TC',
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    SizedBox(width: 4,),
-                    GestureDetector(
-                      onTap: () {},
-                      child: Text(
-                        '興達LINE官方',
-                        style: TextStyle(
-                          color: const Color(0xFFF55572),
-                          fontSize: 14,
-                          fontFamily: 'PingFang TC',
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
                 const Spacer(),
                 const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -339,7 +311,7 @@ class _LoginPageState extends State<LoginPage> {
                     Text(
                       '使用條款',
                       style: TextStyle(
-                        color: Color(0xFFF55572),
+                        color: Color(0xFF8C5F42),
                         fontSize: 12,
                         fontFamily: 'PingFang TC',
                         fontWeight: FontWeight.w500,
@@ -359,7 +331,7 @@ class _LoginPageState extends State<LoginPage> {
                     Text(
                       '隱私權政策',
                       style: TextStyle(
-                        color: Color(0xFFF55572),
+                        color: Color(0xFF8C5F42),
                         fontSize: 12,
                         fontFamily: 'PingFang TC',
                         fontWeight: FontWeight.w500,

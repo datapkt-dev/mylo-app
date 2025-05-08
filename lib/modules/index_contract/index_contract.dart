@@ -686,13 +686,17 @@ class _MainContractState extends State<IndexContractPage> {
             bottom: 16,
             right: 16,
             child: FloatingActionButton(
+              backgroundColor: const Color(0xFF8C5F42),
               onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const ContractNew()),
                 );
               },
-              child: Icon(Icons.add),
+              child: Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
             ),
           ),
         ],
