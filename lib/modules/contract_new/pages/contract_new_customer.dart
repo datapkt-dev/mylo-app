@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:mylo/units/upload_image_widget.dart';
@@ -17,7 +18,7 @@ class _ContractNewCustomerState extends State<ContractNewCustomer> {
   final String baseUrl = 'https://rencoo.com.tw';
 
   List<String> imgId = ['', '',];
-  List<dynamic> customerData = [false, '', '', '', '', '', '', '',];
+  List<dynamic> customerData = List.filled(8, '');
   DateTime birthday = DateTime.now();
   bool native = true;
 
@@ -44,7 +45,9 @@ class _ContractNewCustomerState extends State<ContractNewCustomer> {
     apiService = ApiService(baseUrl: baseUrl);
     futureData = apiService.fetchCity();
 
+    customerData[0] = false;
     if (widget.dataPass[0]) {
+      print('has data');
       nameController.text = widget.dataPass[1];
       idController.text = widget.dataPass[2];
       birthday = DateTime.parse(widget.dataPass[3]);
@@ -87,16 +90,20 @@ class _ContractNewCustomerState extends State<ContractNewCustomer> {
         actions: [
           GestureDetector(
             onTap: () {
-              customerData[0] = true;
-              customerData[1] = nameController.text;
-              customerData[2] = idController.text;
-              customerData[3] = DateFormat('yyyy-MM-dd').format(birthday);
-              customerData[4] = phoneController.text;
-              customerData[5] = cityController.text;
-              customerData[6] = districtController.text;
-              customerData[7] = addressController.text;
-              print(customerData);
-              Navigator.pop(context, customerData);
+              if (nameController.text != '') {
+                customerData[0] = true;
+                customerData[1] = nameController.text;
+                customerData[2] = idController.text;
+                customerData[3] = DateFormat('yyyy-MM-dd').format(birthday);
+                customerData[4] = phoneController.text;
+                customerData[5] = cityController.text;
+                customerData[6] = districtController.text;
+                customerData[7] = addressController.text;
+                print(customerData);
+                Navigator.pop(context, customerData);
+              } else {
+                Fluttertoast.showToast(msg: "請檢查姓名不可為空");
+              }
             },
             child: const Text(
               '確認',
@@ -108,7 +115,7 @@ class _ContractNewCustomerState extends State<ContractNewCustomer> {
               ),
             ),
           ),
-          const Gap(16),
+          const SizedBox(width: 16,),
         ],
       ),
       body: Padding(

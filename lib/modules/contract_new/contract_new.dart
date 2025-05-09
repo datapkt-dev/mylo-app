@@ -170,6 +170,8 @@ class _ContractNewState extends State<ContractNew> {
                       setState(() {
                         if (_selectedItem != null) {
                           _currentStep = _currentStep+1;
+                        } else {
+                          // _currentStep = _currentStep+1;
                         }
                       });
                     },
@@ -368,7 +370,7 @@ class _ContractNewState extends State<ContractNew> {
 
   int count = 1;
   List<List<dynamic>> customerData = [
-    [false, '團團', 'H123456789', '2005/12/01', '0912345678', '台中市', '大雅區', '民生路三段315號',],
+    [false, '', 'H123456789', '2005/12/01', '0912345678', '台中市', '大雅區', '民生路三段315號',],
     [false, '林旺', 'A987654321', '2000/01/01', '0987654321', '台中市', '大雅區', '民生路三段315號'],
     [false, '', '', '', '', ''],
   ];
@@ -842,8 +844,10 @@ class _ContractNewState extends State<ContractNew> {
                                                     context,
                                                     MaterialPageRoute(builder: (context) => ContractNewCustomer(dataPass: customerData[index],)),
                                                   ).then((result) {
+                                                    print('result');
+                                                    print(result);
                                                     if (result != null) {
-                                                      print(result);
+                                                      print('not result');
                                                       setState(() {
                                                         customerData[index] = result;
                                                       });
