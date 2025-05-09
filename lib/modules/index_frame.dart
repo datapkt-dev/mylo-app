@@ -5,6 +5,7 @@ import 'package:mylo/modules/index_contract/index_contract.dart';
 import 'package:mylo/modules/index_profile/index_profile.dart';
 import 'package:mylo/modules/index_property/index_property.dart';
 import 'data/api.dart';
+import 'index_page/index_page.dart';
 
 class IndexFrame extends StatefulWidget {
   const IndexFrame({super.key});
@@ -230,11 +231,11 @@ class _PageFrameState extends State<IndexFrame> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              // _buildBottomNavigationBarItem(
-              //   0,
-              //   'assets/icons/frame/index.svg',
-              //   '首頁',
-              // ),
+              _buildBottomNavigationBarItem(
+                0,
+                'assets/icons/frame/index.svg',
+                '首頁',
+              ),
               _buildBottomNavigationBarItem(
                 1,
                 'assets/icons/frame/property.svg',
@@ -399,11 +400,8 @@ class _PageFrameState extends State<IndexFrame> {
 
   Widget _buildContent() {
     switch (selectedIndex) {
-      // case 0:
-      //   return IndexPage();
-        // return Center(
-        //   child: Text('尚未開放'),
-        // );
+      case 0:
+        return IndexPage();
       case 1:
         return IndexPropertyPage();
       case 2:
