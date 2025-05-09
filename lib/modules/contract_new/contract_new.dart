@@ -7,7 +7,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:timelines_plus/timelines_plus.dart';
 import '../../units/upload_image_widget.dart';
-import '../index_property/data/api.dart';
+import 'data/api.dart';
 
 class ContractNew extends StatefulWidget {
   const ContractNew({super.key});
@@ -49,9 +49,11 @@ class _ContractNewState extends State<ContractNew> {
           ),
           onPressed: () {
             setState(() {
-              _currentStep > 0
-                  ? _currentStep-=1
-                  : Navigator.pop(context);
+              if (_currentStep > 0) {
+                _currentStep -= 1;
+              } else {
+                Navigator.pop(context);
+              }
             });
           },
         ),
@@ -166,7 +168,9 @@ class _ContractNewState extends State<ContractNew> {
                   child: GestureDetector(
                     onTap: () {
                       setState(() {
-                        _currentStep = _currentStep+1;
+                        if (_selectedItem != null) {
+                          _currentStep = _currentStep+1;
+                        }
                       });
                     },
                     child: Container(
@@ -216,7 +220,7 @@ class _ContractNewState extends State<ContractNew> {
     }
   }
 
-  int _selectedItem = -1;
+  int? _selectedItem;
   late List<dynamic> dataList;
 
   Widget step0() {
@@ -268,6 +272,11 @@ class _ContractNewState extends State<ContractNew> {
               }
               if (snapshot.hasData) {
                 dataList = snapshot.data!;
+                if (dataList.isEmpty) {
+                  return Center(
+                    child: Text('目前沒有物件可供選擇'),
+                  );
+                }
               }
               return Column(
                 children: List.generate(dataList.length, (index) {
@@ -934,6 +943,9 @@ class _ContractNewState extends State<ContractNew> {
                                                               Expanded(
                                                                 child: GestureDetector(
                                                                   onTap: () {
+                                                                    setState(() {
+                                                                      customerData[index][0] = false;
+                                                                    });
                                                                     Navigator.pop(context);
                                                                   },
                                                                   child: Container(

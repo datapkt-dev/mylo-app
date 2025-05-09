@@ -8,7 +8,7 @@ class ApiService {
 
   Future<List<dynamic>> fetchData() async {
     try {
-      String urlString = '$baseUrl/api/v1/properties?community_id=1&page_size=10&page=1&status=3';
+      String urlString = '$baseUrl/api/v1/properties?page_size=10&page=1&status=3';
       final url = Uri.parse(urlString);
       final response = await http.get(
         url,

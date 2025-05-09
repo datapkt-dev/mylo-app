@@ -7,7 +7,6 @@ class ApiService {
   ApiService({required this.baseUrl});
 
   Future<List<dynamic>> fetchData() async {
-    print('fetch');
     try {
       String urlString = '$baseUrl/api/v1/landlords';
       final url = Uri.parse(urlString);

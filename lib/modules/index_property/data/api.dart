@@ -10,7 +10,7 @@ class ApiService {
 
   Future<List<dynamic>> fetchData({int? status}) async {
     try {
-      String urlString = '$baseUrl/api/v1/properties?community_id=1&page_size=10&page=1';
+      String urlString = '$baseUrl/api/v1/properties?page_size=10&page=1';
       if (status != 0 && status != null) {
         if (status == 1) {
           urlString += '&status=3';
