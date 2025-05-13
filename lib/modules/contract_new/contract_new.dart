@@ -334,7 +334,7 @@ class _ContractNewState extends State<ContractNew> {
                                 ),
                                 SizedBox(height: 4,),
                                 Text(
-                                  dataList[index]['address'],
+                                  dataList[index]['detailed_address'],
                                   style: TextStyle(
                                     color: Color(0xFF5F6E7B),
                                     fontSize: 12,

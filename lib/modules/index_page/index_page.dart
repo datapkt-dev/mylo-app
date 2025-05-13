@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../temp/bill.dart';
+
 class IndexPage extends StatefulWidget {
   const IndexPage({super.key});
 
@@ -310,6 +312,11 @@ class _IndexPageState extends State<IndexPage> {
                         padding: EdgeInsets.symmetric(horizontal: 16),
                         child: InkWell(
                           onTap: () {
+                            print("123");
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => UtilityFeesPage()),
+                            );
                             // print(aname[index]);
                             // if(index==1) {
                             //   Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage()));
@@ -325,7 +332,7 @@ class _IndexPageState extends State<IndexPage> {
                               ),
                               SizedBox(height: 8,),
                               Text(
-                                aname[index],
+                                '123',
                                 style: TextStyle(
                                   color: Color(0xFF222222),
                                   fontSize: 13,
