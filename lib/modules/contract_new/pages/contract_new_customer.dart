@@ -214,7 +214,7 @@ class _ContractNewCustomerState extends State<ContractNewCustomer> {
                       var result = await showDatePicker(
                         context: context,
                         initialDate: DateTime.now(),
-                        firstDate: DateTime(2023, 01),
+                        firstDate: DateTime(1900, 01),
                         lastDate: DateTime(2026, 12),
                         locale: const Locale('zh', 'TW'),
                       );
