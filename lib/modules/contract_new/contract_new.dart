@@ -383,6 +383,7 @@ class _ContractNewState extends State<ContractNew> {
 
   final List<Widget> _customItems = [];
   int _depositMonths = 0;
+  List<List<dynamic>> costList = [];
 
   void _addCustomItem() {
     setState(() {
@@ -599,6 +600,7 @@ class _ContractNewState extends State<ContractNew> {
                       ).then((result) {
                         if (result != null) {
                           setState(() {
+                            costList = result;
                           });
                         }
                       });
@@ -609,7 +611,7 @@ class _ContractNewState extends State<ContractNew> {
               ),
               const SizedBox(height: 16,),
               Column(
-            children: List.generate(customerData.length, (index) {
+            children: List.generate(costList.length, (index) {
               return Container(
                 width: double.infinity,
                 padding: const EdgeInsets.only(bottom: 16,),
@@ -618,7 +620,7 @@ class _ContractNewState extends State<ContractNew> {
                     Row(
                       children: [
                         Text(
-                          '電費 ${index+1}',
+                          costList[index][1],
                           style: const TextStyle(
                             color: Color(0xFF2B2F35),
                             fontSize: 15,
@@ -630,292 +632,33 @@ class _ContractNewState extends State<ContractNew> {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                           decoration: ShapeDecoration(
-                            color: customerData[index][0] == true ? const Color(0xFFD9F2E5) : const Color(0xFFE3E7EA),
+                            color: const Color(0xFFE3E7EA),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                           ),
                           child: Text(
-                            '每月',
+                            costList[index][4],
                             style: TextStyle(
-                              color: customerData[index][0] == true ? const Color(0xFF248568) : const Color(0xFF7B8A95),
+                              color: const Color(0xFF7B8A95),
                               fontSize: 12,
                               fontFamily: 'PingFang SC',
                               fontWeight: FontWeight.w400,
-                              letterSpacing: 0.60,
                             ),
                           ),
                         ),
                         const Spacer(),
-                        GestureDetector(
-                          onTap: () {
-                            showModalBottomSheet(
-                              context: context,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-                              ),
-                              builder: (BuildContext context) {
-                                return Container(
-                                  padding: const EdgeInsets.symmetric(vertical: 16),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      ListTile(
-                                        title: const Center(
-                                            child: Text(
-                                              '編輯簽約人',
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                color: Color(0xFF007AFF),
-                                                fontSize: 17,
-                                                fontFamily: 'PingFang TC',
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            )
-                                        ),
-                                        onTap: () {
-                                          // 編輯簽約人操作
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(builder: (context) => ContractNewCustomer(dataPass: customerData[index],)),
-                                          ).then((result) {
-                                            if (result != null) {
-                                              setState(() {
-                                                customerData[index] = result;
-                                              });
-                                            }
-                                          });
-                                        },
-                                      ),
-                                      Divider(height: 1, color: Colors.grey.shade300),
-                                      ListTile(
-                                        title: const Center(
-                                            child: Text(
-                                              '刪除簽約人',
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                color: Color(0xFFFF3B30),
-                                                fontSize: 17,
-                                                fontFamily: 'PingFang TC',
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            )
-                                        ),
-                                        onTap: () {
-                                          // 刪除簽約人操作
-                                          Navigator.pop(context);
-                                          showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return AlertDialog(
-                                                content: Column(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: [
-                                                    CircleAvatar(
-                                                      radius: 20,
-                                                      backgroundColor: const Color(0xFFFFDFDF).withOpacity(0.4),
-                                                      child: CircleAvatar(
-                                                        radius: 16,
-                                                        backgroundColor: const Color(0xFFFFDFDF),
-                                                        child: SvgPicture.asset('assets/icons/contract_new/trash.svg'),
-                                                      ),
-                                                    ),
-                                                    const SizedBox(height: 16,),
-                                                    const Text(
-                                                      '刪除此簽約人',
-                                                      textAlign: TextAlign.center,
-                                                      style: TextStyle(
-                                                        color: Color(0xFF2B2F35),
-                                                        fontSize: 16,
-                                                        fontFamily: 'PingFang SC',
-                                                        fontWeight: FontWeight.w500,
-                                                      ),
-                                                    ),
-                                                    const SizedBox(height: 8,),
-                                                    const Text(
-                                                      '您是否要刪除此簽約人？',
-                                                      textAlign: TextAlign.center,
-                                                      style: TextStyle(
-                                                        color: Color(0xFF5F6E7B),
-                                                        fontSize: 15,
-                                                        fontFamily: 'PingFang TC',
-                                                        fontWeight: FontWeight.w400,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                actions: [
-                                                  Row(
-                                                    mainAxisSize: MainAxisSize.max,
-                                                    children: [
-                                                      Expanded(
-                                                        child: GestureDetector(
-                                                          onTap: () {
-                                                            Navigator.pop(context);
-                                                          },
-                                                          child: Container(
-                                                            height: 38,
-                                                            alignment: Alignment.center,
-                                                            decoration: ShapeDecoration(
-                                                              color: Colors.white,
-                                                              shape: RoundedRectangleBorder(
-                                                                side: const BorderSide(width: 1, color: Color(0xFFCBD2D6)),
-                                                                borderRadius: BorderRadius.circular(4),
-                                                              ),
-                                                            ),
-                                                            child: const Text(
-                                                              '取消',
-                                                              style: TextStyle(
-                                                                color: Color(0xFF2B2F35),
-                                                                fontSize: 14,
-                                                                fontFamily: 'Poppins',
-                                                                fontWeight: FontWeight.w500,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      const SizedBox(width: 12,),
-                                                      Expanded(
-                                                        child: GestureDetector(
-                                                          onTap: () {
-                                                            setState(() {
-                                                              customerData.removeAt(index);
-                                                            });
-                                                            Navigator.pop(context);
-                                                          },
-                                                          child: Container(
-                                                            height: 38,
-                                                            alignment: Alignment.center,
-                                                            decoration: ShapeDecoration(
-                                                              color: Colors.white,
-                                                              shape: RoundedRectangleBorder(
-                                                                side: const BorderSide(width: 1, color: Color(0xFFCBD2D6)),
-                                                                borderRadius: BorderRadius.circular(4),
-                                                              ),
-                                                            ),
-                                                            child: const Text(
-                                                              '刪除',
-                                                              textAlign: TextAlign.center,
-                                                              style: TextStyle(
-                                                                color: Color(0xFFFF4444),
-                                                                fontSize: 14,
-                                                                fontFamily: 'PingFang SC',
-                                                                fontWeight: FontWeight.w500,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              );
-                                            },
-                                          );
-                                        },
-                                      ),
-                                      Divider(height: 1, color: Colors.grey.shade300),
-                                      ListTile(
-                                        title: const Center(
-                                          child: Text(
-                                            '取消',
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              color: Color(0xFF007AFF),
-                                              fontSize: 17,
-                                              fontFamily: 'PingFang TC',
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                        ),
-                                        onTap: () {
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                          child: const Text(
-                            '\$ 1000 /月',
-                            style: TextStyle(
-                              color: Color(0xFF2B2F35),
-                              fontSize: 15,
-                              fontFamily: 'PingFang TC',
-                              fontWeight: FontWeight.w400,
-                            ),
+                        Text(
+                          '\$ ${costList[index][5]} ${costList[index][3]}',
+                          style: TextStyle(
+                            color: Color(0xFF2B2F35),
+                            fontSize: 15,
+                            fontFamily: 'PingFang TC',
+                            fontWeight: FontWeight.w400,
                           ),
                         ),
                       ],
                     ),
-                    if (customerData[index][0] == true) ...[
-                      const SizedBox(width: 12,),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // CircleAvatar(
-                          //   radius: 20,
-                          //   backgroundColor: Color(0xFFB6E4D0),
-                          // ),
-                          // SvgPicture.asset('assets/icons/contract_new/customer_female.svg'),
-                          Image.asset(width: 20,'assets/images/contract_new/customer_male.png',),
-                          const SizedBox(height: 16,),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                customerData[index][1],
-                                style: const TextStyle(
-                                  color: Color(0xFF2B2F35),
-                                  fontSize: 15,
-                                  fontFamily: 'PingFang SC',
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              Text(
-                                customerData[index][2],
-                                style: const TextStyle(
-                                  color: Color(0xFF2B2F35),
-                                  fontSize: 15,
-                                  fontFamily: 'PingFang TC',
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                              Text(
-                                customerData[index][3],
-                                style: const TextStyle(
-                                  color: Color(0xFF2B2F35),
-                                  fontSize: 15,
-                                  fontFamily: 'PingFang TC',
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                              Text(
-                                customerData[index][4],
-                                style: const TextStyle(
-                                  color: Color(0xFF2B2F35),
-                                  fontSize: 15,
-                                  fontFamily: 'PingFang TC',
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                              Text(
-                                customerData[index][5]+customerData[index][6]+customerData[index][7],
-                                style: const TextStyle(
-                                  color: Color(0xFF2B2F35),
-                                  fontSize: 15,
-                                  fontFamily: 'PingFang TC',
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      )
-                    ],
                     const SizedBox(height: 8,),
-                    index < customerData.length-1 ? const Divider(thickness: 1, color: Color(0xFFCBD2D6)) : Container(),
+                    index < costList.length-1 ? const Divider(thickness: 1, color: Color(0xFFCBD2D6)) : Container(),
                   ],
                 ),
               );

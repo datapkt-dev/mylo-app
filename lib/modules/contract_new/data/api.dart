@@ -52,4 +52,24 @@ class ApiService {
       return [];
     }
   }
+
+  Future<List<dynamic>> fetchCost() async {
+    try {
+      String urlString = '$baseUrl/api/v1/fees';
+      final url = Uri.parse(urlString);
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> dataJson = json.decode(response.body);
+        List<dynamic> dataList = dataJson['data'];
+
+        return dataList;
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (e) {
+      print('Error fetching data: $e');
+      return [];
+    }
+  }
 }

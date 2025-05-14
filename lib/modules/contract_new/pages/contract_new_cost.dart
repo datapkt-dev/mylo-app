@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../data/api.dart';
 
 class ContractNewCost extends StatefulWidget {
   const ContractNewCost({super.key});
@@ -8,17 +9,25 @@ class ContractNewCost extends StatefulWidget {
 }
 
 class _ContractNewCostState extends State<ContractNewCost> {
-  final List<Widget> _customItems = [];
+  final String baseUrl = 'https://rencoo.com.tw';
+  late final ApiService apiService;
+  late Future<List<dynamic>> futureData;
+  late List<dynamic> dataList;
 
-  void _addCustomItem() {
-    setState(() {
-      _customItems.add(const WaterFeeCard());
-    });
-  }
+  // final List<Widget> _customItems = [WaterFeeCard(),];
+  List<List<dynamic>> costList = [];
 
   @override
   void initState() {
     super.initState();
+    apiService = ApiService(baseUrl: baseUrl);
+    futureData = apiService.fetchCost();
+  }
+
+  void _addCustomItem() {
+    setState(() {
+      // _customItems.add(const WaterFeeCard());
+    });
   }
 
   @override
@@ -46,7 +55,11 @@ class _ContractNewCostState extends State<ContractNewCost> {
         ),
         actions: [
           GestureDetector(
-            onTap: () {},
+            onTap: () {
+              final filteredList = costList.where((item) => item[0] == true).toList();
+              print(filteredList);
+              Navigator.pop(context, filteredList);
+            },
             child: const Text(
               '確認',
               style: TextStyle(
@@ -64,24 +77,63 @@ class _ContractNewCostState extends State<ContractNewCost> {
         padding: const EdgeInsets.all(16),
         child: SingleChildScrollView(
           child: _block(Column(
-              children: [
-                const WaterFeeCard(),
-                ..._customItems,
-                OutlinedButton.icon(
-                  onPressed: _addCustomItem,
-                  icon: const Icon(Icons.add, color: Color(0xFF8C5F42)),
-                  label: const Text(
-                    '新增自訂項目',
-                    style: TextStyle(color: Color(0xFF8C5F42)),
-                  ),
-                  style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Color(0xFF8C5F42)),
-                    foregroundColor: const Color(0xFF8C5F42), // 按下的 splash 也可跟著變色
-                  ),
+            children: [
+              FutureBuilder(
+                future: futureData,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Text(
+                        '發生錯誤: ${snapshot.error}',
+                        style: const TextStyle(color: Colors.red, fontSize: 16),
+                      ),
+                    );
+                  }
+                  if (snapshot.hasData) {
+                    dataList = snapshot.data!;
+                    costList = List.generate(
+                      dataList.length,
+                          (index) => [false, dataList[index]['fee_name'], dataList[index]['billing_method'], dataList[index]['unit_title'], null, '0'],
+                    );
+                  }
+                  return Column(
+                    children: List.generate(dataList.length, (index) {
+                      return WaterFeeCard(costData: costList[index]);
+                    }),
+                  );
+                },
+              ),
+              OutlinedButton.icon(
+                onPressed: _addCustomItem,
+                icon: const Icon(Icons.add, color: Color(0xFF8C5F42)),
+                label: const Text(
+                  '新增自訂項目',
+                  style: TextStyle(color: Color(0xFF8C5F42)),
                 ),
-              ],
-            ),
-          ),
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: Color(0xFF8C5F42)),
+                  foregroundColor: const Color(0xFF8C5F42), // 按下的 splash 也可跟著變色
+                ),
+              ),
+              OutlinedButton.icon(
+                onPressed: () {
+                  print(costList);
+                },
+                icon: const Icon(Icons.add, color: Color(0xFF8C5F42)),
+                label: const Text(
+                  '測試',
+                  style: TextStyle(color: Color(0xFF8C5F42)),
+                ),
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: Color(0xFF8C5F42)),
+                  foregroundColor: const Color(0xFF8C5F42), // 按下的 splash 也可跟著變色
+                ),
+              ),
+            ],
+          )),
         ),
       ),
     );
@@ -102,9 +154,16 @@ class _ContractNewCostState extends State<ContractNewCost> {
   }
 }
 
-class WaterFeeCard extends StatelessWidget {
-  const WaterFeeCard({super.key});
+class WaterFeeCard extends StatefulWidget {
+  final List<dynamic> costData;
+  const WaterFeeCard({super.key, required this.costData});
 
+  @override
+  State<WaterFeeCard> createState() => _WaterFeeCardState();
+}
+
+class _WaterFeeCardState extends State<WaterFeeCard> {
+  String? selectedMethod;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -122,12 +181,21 @@ class WaterFeeCard extends StatelessWidget {
             children: [
               Switch(
                 activeColor: const Color(0xFF8C5F42),
-                value: true,
-                onChanged: (val) {},
+                value: widget.costData[0],
+                onChanged: (val) {
+                  setState(() {
+                    widget.costData[0] = val;
+                  });
+                },
               ),
               const SizedBox(width: 8),
-              const Text('水費',
-                  style: TextStyle(fontSize: 15, fontFamily: 'PingFang TC')),
+              Text(
+                widget.costData[1],
+                style: TextStyle(
+                  fontSize: 15,
+                  fontFamily: 'PingFang TC',
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 20),
@@ -136,7 +204,7 @@ class WaterFeeCard extends StatelessWidget {
               Expanded(
                 child: Container(
                   width: double.infinity,
-                  height: 48,
+                  height: 55,
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   decoration: ShapeDecoration(
                     color: const Color(0xFFF4F6F7),
@@ -146,13 +214,24 @@ class WaterFeeCard extends StatelessWidget {
                     ),
                   ),
                   child: DropdownButtonFormField<String>(
-                    decoration: const InputDecoration(labelText: '收費+方式'),
-                    value: '每月',
-                    items: const [
-                      DropdownMenuItem(value: '每月', child: Text('每月')),
-                      DropdownMenuItem(value: '單次', child: Text('單次')),
-                    ],
-                    onChanged: (value) {},
+                    isExpanded: true,
+                    decoration: const InputDecoration(
+                      labelText: '收費方式',
+                      border: InputBorder.none,
+                    ),
+                    value: selectedMethod, // 預設選項
+                    items: widget.costData[2].map<DropdownMenuItem<String>>((item) {
+                      return DropdownMenuItem<String>(
+                        value: item['method_name'], // 或改用 item['method_id'].toString()
+                        child: Text(item['method_name']),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedMethod = value!;
+                        widget.costData[4] = selectedMethod;
+                      });
+                    },
                   ),
                 ),
               ),
@@ -160,7 +239,7 @@ class WaterFeeCard extends StatelessWidget {
               Expanded(
                 child: Container(
                   width: double.infinity,
-                  height: 48,
+                  height: 55,
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   decoration: ShapeDecoration(
                     color: const Color(0xFFF4F6F7),
@@ -170,8 +249,16 @@ class WaterFeeCard extends StatelessWidget {
                     ),
                   ),
                   child: TextFormField(
-                    decoration: const InputDecoration(labelText: '單價 (TWD)'),
+                    decoration: InputDecoration(
+                      labelText: widget.costData[3],
+                      border: InputBorder.none,
+                    ),
                     keyboardType: TextInputType.number,
+                    onChanged: (value) {
+                      setState(() {
+                        widget.costData[5] = value;
+                      });
+                    },
                   ),
                 ),
               ),
