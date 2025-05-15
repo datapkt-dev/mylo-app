@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 import '../contract_detail/pages/contract_detail.dart';
-import '../contract_new/contract_new.dart';
+import '../contract/contract_new.dart';
 
 class IndexContractPage extends StatefulWidget {
   const IndexContractPage({super.key});

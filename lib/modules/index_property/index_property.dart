@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shimmer/shimmer.dart';
 import 'data/api.dart';
-// import 'data/model.dart';
 import 'package:mylo/modules/index_property/pages/property_community_statistics.dart';
 
 class IndexPropertyPage extends StatefulWidget {
@@ -15,6 +14,7 @@ class IndexPropertyPage extends StatefulWidget {
 class _MainPropertyState extends State<IndexPropertyPage> {
   final String baseUrl = 'https://rencoo.com.tw';
 
+  String? keyword;
   int selectedType = 0;
   List<String> types = ['全部', '未出租', '已出租',];
 
@@ -33,7 +33,7 @@ class _MainPropertyState extends State<IndexPropertyPage> {
 
   Future<void> handleRefresh() async {
     setState(() {
-      futureData = apiService.fetchData();
+      futureData = apiService.fetchData(status: selectedType, keyword: keyword);
     });
   }
 
@@ -83,6 +83,7 @@ class _MainPropertyState extends State<IndexPropertyPage> {
                 child: TextField(
                   maxLines: 1,
                   textAlignVertical: TextAlignVertical.center,
+                  textInputAction: TextInputAction.search,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(Icons.search),
                     hintText: '搜尋關鍵字',
@@ -91,7 +92,11 @@ class _MainPropertyState extends State<IndexPropertyPage> {
                     ),
                     border: InputBorder.none,
                   ),
-                  onChanged: (value) {},
+                  onSubmitted: (value) {
+                    setState(() {
+                      futureData = apiService.fetchData(status: selectedType, keyword: value);
+                    });
+                  },
                 ),
               ),
             ),
@@ -127,7 +132,7 @@ class _MainPropertyState extends State<IndexPropertyPage> {
                               onTap: () {
                                 setState(() {
                                   selectedType = index;
-                                  futureData = apiService.fetchData(status: index);
+                                  futureData = apiService.fetchData(status: selectedType);
                                 });
                               },
                               child: Container(
