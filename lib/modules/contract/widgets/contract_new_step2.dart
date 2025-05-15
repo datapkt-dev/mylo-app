@@ -28,6 +28,9 @@ class _ContractNewStep2State extends State<ContractNewStep2> {
   int _depositMonths = 0;
   List<List<dynamic>> costList = [];
 
+  int total = 0;
+  int rent = 0;
+
   void _addCustomItem() {
     setState(() {
       _customItems.add(const WaterFeeCard());
@@ -133,6 +136,11 @@ class _ContractNewStep2State extends State<ContractNewStep2> {
                             child: TextFormField(
                               decoration: const InputDecoration(labelText: '每月租金'),
                               keyboardType: TextInputType.number,
+                              onChanged: (value) {
+                                setState(() {
+                                  rent = int.parse(value);
+                                });
+                              },
                             ),
                           ),
                         ),
@@ -220,7 +228,7 @@ class _ContractNewStep2State extends State<ContractNewStep2> {
                         ),
                         const Spacer(),
                         Text(
-                          '共計：TWD 0',
+                          '共計：TWD ${rent * _depositMonths}',
                           style: TextStyle(
                             color: Color(0xFF248568),
                           ),

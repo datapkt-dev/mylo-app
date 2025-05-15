@@ -39,6 +39,7 @@ class _ContractNewStep1State extends State<ContractNewStep1> {
             ),
             child: TextField(
               maxLines: 1,
+              textInputAction: TextInputAction.search,
               decoration: const InputDecoration(
                 hintText: '搜尋物件',
                 hintStyle: TextStyle(
@@ -54,7 +55,11 @@ class _ContractNewStep1State extends State<ContractNewStep1> {
                   color: Color(0xFF5F6E7B),
                 ),
               ),
-              onChanged: (value) {},
+              onSubmitted: (value) {
+                setState(() {
+                  futureData = apiService.fetchData(keyword: value);
+                });
+              },
             ),
           ),
           SizedBox(height: 16,),

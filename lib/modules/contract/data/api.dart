@@ -6,9 +6,13 @@ class ApiService {
 
   ApiService({required this.baseUrl});
 
-  Future<List<dynamic>> fetchData() async {
+  Future<List<dynamic>> fetchData({String? keyword}) async {
     try {
       String urlString = '$baseUrl/api/v1/properties?page_size=10&page=1&status=3';
+      if (keyword != null) {
+        urlString += '&search_title=$keyword';
+      }
+      print(urlString);
       final url = Uri.parse(urlString);
       final response = await http.get(
         url,
