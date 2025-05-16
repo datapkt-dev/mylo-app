@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../units/upload_image_widget.dart';
+import '../data/api.dart';
 
 class ContractNewStep3 extends StatefulWidget {
   // 屋況點交
@@ -12,21 +13,34 @@ class ContractNewStep3 extends StatefulWidget {
 }
 
 class _ContractNewStep3State extends State<ContractNewStep3> {
-  List<List<dynamic>> furniture = [
-    ['雙人床床架', false, [], ''],
-    ['床頭櫃', false, [], ''],
-    ['沙發', false, [], ''],
+  List<dynamic> furniture = [
+    // ['雙人床床架', false, [], ''],
+    // ['床頭櫃', false, [], ''],
+    // ['沙發', false, [], ''],
   ];
-  List<List<dynamic>> appliance = [
-    ['電風扇', false, [], ''],
-    ['冰箱', false, [], ''],
-    ['電視', false, [], ''],
-    ['電視遙控器', false, [], ''],
-    ['冷氣', false, [], ''],
-    ['冷氣遙控器', false, [], ''],
+  List<dynamic> appliance = [
+    // ['電風扇', false, [], ''],
+    // ['冰箱', false, [], ''],
+    // ['電視', false, [], ''],
+    // ['電視遙控器', false, [], ''],
+    // ['冷氣', false, [], ''],
+    // ['冷氣遙控器', false, [], ''],
   ];
-  List<dynamic> imgRoute = [];
+  bool _dataInitialized = false;
+
   final TextEditingController descriptionController = TextEditingController();
+
+  final String baseUrl = 'https://rencoo.com.tw';
+  late final ApiService apiService;
+  late Future<Map<String, dynamic>> futureData;
+  late Map<String, dynamic> dataList;
+
+  @override
+  void initState() {
+    super.initState();
+    apiService = ApiService(baseUrl: baseUrl);
+    futureData = apiService.fetchEquipment();
+  }
 
   @override
   void dispose() {
@@ -39,671 +53,745 @@ class _ContractNewStep3State extends State<ContractNewStep3> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          _block(Column(
-            children: [
-              Row(
+          FutureBuilder(
+            future: futureData,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text(
+                    '發生錯誤: ${snapshot.error}',
+                    style: const TextStyle(color: Colors.red, fontSize: 16),
+                  ),
+                );
+              }
+              if (snapshot.hasData && !_dataInitialized) {
+                dataList = snapshot.data!;
+
+                furniture = dataList['furnitures'];
+                appliance = dataList['appliances'];
+
+                furniture = furniture.map((item) {
+                  return {
+                    ...item,
+                    'available': false,
+                    'img': [],
+                    'caption': '',
+                  };
+                }).toList();
+
+                appliance = appliance.map((item) {
+                  return {
+                    ...item,
+                    'available': false,
+                    'img': [],
+                    'caption': '',
+                  };
+                }).toList();
+
+                _dataInitialized = true;
+              }
+              return _block(Column(
                 children: [
-                  const Text(
-                    '家具',
-                    style: TextStyle(
-                      color: Color(0xFF2B2F35),
-                      fontSize: 15,
-                      fontFamily: 'PingFang TC',
-                      fontWeight: FontWeight.w500,
-                    ),
+                  Row(
+                    children: [
+                      const Text(
+                        '家具',
+                        style: TextStyle(
+                          color: Color(0xFF2B2F35),
+                          fontSize: 15,
+                          fontFamily: 'PingFang TC',
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(width: 10,),
+                      Text(
+                        '${furniture.length}項',
+                        style: const TextStyle(
+                          color: Color(0xFF2B2F35),
+                          fontSize: 15,
+                          fontFamily: 'PingFang TC',
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 10,),
-                  Text(
-                    '${furniture.length}項',
-                    style: const TextStyle(
-                      color: Color(0xFF2B2F35),
-                      fontSize: 15,
-                      fontFamily: 'PingFang TC',
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(width: 16,),
-              Column(
-                children: List.generate(furniture.length, (index) {
-                  return Padding(
-                    padding: EdgeInsets.only(bottom: index < furniture.length-1 ? 16 : 0,),
-                    child: Column(
-                      children: [
-                        Row(
+                  const SizedBox(width: 16,),
+                  Column(
+                    children: List.generate(furniture.length, (index) {
+                      return Padding(
+                        padding: EdgeInsets.only(bottom: index < furniture.length-1 ? 16 : 0,),
+                        child: Column(
                           children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            Row(
                               children: [
-                                Row(
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    GestureDetector(
-                                      onTap: () async {
-                                        furniture[index][2] != []
-                                            ? imgRoute = furniture[index][2]
-                                            : imgRoute = [];
-                                        furniture[index][3] != ''
-                                            ? descriptionController.text = furniture[index][3]
-                                            : descriptionController.text = '';
-                                        final result = await showModalBottomSheet(
-                                          isScrollControlled: true,
-                                          backgroundColor: Colors.white,
-                                          context: context,
-                                          shape: const RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.vertical(top: Radius.circular(16),),
-                                          ),
-                                          builder: (BuildContext context) {
-                                            return Padding(
-                                              padding: EdgeInsets.only(
-                                                bottom: MediaQuery.of(context).viewInsets.bottom,
+                                    Row(
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () async {
+                                            final result = await showModalBottomSheet(
+                                              isScrollControlled: true,
+                                              backgroundColor: Colors.white,
+                                              context: context,
+                                              shape: const RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.vertical(top: Radius.circular(16),),
                                               ),
-                                              child: StatefulBuilder(
-                                                builder: (BuildContext context, StateSetter setState) {
-                                                  return Container(
-                                                    width: double.infinity,
-                                                    padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16,),
-                                                    child: SingleChildScrollView(
-                                                      child: Column(
-                                                        mainAxisSize: MainAxisSize.min,
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: [
-                                                          Text(
-                                                            '${furniture[index][0]}',
-                                                            style: const TextStyle(
-                                                              color: Color(0xFF222222),
-                                                              fontSize: 18,
-                                                              fontFamily: 'PingFang TC',
-                                                              fontWeight: FontWeight.w500,
-                                                            ),
-                                                          ),
-                                                          const SizedBox(height: 12,),
-                                                          Wrap(
-                                                            runSpacing: 12,
-                                                            spacing: 12,
-                                                            children: List.generate(imgRoute.length+1, (index) {
-                                                              if (index == imgRoute.length) {
-                                                                if (imgRoute.length < 4) {
-                                                                  return UploadImageWidget(
-                                                                    onImagePicked: (path) {
-                                                                      if (imgRoute.length<4) {
-                                                                        if (path.isNotEmpty) {
-                                                                          setState(() {
-                                                                            imgRoute.add(path);
-                                                                          });
-                                                                        }
-                                                                        else {
-                                                                          print("Invalid file path.");
-                                                                        }
-                                                                      }
-                                                                    },
-                                                                    child: Container(
-                                                                      width: 80,
-                                                                      height: 80,
-                                                                      alignment: Alignment.center,
-                                                                      decoration: ShapeDecoration(
-                                                                        color: Colors.white,
-                                                                        shape: RoundedRectangleBorder(
-                                                                          side: const BorderSide(width: 1, color: Color(0xFF319877)),
-                                                                          borderRadius: BorderRadius.circular(3),
-                                                                        ),
-                                                                      ),
-                                                                      child: Column(
-                                                                        mainAxisSize: MainAxisSize.min,
-                                                                        children: [
-                                                                          SvgPicture.asset(
-                                                                            width: 14,
-                                                                            height: 14,
-                                                                            'assets/icons/contract_new/camera.svg',
-                                                                          ),
-                                                                          const SizedBox(height: 8,),
-                                                                          Text(
-                                                                            '上傳 $index/4',
-                                                                            style: const TextStyle(
-                                                                              color: Color(0xFF5F6E7B),
-                                                                              fontSize: 14,
-                                                                              fontFamily: 'PingFang TC',
-                                                                              fontWeight: FontWeight.w400,
-                                                                              letterSpacing: 0.70,
-                                                                            ),
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                    ),
-                                                                  );
-                                                                } else {
-                                                                  return Container();
-                                                                }
-                                                              } else {
-                                                                return Stack(
-                                                                  children: [
-                                                                    SizedBox(
-                                                                      width: 80,
-                                                                      height: 80,
-                                                                      child: ClipRRect(
-                                                                        borderRadius: BorderRadius.circular(3),
-                                                                        child: Image.file(
-                                                                          File(imgRoute[index]),
-                                                                          fit: BoxFit.cover,
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                    Positioned(
-                                                                      top: 3,
-                                                                      right: 4,
-                                                                      child: GestureDetector(
-                                                                        onTap: () {
-                                                                          setState(() {
-                                                                            imgRoute.removeAt(index);
-                                                                          });
-                                                                        },
-                                                                        child: SvgPicture.asset('assets/icons/contract_new/delete.svg'),
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                );
-                                                              }
-                                                            }),
-                                                          ),
-                                                          const SizedBox(height: 8,),
-                                                          const Text(
-                                                            '備註',
-                                                            style: TextStyle(
-                                                              color: Color(0xFF2B2F35),
-                                                              fontSize: 15,
-                                                              fontFamily: 'PingFang TC',
-                                                              fontWeight: FontWeight.w400,
-                                                            ),
-                                                          ),
-                                                          const SizedBox(height: 8,),
-                                                          Container(
-                                                            height: 48,
-                                                            width: double.infinity,
-                                                            padding: const EdgeInsets.symmetric(horizontal: 16,),
-                                                            decoration: ShapeDecoration(
-                                                              color: const Color(0xFFF4F6F7),
-                                                              shape: RoundedRectangleBorder(
-                                                                side: const BorderSide(width: 1, color: Color(0xFFF4F6F7)),
-                                                                borderRadius: BorderRadius.circular(3),
-                                                              ),
-                                                            ),
-                                                            child: TextField(
-                                                              controller: descriptionController,
-                                                              maxLines: 1,
-                                                              decoration: const InputDecoration(
-                                                                hintText: '備註說明',
-                                                                hintStyle: TextStyle(
-                                                                  color: Color(0xFF2B2F35),
-                                                                  fontSize: 15,
-                                                                  fontFamily: 'PingFang TC',
-                                                                  fontWeight: FontWeight.w400,
-                                                                ),
-                                                                border: InputBorder.none,
-                                                              ),
-                                                              onChanged: (value) {},
-                                                            ),
-                                                          ),
-                                                          const SizedBox(height: 24,),
-                                                          GestureDetector(
-                                                            onTap: () {
-                                                              if (imgRoute.isNotEmpty) {
-                                                                List<dynamic> img = [imgRoute, descriptionController.text];
-                                                                Navigator.pop(context, img);
-                                                              } else {
-                                                                Navigator.pop(context, '');
-                                                              }
-                                                            },
-                                                            child: Container(
-                                                              height: 40,
-                                                              width: double.infinity,
-                                                              alignment: Alignment.center,
-                                                              decoration: ShapeDecoration(
-                                                                color: const Color(0xFF8C5F42),
-                                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-                                                              ),
-                                                              child: const Text(
-                                                                '確定',
-                                                                textAlign: TextAlign.center,
-                                                                style: TextStyle(
-                                                                  color: Colors.white,
-                                                                  fontSize: 16,
+                                              builder: (BuildContext context) {
+                                                List<dynamic> imgRoute = List.from(furniture[index]['img']);
+                                                TextEditingController descriptionController = TextEditingController(
+                                                  text: furniture[index]['caption'] ?? '',
+                                                );
+                                                return Padding(
+                                                  padding: EdgeInsets.only(
+                                                    bottom: MediaQuery.of(context).viewInsets.bottom,
+                                                  ),
+                                                  child: StatefulBuilder(
+                                                    builder: (BuildContext context, StateSetter setState) {
+                                                      return Container(
+                                                        width: double.infinity,
+                                                        padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16,),
+                                                        child: SingleChildScrollView(
+                                                          child: Column(
+                                                            mainAxisSize: MainAxisSize.min,
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              Text(
+                                                                '${furniture[index]['furniture_name']}',
+                                                                style: const TextStyle(
+                                                                  color: Color(0xFF222222),
+                                                                  fontSize: 18,
                                                                   fontFamily: 'PingFang TC',
                                                                   fontWeight: FontWeight.w500,
                                                                 ),
                                                               ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  );
-                                                },
-                                              ),
-                                            );
-                                          },
-                                        );
-                                        if (result == null) {
-                                          print("使用者未點擊確定，返回值為 null");
-                                        } else {
-                                          setState(() {
-                                            furniture[index][2] = result[0];
-                                            furniture[index][3] = result[1];
-                                            furniture[index][1] = true;
-                                          });
-                                        }
-                                      },
-                                      child: SvgPicture.asset('assets/icons/contract_new/camera.svg'),
-                                    ),
-                                    const SizedBox(width: 8,),
-                                    Text(
-                                      '${furniture[index][0]} X1',
-                                      style: const TextStyle(
-                                        color: Color(0xFF2B2F35),
-                                        fontSize: 15,
-                                        fontFamily: 'PingFang TC',
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const Text(
-                                  '\$5600',
-                                  style: TextStyle(
-                                    color: Color(0xFF5F6E7B),
-                                    fontSize: 14,
-                                    fontFamily: 'PingFang TC',
-                                    fontWeight: FontWeight.w400,
-                                    letterSpacing: 0.70,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const Spacer(),
-                            Transform.scale(
-                              scale: 0.8,
-                              child: Switch(
-                                value: furniture[index][1],
-                                activeColor: const Color(0xFF8C5F42),
-                                onChanged: (bool value) async {
-                                  setState(() {
-                                    furniture[index][1] = !furniture[index][1];
-                                  });
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                        if (furniture[index][2].isNotEmpty && furniture[index][1]) ...[
-                          Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.all(8),
-                            decoration: ShapeDecoration(
-                              color: const Color(0xFFF4F6F7),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Wrap(
-                                  runSpacing: 12,
-                                  spacing: 12,
-                                  children: List.generate(furniture[index][2].length, (indexNd) {
-                                    return SizedBox(
-                                      width: 80,
-                                      height: 80,
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(3),
-                                        child: Image.file(
-                                          File(furniture[index][2][indexNd]),
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    );
-                                  }),
-                                ),
-                                Text(
-                                  '${furniture[index][3]}',
-                                  style: TextStyle(
-                                    color: Color(0xFF2B2F35),
-                                    fontSize: 14,
-                                    fontFamily: 'PingFang TC',
-                                    fontWeight: FontWeight.w400,
-                                    letterSpacing: 0.70,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                  );
-                }),
-              ),
-              const Divider(height: 48, thickness: 1, color: Color(0xFFCBD2D6),),
-              Row(
-                children: [
-                  const Text(
-                    '家電',
-                    style: TextStyle(
-                      color: Color(0xFF2B2F35),
-                      fontSize: 15,
-                      fontFamily: 'PingFang TC',
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(width: 10,),
-                  Text(
-                    '${appliance.length}項',
-                    style: const TextStyle(
-                      color: Color(0xFF2B2F35),
-                      fontSize: 15,
-                      fontFamily: 'PingFang TC',
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16,),
-              Column(
-                children: List.generate(appliance.length, (index) {
-                  return Padding(
-                    padding: EdgeInsets.only(bottom: index < appliance.length-1 ? 16 : 0,),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () async {
-                                        appliance[index][2] != []
-                                            ? imgRoute = appliance[index][2]
-                                            : imgRoute = [];
-                                        appliance[index][3] != ''
-                                            ? descriptionController.text = appliance[index][3]
-                                            : descriptionController.text = '';
-                                        final result = await showModalBottomSheet(
-                                          isScrollControlled: true,
-                                          backgroundColor: Colors.white,
-                                          context: context,
-                                          shape: const RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-                                          ),
-                                          builder: (BuildContext context) {
-                                            return Padding(
-                                              padding: EdgeInsets.only(
-                                                bottom: MediaQuery.of(context).viewInsets.bottom,
-                                              ),
-                                              child: StatefulBuilder(
-                                                builder: (BuildContext context, StateSetter setState) {
-                                                  return Container(
-                                                    width: double.infinity,
-                                                    padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16,),
-                                                    child: SingleChildScrollView(
-                                                      child: Column(
-                                                        mainAxisSize: MainAxisSize.min,
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: [
-                                                          Text(
-                                                            '${appliance[index][0]}',
-                                                            style: const TextStyle(
-                                                              color: Color(0xFF222222),
-                                                              fontSize: 18,
-                                                              fontFamily: 'PingFang TC',
-                                                              fontWeight: FontWeight.w500,
-                                                            ),
-                                                          ),
-                                                          const SizedBox(height: 12,),
-                                                          Wrap(
-                                                            runSpacing: 12,
-                                                            spacing: 12,
-                                                            children: List.generate(imgRoute.length+1, (index) {
-                                                              if (index == imgRoute.length) {
-                                                                return UploadImageWidget(
-                                                                  onImagePicked: (path) {
-                                                                    if (imgRoute.length<4) {
-                                                                      if (path.isNotEmpty) {
-                                                                        setState(() {
-                                                                          imgRoute.add(path);
-                                                                        });
-                                                                      }
-                                                                      else {
-                                                                        print("Invalid file path.");
-                                                                      }
-                                                                    }
-                                                                  },
-                                                                  child: Container(
-                                                                    width: 80,
-                                                                    height: 80,
-                                                                    alignment: Alignment.center,
-                                                                    decoration: ShapeDecoration(
-                                                                      color: Colors.white,
-                                                                      shape: RoundedRectangleBorder(
-                                                                        side: const BorderSide(width: 1, color: Color(0xFF319877)),
-                                                                        borderRadius: BorderRadius.circular(3),
-                                                                      ),
-                                                                    ),
-                                                                    child: Column(
-                                                                      mainAxisSize: MainAxisSize.min,
-                                                                      children: [
-                                                                        SvgPicture.asset(
-                                                                          width: 14,
-                                                                          height: 14,
-                                                                          'assets/icons/contract_new/camera.svg',
+                                                              const SizedBox(height: 12,),
+                                                              Wrap(
+                                                                runSpacing: 12,
+                                                                spacing: 12,
+                                                                children: List.generate(imgRoute.length+1, (index) {
+                                                                  if (index == imgRoute.length) {
+                                                                    if (imgRoute.length < 4) {
+                                                                      return UploadImageWidget(
+                                                                        onImagePicked: (path) {
+                                                                          if (imgRoute.length<4) {
+                                                                            if (path.isNotEmpty) {
+                                                                              setState(() {
+                                                                                imgRoute.add(path);
+                                                                              });
+                                                                            }
+                                                                            else {
+                                                                              print("Invalid file path.");
+                                                                            }
+                                                                          }
+                                                                        },
+                                                                        child: Container(
+                                                                          width: 80,
+                                                                          height: 80,
+                                                                          alignment: Alignment.center,
+                                                                          decoration: ShapeDecoration(
+                                                                            color: Colors.white,
+                                                                            shape: RoundedRectangleBorder(
+                                                                              side: const BorderSide(width: 1, color: Color(0xFF319877)),
+                                                                              borderRadius: BorderRadius.circular(3),
+                                                                            ),
+                                                                          ),
+                                                                          child: Column(
+                                                                            mainAxisSize: MainAxisSize.min,
+                                                                            children: [
+                                                                              SvgPicture.asset(
+                                                                                width: 14,
+                                                                                height: 14,
+                                                                                'assets/icons/contract_new/camera.svg',
+                                                                              ),
+                                                                              const SizedBox(height: 8,),
+                                                                              Text(
+                                                                                '上傳 $index/4',
+                                                                                style: const TextStyle(
+                                                                                  color: Color(0xFF5F6E7B),
+                                                                                  fontSize: 14,
+                                                                                  fontFamily: 'PingFang TC',
+                                                                                  fontWeight: FontWeight.w400,
+                                                                                  letterSpacing: 0.70,
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
                                                                         ),
-                                                                        const SizedBox(height: 8,),
-                                                                        Text(
-                                                                          '上傳 $index/4',
-                                                                          style: const TextStyle(
-                                                                            color: Color(0xFF5F6E7B),
-                                                                            fontSize: 14,
-                                                                            fontFamily: 'PingFang TC',
-                                                                            fontWeight: FontWeight.w400,
-                                                                            letterSpacing: 0.70,
+                                                                      );
+                                                                    } else {
+                                                                      return SizedBox.shrink();
+                                                                    }
+                                                                  }
+                                                                  else {
+                                                                    return Stack(
+                                                                      children: [
+                                                                        SizedBox(
+                                                                          width: 80,
+                                                                          height: 80,
+                                                                          child: ClipRRect(
+                                                                            borderRadius: BorderRadius.circular(3),
+                                                                            child: Image.file(
+                                                                              File(imgRoute[index]),
+                                                                              fit: BoxFit.cover,
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                        Positioned(
+                                                                          top: 3,
+                                                                          right: 4,
+                                                                          child: GestureDetector(
+                                                                            onTap: () {
+                                                                              setState(() {
+                                                                                imgRoute.removeAt(index);
+                                                                              });
+                                                                            },
+                                                                            child: SvgPicture.asset('assets/icons/contract_new/delete.svg'),
                                                                           ),
                                                                         ),
                                                                       ],
-                                                                    ),
-                                                                  ),
-                                                                );
-                                                              } else {
-                                                                return SizedBox(
-                                                                  width: 80,
-                                                                  height: 80,
-                                                                  child: ClipRRect(
-                                                                    borderRadius: BorderRadius.circular(3),
-                                                                    child: Image.file(
-                                                                      File(imgRoute[index]),
-                                                                      fit: BoxFit.cover,
-                                                                    ),
-                                                                  ),
-                                                                );
-                                                              }
-                                                            }),
-                                                          ),
-                                                          const SizedBox(height: 8,),
-                                                          const Text(
-                                                            '備註',
-                                                            style: TextStyle(
-                                                              color: Color(0xFF2B2F35),
-                                                              fontSize: 15,
-                                                              fontFamily: 'PingFang TC',
-                                                              fontWeight: FontWeight.w400,
-                                                            ),
-                                                          ),
-                                                          const SizedBox(height: 8,),
-                                                          Container(
-                                                            height: 48,
-                                                            width: double.infinity,
-                                                            padding: const EdgeInsets.symmetric(horizontal: 16,),
-                                                            decoration: ShapeDecoration(
-                                                              color: const Color(0xFFF4F6F7),
-                                                              shape: RoundedRectangleBorder(
-                                                                side: const BorderSide(width: 1, color: Color(0xFFF4F6F7)),
-                                                                borderRadius: BorderRadius.circular(3),
+                                                                    );
+                                                                  }
+                                                                }),
                                                               ),
-                                                            ),
-                                                            child: TextField(
-                                                              controller: descriptionController,
-                                                              maxLines: 1,
-                                                              decoration: const InputDecoration(
-                                                                hintText: '備註說明',
-                                                                hintStyle: TextStyle(
+                                                              const SizedBox(height: 8,),
+                                                              const Text(
+                                                                '備註',
+                                                                style: TextStyle(
                                                                   color: Color(0xFF2B2F35),
                                                                   fontSize: 15,
                                                                   fontFamily: 'PingFang TC',
                                                                   fontWeight: FontWeight.w400,
                                                                 ),
-                                                                border: InputBorder.none,
                                                               ),
-                                                              onChanged: (value) {},
-                                                            ),
-                                                          ),
-                                                          const SizedBox(height: 24,),
-                                                          GestureDetector(
-                                                            onTap: () {
-                                                              if (imgRoute.isNotEmpty) {
-                                                                List<dynamic> img = [imgRoute, descriptionController.text];
-                                                                Navigator.pop(context, img);
-                                                              } else {
-                                                                Navigator.pop(context, '');
-                                                              }
-                                                            },
-                                                            child: Container(
-                                                              height: 40,
-                                                              width: double.infinity,
-                                                              alignment: Alignment.center,
-                                                              decoration: ShapeDecoration(
-                                                                color: const Color(0xFF8C5F42),
-                                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-                                                              ),
-                                                              child: const Text(
-                                                                '確定',
-                                                                textAlign: TextAlign.center,
-                                                                style: TextStyle(
-                                                                  color: Colors.white,
-                                                                  fontSize: 16,
-                                                                  fontFamily: 'PingFang TC',
-                                                                  fontWeight: FontWeight.w500,
+                                                              const SizedBox(height: 8,),
+                                                              Container(
+                                                                height: 48,
+                                                                width: double.infinity,
+                                                                padding: const EdgeInsets.symmetric(horizontal: 16,),
+                                                                decoration: ShapeDecoration(
+                                                                  color: const Color(0xFFF4F6F7),
+                                                                  shape: RoundedRectangleBorder(
+                                                                    side: const BorderSide(width: 1, color: Color(0xFFF4F6F7)),
+                                                                    borderRadius: BorderRadius.circular(3),
+                                                                  ),
+                                                                ),
+                                                                child: TextField(
+                                                                  controller: descriptionController,
+                                                                  maxLines: 1,
+                                                                  decoration: const InputDecoration(
+                                                                    hintText: '備註說明',
+                                                                    hintStyle: TextStyle(
+                                                                      color: Color(0xFF2B2F35),
+                                                                      fontSize: 15,
+                                                                      fontFamily: 'PingFang TC',
+                                                                      fontWeight: FontWeight.w400,
+                                                                    ),
+                                                                    border: InputBorder.none,
+                                                                  ),
                                                                 ),
                                                               ),
-                                                            ),
+                                                              const SizedBox(height: 24,),
+                                                              GestureDetector(
+                                                                onTap: () {
+                                                                  final description = descriptionController.text;
+                                                                  final images = List.from(imgRoute);
+
+                                                                  Navigator.pop(context, {
+                                                                    'submit': true,
+                                                                    'images': images,
+                                                                    'caption': description,
+                                                                  });
+                                                                },
+                                                                child: Container(
+                                                                  height: 40,
+                                                                  width: double.infinity,
+                                                                  alignment: Alignment.center,
+                                                                  decoration: ShapeDecoration(
+                                                                    color: const Color(0xFF8C5F42),
+                                                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
+                                                                  ),
+                                                                  child: const Text(
+                                                                    '確定',
+                                                                    textAlign: TextAlign.center,
+                                                                    style: TextStyle(
+                                                                      color: Colors.white,
+                                                                      fontSize: 16,
+                                                                      fontFamily: 'PingFang TC',
+                                                                      fontWeight: FontWeight.w500,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
                                                           ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  );
-                                                },
-                                              ),
+                                                        ),
+                                                      );
+                                                    },
+                                                  ),
+                                                );
+                                              },
                                             );
+                                            if (result != null) {
+                                              final images = result['images'] as List?;
+                                              final caption = result['caption']?.toString().trim();
+
+                                              final hasData = (images != null && images.isNotEmpty) || (caption != null && caption.isNotEmpty);
+
+                                              setState(() {
+                                                furniture[index]['available'] = hasData;
+                                                furniture[index]['img'] = images ?? [];
+                                                furniture[index]['caption'] = caption ?? '';
+                                              });
+
+                                              print(hasData ? '更新資料' : '清除資料');
+                                            } else {
+                                              print("使用者未點擊確定，返回值為 null");
+                                            }
                                           },
-                                        );
-                                        if (result == null) {
-                                          print("使用者未點擊確定，返回值為 null");
-                                        } else {
-                                          setState(() {
-                                            appliance[index][2] = result[0];
-                                            appliance[index][3] = result[1];
-                                            appliance[index][1] = true;
-                                          });
-                                        }
-                                      },
-                                      child: SvgPicture.asset('assets/icons/contract_new/camera.svg'),
+                                          child: SvgPicture.asset('assets/icons/contract_new/camera.svg'),
+                                        ),
+                                        const SizedBox(width: 8,),
+                                        Text(
+                                          '${furniture[index]['furniture_name']} X${furniture[index]['qty']}',
+                                          style: const TextStyle(
+                                            color: Color(0xFF2B2F35),
+                                            fontSize: 15,
+                                            fontFamily: 'PingFang TC',
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    const SizedBox(width: 8,),
                                     Text(
-                                      '${appliance[index][0]} X1',
-                                      style: const TextStyle(
-                                        color: Color(0xFF2B2F35),
-                                        fontSize: 15,
+                                      '\$${furniture[index]['price']}',
+                                      style: TextStyle(
+                                        color: Color(0xFF5F6E7B),
+                                        fontSize: 14,
                                         fontFamily: 'PingFang TC',
-                                        fontWeight: FontWeight.w500,
+                                        fontWeight: FontWeight.w400,
                                       ),
                                     ),
                                   ],
                                 ),
-                                const Text(
-                                  '\$5600',
-                                  style: TextStyle(
-                                    color: Color(0xFF5F6E7B),
-                                    fontSize: 14,
-                                    fontFamily: 'PingFang TC',
-                                    fontWeight: FontWeight.w400,
-                                    letterSpacing: 0.70,
+                                const Spacer(),
+                                Transform.scale(
+                                  scale: 0.8,
+                                  child: Switch(
+                                    value: furniture[index]['available'] ?? false,
+                                    activeColor: const Color(0xFF8C5F42),
+                                    onChanged: (bool value) async {
+                                      setState(() {
+                                        furniture[index]['available'] = value;
+                                      });
+                                    },
                                   ),
-                                )
+                                ),
                               ],
                             ),
-                            const Spacer(),
-                            Transform.scale(
-                              scale: 0.8,
-                              child: Switch(
-                                value: appliance[index][1],
-                                activeColor: const Color(0xFF8C5F42),
-                                onChanged: (bool value) async {
-                                  setState(() {
-                                    appliance[index][1] = !appliance[index][1];
-                                  });
-                                },
+                            if (furniture[index]['available']) ...[
+                              Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(8),
+                                decoration: ShapeDecoration(
+                                  color: const Color(0xFFF4F6F7),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Wrap(
+                                      runSpacing: 12,
+                                      spacing: 12,
+                                      children: List.generate(furniture[index]['img'].length, (indexNd) {
+                                        return SizedBox(
+                                          width: 80,
+                                          height: 80,
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(3),
+                                            child: Image.file(
+                                              File(furniture[index]['img'][indexNd]),
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        );
+                                      }),
+                                    ),
+                                    Text(
+                                      '${furniture[index]['caption']}',
+                                      style: TextStyle(
+                                        color: Color(0xFF2B2F35),
+                                        fontSize: 14,
+                                        fontFamily: 'PingFang TC',
+                                        fontWeight: FontWeight.w400,
+                                        letterSpacing: 0.70,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
+                            ],
                           ],
                         ),
-                        if (appliance[index][2].isNotEmpty && appliance[index][1]) ...[
-                          Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.all(8),
-                            decoration: ShapeDecoration(
-                              color: const Color(0xFFF4F6F7),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
+                      );
+                    }),
+                  ),
+                  const Divider(height: 48, thickness: 1, color: Color(0xFFCBD2D6),),
+                  Row(
+                    children: [
+                      const Text(
+                        '家電',
+                        style: TextStyle(
+                          color: Color(0xFF2B2F35),
+                          fontSize: 15,
+                          fontFamily: 'PingFang TC',
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(width: 10,),
+                      Text(
+                        '${appliance.length}項',
+                        style: const TextStyle(
+                          color: Color(0xFF2B2F35),
+                          fontSize: 15,
+                          fontFamily: 'PingFang TC',
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16,),
+                  Column(
+                    children: List.generate(appliance.length, (index) {
+                      return Padding(
+                        padding: EdgeInsets.only(bottom: index < appliance.length-1 ? 16 : 0,),
+                        child: Column(
+                          children: [
+                            Row(
                               children: [
-                                Wrap(
-                                  runSpacing: 12,
-                                  spacing: 12,
-                                  children: List.generate(appliance[index][2].length, (indexNd) {
-                                    return SizedBox(
-                                      width: 80,
-                                      height: 80,
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(3),
-                                        child: Image.file(
-                                          File(appliance[index][2][indexNd]),
-                                          fit: BoxFit.cover,
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () async {
+                                            final result = await showModalBottomSheet(
+                                              isScrollControlled: true,
+                                              backgroundColor: Colors.white,
+                                              context: context,
+                                              shape: const RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                                              ),
+                                              builder: (BuildContext context) {
+                                                List<dynamic> imgRoute = List.from(appliance[index]['img']);
+                                                TextEditingController descriptionController = TextEditingController(
+                                                  text: appliance[index]['caption'] ?? '',
+                                                );
+                                                return Padding(
+                                                  padding: EdgeInsets.only(
+                                                    bottom: MediaQuery.of(context).viewInsets.bottom,
+                                                  ),
+                                                  child: StatefulBuilder(
+                                                    builder: (BuildContext context, StateSetter setState) {
+                                                      return Container(
+                                                        width: double.infinity,
+                                                        padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16,),
+                                                        child: SingleChildScrollView(
+                                                          child: Column(
+                                                            mainAxisSize: MainAxisSize.min,
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              Text(
+                                                                '${appliance[index]['appliance_name']}',
+                                                                style: const TextStyle(
+                                                                  color: Color(0xFF222222),
+                                                                  fontSize: 18,
+                                                                  fontFamily: 'PingFang TC',
+                                                                  fontWeight: FontWeight.w500,
+                                                                ),
+                                                              ),
+                                                              const SizedBox(height: 12,),
+                                                              Wrap(
+                                                                runSpacing: 12,
+                                                                spacing: 12,
+                                                                children: List.generate(imgRoute.length+1, (index) {
+                                                                  if (index == imgRoute.length) {
+                                                                    if (imgRoute.length < 4) {
+                                                                      return UploadImageWidget(
+                                                                        onImagePicked: (path) {
+                                                                          if (imgRoute.length<4) {
+                                                                            if (path.isNotEmpty) {
+                                                                              setState(() {
+                                                                                imgRoute.add(path);
+                                                                              });
+                                                                            }
+                                                                            else {
+                                                                              print("Invalid file path.");
+                                                                            }
+                                                                          }
+                                                                        },
+                                                                        child: Container(
+                                                                          width: 80,
+                                                                          height: 80,
+                                                                          alignment: Alignment.center,
+                                                                          decoration: ShapeDecoration(
+                                                                            color: Colors.white,
+                                                                            shape: RoundedRectangleBorder(
+                                                                              side: const BorderSide(width: 1, color: Color(0xFF319877)),
+                                                                              borderRadius: BorderRadius.circular(3),
+                                                                            ),
+                                                                          ),
+                                                                          child: Column(
+                                                                            mainAxisSize: MainAxisSize.min,
+                                                                            children: [
+                                                                              SvgPicture.asset(
+                                                                                width: 14,
+                                                                                height: 14,
+                                                                                'assets/icons/contract_new/camera.svg',
+                                                                              ),
+                                                                              const SizedBox(height: 8,),
+                                                                              Text(
+                                                                                '上傳 $index/4',
+                                                                                style: const TextStyle(
+                                                                                  color: Color(0xFF5F6E7B),
+                                                                                  fontSize: 14,
+                                                                                  fontFamily: 'PingFang TC',
+                                                                                  fontWeight: FontWeight.w400,
+                                                                                  letterSpacing: 0.70,
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                      );
+                                                                    } else {
+                                                                      return SizedBox.shrink();
+                                                                    }
+                                                                  }
+                                                                  else {
+                                                                    return Stack(
+                                                                      children: [
+                                                                        SizedBox(
+                                                                          width: 80,
+                                                                          height: 80,
+                                                                          child: ClipRRect(
+                                                                            borderRadius: BorderRadius.circular(3),
+                                                                            child: Image.file(
+                                                                              File(imgRoute[index]),
+                                                                              fit: BoxFit.cover,
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                        Positioned(
+                                                                          top: 3,
+                                                                          right: 4,
+                                                                          child: GestureDetector(
+                                                                            onTap: () {
+                                                                              setState(() {
+                                                                                imgRoute.removeAt(index);
+                                                                              });
+                                                                            },
+                                                                            child: SvgPicture.asset('assets/icons/contract_new/delete.svg'),
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    );
+                                                                  }
+                                                                }),
+                                                              ),
+                                                              const SizedBox(height: 8,),
+                                                              const Text(
+                                                                '備註',
+                                                                style: TextStyle(
+                                                                  color: Color(0xFF2B2F35),
+                                                                  fontSize: 15,
+                                                                  fontFamily: 'PingFang TC',
+                                                                  fontWeight: FontWeight.w400,
+                                                                ),
+                                                              ),
+                                                              const SizedBox(height: 8,),
+                                                              Container(
+                                                                height: 48,
+                                                                width: double.infinity,
+                                                                padding: const EdgeInsets.symmetric(horizontal: 16,),
+                                                                decoration: ShapeDecoration(
+                                                                  color: const Color(0xFFF4F6F7),
+                                                                  shape: RoundedRectangleBorder(
+                                                                    side: const BorderSide(width: 1, color: Color(0xFFF4F6F7)),
+                                                                    borderRadius: BorderRadius.circular(3),
+                                                                  ),
+                                                                ),
+                                                                child: TextField(
+                                                                  controller: descriptionController,
+                                                                  maxLines: 1,
+                                                                  decoration: const InputDecoration(
+                                                                    hintText: '備註說明',
+                                                                    hintStyle: TextStyle(
+                                                                      color: Color(0xFF2B2F35),
+                                                                      fontSize: 15,
+                                                                      fontFamily: 'PingFang TC',
+                                                                      fontWeight: FontWeight.w400,
+                                                                    ),
+                                                                    border: InputBorder.none,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              const SizedBox(height: 24,),
+                                                              GestureDetector(
+                                                                onTap: () {
+                                                                  final description = descriptionController.text;
+                                                                  final images = List.from(imgRoute);
+
+                                                                  Navigator.pop(context, {
+                                                                    'submit': true,
+                                                                    'images': images,
+                                                                    'caption': description,
+                                                                  });
+                                                                },
+                                                                child: Container(
+                                                                  height: 40,
+                                                                  width: double.infinity,
+                                                                  alignment: Alignment.center,
+                                                                  decoration: ShapeDecoration(
+                                                                    color: const Color(0xFF8C5F42),
+                                                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
+                                                                  ),
+                                                                  child: const Text(
+                                                                    '確定',
+                                                                    textAlign: TextAlign.center,
+                                                                    style: TextStyle(
+                                                                      color: Colors.white,
+                                                                      fontSize: 16,
+                                                                      fontFamily: 'PingFang TC',
+                                                                      fontWeight: FontWeight.w500,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      );
+                                                    },
+                                                  ),
+                                                );
+                                              },
+                                            );
+                                            if (result != null) {
+                                              final images = result['images'] as List?;
+                                              final caption = result['caption']?.toString().trim();
+
+                                              final hasData = (images != null && images.isNotEmpty) || (caption != null && caption.isNotEmpty);
+
+                                              setState(() {
+                                                appliance[index]['available'] = hasData;
+                                                appliance[index]['img'] = images ?? [];
+                                                appliance[index]['caption'] = caption ?? '';
+                                              });
+
+                                              print(hasData ? '更新資料' : '清除資料');
+                                            } else {
+                                              print("使用者未點擊確定，返回值為 null");
+                                            }
+                                          },
+                                          child: SvgPicture.asset('assets/icons/contract_new/camera.svg'),
                                         ),
+                                        const SizedBox(width: 8,),
+                                        Text(
+                                          '${appliance[index]['appliance_name']} X${appliance[index]['qty']}',
+                                          style: const TextStyle(
+                                            color: Color(0xFF2B2F35),
+                                            fontSize: 15,
+                                            fontFamily: 'PingFang TC',
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Text(
+                                      '\$${appliance[index]['price']}',
+                                      style: TextStyle(
+                                        color: Color(0xFF5F6E7B),
+                                        fontSize: 14,
+                                        fontFamily: 'PingFang TC',
+                                        fontWeight: FontWeight.w400,
                                       ),
-                                    );
-                                  }),
+                                    )
+                                  ],
                                 ),
-                                Text(
-                                  appliance[index][3],
-                                  style: const TextStyle(
-                                    color: Color(0xFF2B2F35),
-                                    fontSize: 14,
-                                    fontFamily: 'PingFang TC',
-                                    fontWeight: FontWeight.w400,
-                                    letterSpacing: 0.70,
+                                const Spacer(),
+                                Transform.scale(
+                                  scale: 0.8,
+                                  child: Switch(
+                                    value: appliance[index]['available'] ?? false,
+                                    activeColor: const Color(0xFF8C5F42),
+                                    onChanged: (bool value) async {
+                                      setState(() {
+                                        appliance[index]['available'] = value;
+                                      });
+                                    },
                                   ),
                                 ),
                               ],
                             ),
-                          ),
-                        ],
-                      ],
-                    ),
-                  );
-                }),
-              ),
-            ],
-          ),),
+                            if (appliance[index]['available']) ...[
+                              Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(8),
+                                decoration: ShapeDecoration(
+                                  color: const Color(0xFFF4F6F7),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Wrap(
+                                      runSpacing: 12,
+                                      spacing: 12,
+                                      children: List.generate(appliance[index]['img'].length, (indexNd) {
+                                        return SizedBox(
+                                          width: 80,
+                                          height: 80,
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(3),
+                                            child: Image.file(
+                                              File(appliance[index]['img'][indexNd]),
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        );
+                                      }),
+                                    ),
+                                    Text(
+                                      '${appliance[index]['caption']}',
+                                      style: const TextStyle(
+                                        color: Color(0xFF2B2F35),
+                                        fontSize: 14,
+                                        fontFamily: 'PingFang TC',
+                                        fontWeight: FontWeight.w400,
+                                        letterSpacing: 0.70,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      );
+                    }),
+                  ),
+                ],
+              ),);
+            },
+          ),
           const SizedBox(height: 16,),
           _block(Column(
             crossAxisAlignment: CrossAxisAlignment.start,

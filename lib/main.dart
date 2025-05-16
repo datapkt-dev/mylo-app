@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mylo/modules/index_frame.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:mylo/modules/login/login.dart';
 import 'package:mylo/units/auth_service.dart';
 
-
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -75,5 +75,9 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return startPage;
+    // return Scaffold(
+    //   appBar: AppBar(title: Text(widget.title)),
+    //   body: ContractNewStep1(),
+    // );
   }
 }

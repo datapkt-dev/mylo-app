@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mylo/modules/contract/widgets/contract_new_step1.dart';
 import 'package:mylo/modules/contract/widgets/contract_new_step2.dart';
 import 'package:mylo/modules/contract/widgets/contract_new_step3.dart';
@@ -6,15 +7,16 @@ import 'package:mylo/modules/contract/widgets/contract_new_step4.dart';
 import 'package:mylo/modules/contract/widgets/contract_new_step5.dart';
 import 'package:timelines_plus/timelines_plus.dart';
 import 'data/api.dart';
+import 'package:mylo/providers/mylo_provider.dart';
 
-class ContractNew extends StatefulWidget {
+class ContractNew extends ConsumerStatefulWidget {
   const ContractNew({super.key});
 
   @override
-  State<ContractNew> createState() => _ContractNewState();
+  ConsumerState<ContractNew> createState() => _ContractNewState();
 }
 
-class _ContractNewState extends State<ContractNew> {
+class _ContractNewState extends ConsumerState<ContractNew> {
   final int _totalStages = 5;
   final List<String> _processes = ['選擇物件', '填寫資料', '屋況點交', '預覽合約', '完成合約',];
   int _currentStep = 0;
@@ -33,6 +35,7 @@ class _ContractNewState extends State<ContractNew> {
 
   @override
   Widget build(BuildContext context) {
+    final selectedItem = ref.watch(selectedItemProvider);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -166,11 +169,10 @@ class _ContractNewState extends State<ContractNew> {
                 child: GestureDetector(
                   onTap: () {
                     setState(() {
-                      _currentStep = _currentStep+1;
-                      // if (_selectedItem != null) {
-                      //   _currentStep = _currentStep+1;
-                      // } else {
-                      // }
+                      if (selectedItem != -1) {
+                        _currentStep = _currentStep+1;
+                      } else {
+                      }
                     });
                   },
                   child: Container(

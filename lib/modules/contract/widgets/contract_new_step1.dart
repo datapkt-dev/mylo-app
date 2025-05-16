@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/api.dart';
+import 'package:mylo/providers/mylo_provider.dart';
 
-class ContractNewStep1 extends StatefulWidget {
+class ContractNewStep1 extends ConsumerStatefulWidget {
   // 選擇物件
   const ContractNewStep1({super.key});
 
   @override
-  State<ContractNewStep1> createState() => _ContractNewStep1State();
+  ConsumerState<ContractNewStep1> createState() => _ContractNewStep1State();
 }
 
-class _ContractNewStep1State extends State<ContractNewStep1> {
-  int? _selectedItem;
-
+class _ContractNewStep1State extends ConsumerState<ContractNewStep1> {
   final String baseUrl = 'https://rencoo.com.tw';
   late final ApiService apiService;
   late Future<List<dynamic>> futureData;
@@ -26,6 +26,7 @@ class _ContractNewStep1State extends State<ContractNewStep1> {
 
   @override
   Widget build(BuildContext context) {
+    final selectedItem = ref.watch(selectedItemProvider);
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -90,18 +91,18 @@ class _ContractNewStep1State extends State<ContractNewStep1> {
                   return GestureDetector(
                     onTap: () {
                       setState(() {
-                        _selectedItem = index;
+                        ref.read(selectedItemProvider.notifier).state = index;
                       });
                     },
                     child: Container(
                       margin: const EdgeInsets.only(bottom: 16,),
                       padding: const EdgeInsets.all(16),
                       decoration: ShapeDecoration(
-                        color: _selectedItem == index ? const Color(0xFFF7F4EF) : Colors.white,
+                        color: selectedItem == index ? const Color(0xFFF7F4EF) : Colors.white,
                         shape: RoundedRectangleBorder(
                           side: BorderSide(
                             width: 1,
-                            color: _selectedItem == index ? const Color(0xFF8C5F42) : const Color(0xFFDEE2E6),
+                            color: selectedItem == index ? const Color(0xFF8C5F42) : const Color(0xFFDEE2E6),
                           ),
                           borderRadius: BorderRadius.circular(4),
                         ),
@@ -117,8 +118,8 @@ class _ContractNewStep1State extends State<ContractNewStep1> {
                             ),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(4), // 保持與 Container 的圓角一致
-                              child: Image.asset(
-                                'assets/images/contract_new/item_${index%3}.png',
+                              child: Image.network(
+                                'https://rencoo.com.tw/${dataList[index]['image_url'][0]}',
                                 fit: BoxFit.cover, // 使用 BoxFit
                               ),
                             ),

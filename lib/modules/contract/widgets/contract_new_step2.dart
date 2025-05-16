@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:mylo/modules/contract/pages/contract_new_customer.dart';
+import '../../../providers/mylo_provider.dart';
 import '../data/api.dart';
 import '../pages/contract_new_cost.dart';
 
-class ContractNewStep2 extends StatefulWidget {
+class ContractNewStep2 extends ConsumerStatefulWidget {
   // 填寫資料
   const ContractNewStep2({super.key});
 
   @override
-  State<ContractNewStep2> createState() => _ContractNewStep2State();
+  ConsumerState<ContractNewStep2> createState() => _ContractNewStep2State();
 }
 
-class _ContractNewStep2State extends State<ContractNewStep2> {
+class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
   List<List<dynamic>> customerData = [
     [false, '', '', '', '', '', '', '',],
   ];
@@ -29,7 +31,7 @@ class _ContractNewStep2State extends State<ContractNewStep2> {
   List<List<dynamic>> costList = [];
 
   int total = 0;
-  int rent = 0;
+  late TextEditingController _controller;
 
   void _addCustomItem() {
     setState(() {
@@ -45,12 +47,19 @@ class _ContractNewStep2State extends State<ContractNewStep2> {
   @override
   void initState() {
     super.initState();
-    apiService = ApiService(baseUrl: baseUrl);
-    futureData = apiService.fetchData();
+    final initialValue = ref.read(rentProvider).toString();
+    _controller = TextEditingController(text: initialValue);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final rent = ref.watch(rentProvider);
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -134,12 +143,12 @@ class _ContractNewStep2State extends State<ContractNewStep2> {
                               ),
                             ),
                             child: TextFormField(
+                              controller: _controller,
                               decoration: const InputDecoration(labelText: '每月租金'),
                               keyboardType: TextInputType.number,
                               onChanged: (value) {
-                                setState(() {
-                                  rent = int.parse(value);
-                                });
+                                final parsed = int.tryParse(value) ?? 0;
+                                ref.read(rentProvider.notifier).state = parsed;
                               },
                             ),
                           ),

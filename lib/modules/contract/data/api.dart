@@ -12,7 +12,6 @@ class ApiService {
       if (keyword != null) {
         urlString += '&search_title=$keyword';
       }
-      print(urlString);
       final url = Uri.parse(urlString);
       final response = await http.get(
         url,
@@ -74,6 +73,26 @@ class ApiService {
     } catch (e) {
       print('Error fetching data: $e');
       return [];
+    }
+  }
+
+  Future<Map<String, dynamic>> fetchEquipment() async {
+    try {
+      String urlString = '$baseUrl/api/v1/checking_equips';
+      final url = Uri.parse(urlString);
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> dataJson = json.decode(response.body);
+        Map<String, dynamic> dataList = dataJson['data'];
+
+        return dataList;
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (e) {
+      print('Error fetching data: $e');
+      return {};
     }
   }
 }

@@ -304,7 +304,7 @@ class _MainPropertyState extends State<IndexPropertyPage> {
                                                           ),
                                                           SizedBox(height: 4,),
                                                           Text(
-                                                            '${dataList[index]['address']}',
+                                                            '${dataList[index]['detailed_address']}',
                                                             style: TextStyle(
                                                               color: const Color(0xFF5F6E7B),
                                                               fontSize: 15,
