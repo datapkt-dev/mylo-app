@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import '../../../providers/mylo_provider.dart';
 import '../data/api.dart';
 
-class ContractNewCost extends StatefulWidget {
+class ContractNewCost extends ConsumerStatefulWidget {
   const ContractNewCost({super.key});
 
   @override
-  State<ContractNewCost> createState() => _ContractNewCostState();
+  ConsumerState<ContractNewCost> createState() => _ContractNewCostState();
 }
 
-class _ContractNewCostState extends State<ContractNewCost> {
+class _ContractNewCostState extends ConsumerState<ContractNewCost> {
   final String baseUrl = 'https://rencoo.com.tw';
   late final ApiService apiService;
   late Future<List<dynamic>> futureData;
@@ -34,6 +36,7 @@ class _ContractNewCostState extends State<ContractNewCost> {
 
   @override
   Widget build(BuildContext context) {
+    final data = ref.watch(contractDataProvider);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -75,8 +78,13 @@ class _ContractNewCostState extends State<ContractNewCost> {
                 return;
               }
 
-              final filteredList = costList.where((item) => item[0] == true).toList();
-              Navigator.pop(context, filteredList);
+              // final filteredList = costList.where((item) => item[0] == true).toList();
+              // print(filteredList);
+              ref.read(contractDataProvider.notifier).update((map) => {
+                ...map,
+                'utility_fees': costList,
+              });
+              Navigator.pop(context);
             },
             child: const Text(
               '確認',

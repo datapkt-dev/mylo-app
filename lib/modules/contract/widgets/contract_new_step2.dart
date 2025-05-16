@@ -19,25 +19,20 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
   List<List<dynamic>> customerData = [
     [false, '', '', '', '', '', '', '',],
   ];
-  final TextEditingController controllerDeposit = TextEditingController();
-  final TextEditingController controllerRent = TextEditingController();
-  final TextEditingController controllerElectricity = TextEditingController();
   DateTime effective = DateTime.now();
   DateTime expiration = DateTime.now();
   final TextEditingController controllerNote = TextEditingController();
 
-  final List<Widget> _customItems = [];
-  int _depositMonths = 0;
-  List<List<dynamic>> costList = [];
-
+  List<String> depositTypes= ['每月租金', '固定金額',];
+  int rent = 0;
+  int depositType = 0;
+  int depositMonths = 0;
+  late TextEditingController controllerAmount = TextEditingController();
   int total = 0;
-  late TextEditingController _controller;
+  // List<List<dynamic>> costList = [];
+  Map<dynamic, dynamic> costList = {};
 
-  void _addCustomItem() {
-    setState(() {
-      _customItems.add(const WaterFeeCard());
-    });
-  }
+  late TextEditingController controllerRent;
 
   final String baseUrl = 'https://rencoo.com.tw';
   late final ApiService apiService;
@@ -47,19 +42,34 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
   @override
   void initState() {
     super.initState();
-    final initialValue = ref.read(rentProvider).toString();
-    _controller = TextEditingController(text: initialValue);
+    // final initialValue = ref.read(rentProvider).toString();
+    // _controller = TextEditingController(text: initialValue);
+    final contractData = ref.read(contractDataProvider);
+    rent = contractData['rent'];
+    depositMonths = contractData['deposit_months'];
+    controllerRent = TextEditingController(text: rent.toString());
+    controllerAmount = TextEditingController(text: contractData['deposit_amount'].toString());
+    costList = contractData['utility_fees'];
+  }
+
+  void updateTotal() {
+    setState(() {
+      if (depositType == 0) {
+        total = rent * depositMonths;
+      } else if (depositType == 1) {
+        total = rent + int.parse(controllerAmount.text.isEmpty ? '0' : controllerAmount.text);
+      }
+    });
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    controllerRent.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final rent = ref.watch(rentProvider);
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -109,7 +119,6 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                       children: [
                         Expanded(
                           child: Container(
-                            width: double.infinity,
                             height: 48,
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                             decoration: ShapeDecoration(
@@ -132,7 +141,6 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                         const SizedBox(width: 16),
                         Expanded(
                           child: Container(
-                            width: double.infinity,
                             height: 48,
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                             decoration: ShapeDecoration(
@@ -143,12 +151,16 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                               ),
                             ),
                             child: TextFormField(
-                              controller: _controller,
+                              controller: controllerRent,
                               decoration: const InputDecoration(labelText: '每月租金'),
                               keyboardType: TextInputType.number,
                               onChanged: (value) {
-                                final parsed = int.tryParse(value) ?? 0;
-                                ref.read(rentProvider.notifier).state = parsed;
+                                rent = int.tryParse(value) ?? 0;
+                                ref.read(contractDataProvider.notifier).update((map) => {
+                                  ...map,
+                                  'rent': rent,
+                                });
+                                updateTotal();
                               },
                             ),
                           ),
@@ -197,47 +209,107 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                     ),
                     const SizedBox(height: 8),
                     Row(
-                      children: [
-                        Radio(
-                          value: true,
-                          groupValue: true,
-                          onChanged: (_) {},
-                          activeColor: Color(0xFF8C5F42),
-                        ),
-                        const Text('每月租金'),
-                        const SizedBox(width: 16),
-                        Radio(
-                          value: false,
-                          groupValue: true,
-                          onChanged: (_) {},
-                          activeColor: Color(0xFF8C5F42),
-                        ),
-                        const Text('固定金額'),
-                      ],
+                      children: List.generate(depositTypes.length, (index) {
+                        return Row(
+                          children: [
+                            Radio(
+                              value: index,
+                              groupValue: depositType,
+                              onChanged: (value) {
+                                setState(() {
+                                  depositType = value!;
+                                  updateTotal();
+                                });
+                              },
+                              activeColor: Color(0xFF8C5F42),
+                            ),
+                            Text(depositTypes[index]),
+                            SizedBox(width: 16),
+                          ],
+                        );
+                      }),
+                      // children: [
+                      //   Radio(
+                      //     value: true,
+                      //     groupValue: true,
+                      //     onChanged: (_) {},
+                      //     activeColor: Color(0xFF8C5F42),
+                      //   ),
+                      //   const Text('每月租金'),
+                      //   const SizedBox(width: 16),
+                      //   Radio(
+                      //     value: false,
+                      //     groupValue: true,
+                      //     onChanged: (_) {},
+                      //     activeColor: Color(0xFF8C5F42),
+                      //   ),
+                      //   const Text('固定金額'),
+                      // ],
                     ),
                     const SizedBox(height: 8),
                     Row(
                       children: [
-                        IconButton(
-                          icon: const Icon(Icons.remove_circle_outline),
-                          onPressed: () {
-                            setState(() {
-                              if (_depositMonths > 0) _depositMonths--;
-                            });
-                          },
-                        ),
-                        Text('$_depositMonths 個月'),
-                        IconButton(
-                          icon: const Icon(Icons.add_circle_outline),
-                          onPressed: () {
-                            setState(() {
-                              _depositMonths++;
-                            });
-                          },
-                        ),
+                        if (depositType == 0) ...[
+                          IconButton(
+                            icon: const Icon(Icons.remove_circle_outline),
+                            onPressed: () {
+                              setState(() {
+                                if (depositMonths > 0) {
+                                  depositMonths--;
+                                  ref.read(contractDataProvider.notifier).update((map) => {
+                                    ...map,
+                                    'deposit_months': depositMonths,
+                                  });
+                                }
+                                updateTotal();
+                              });
+                            },
+                          ),
+                          Text('$depositMonths 個月'),
+                          IconButton(
+                            icon: const Icon(Icons.add_circle_outline),
+                            onPressed: () {
+                              setState(() {
+                                depositMonths++;
+                                ref.read(contractDataProvider.notifier).update((map) => {
+                                  ...map,
+                                  'deposit_months': depositMonths,
+                                });
+                                updateTotal();
+                              });
+                            },
+                          ),
+                        ]
+                        else if (depositType == 1) ...[
+                          Container(
+                            width: 125,
+                            height: 48,
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            decoration: ShapeDecoration(
+                              color: const Color(0xFFF4F6F7),
+                              shape: RoundedRectangleBorder(
+                                side: const BorderSide(width: 1, color: Color(0xFFF4F6F7)),
+                                borderRadius: BorderRadius.circular(3),
+                              ),
+                            ),
+                            child: TextFormField(
+                              controller: controllerAmount,
+                              decoration: const InputDecoration(labelText: '押金'),
+                              keyboardType: TextInputType.number,
+                              onChanged: (value) {
+                                if (value == '') value = '0';
+                                ref.read(contractDataProvider.notifier).update((map) => {
+                                  ...map,
+                                  'deposit_amount': int.parse(value),
+                                });
+                                updateTotal();
+                              },
+                            ),
+                          ),
+                        ],
                         const Spacer(),
                         Text(
-                          '共計：TWD ${rent * _depositMonths}',
+                          '共計：TWD $total',
                           style: TextStyle(
                             color: Color(0xFF248568),
                           ),
@@ -271,11 +343,9 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                         context,
                         MaterialPageRoute(builder: (context) => ContractNewCost()),
                       ).then((result) {
-                        if (result != null) {
-                          setState(() {
-                            costList = result;
-                          });
-                        }
+                        print('生活費用返回');
+                        print(ref.read(contractDataProvider)['utility_fees'].length);
+                        print(costList);
                       });
                     },
                     child: Text('編輯'),
@@ -301,33 +371,54 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
-                            const SizedBox(width: 8,),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                              decoration: ShapeDecoration(
-                                color: const Color(0xFFE3E7EA),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                            if (costList[index][0]) ...[
+                              const SizedBox(width: 8,),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                decoration: ShapeDecoration(
+                                  color: const Color(0xFFDCFCE5),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                                ),
+                                child: Text(
+                                  costList[index][4],
+                                  style: TextStyle(
+                                    color: const Color(0xFF22C555),
+                                    fontSize: 12,
+                                    fontFamily: 'PingFang SC',
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
                               ),
-                              child: Text(
-                                costList[index][4],
+                              const Spacer(),
+                              Text(
+                                '\$ ${costList[index][5]} ${costList[index][3]}',
                                 style: TextStyle(
-                                  color: const Color(0xFF7B8A95),
-                                  fontSize: 12,
-                                  fontFamily: 'PingFang SC',
+                                  color: Color(0xFF2B2F35),
+                                  fontSize: 15,
+                                  fontFamily: 'PingFang TC',
                                   fontWeight: FontWeight.w400,
                                 ),
                               ),
-                            ),
-                            const Spacer(),
-                            Text(
-                              '\$ ${costList[index][5]} ${costList[index][3]}',
-                              style: TextStyle(
-                                color: Color(0xFF2B2F35),
-                                fontSize: 15,
-                                fontFamily: 'PingFang TC',
-                                fontWeight: FontWeight.w400,
+                            ] else ...[
+                              const SizedBox(width: 8,),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                decoration: ShapeDecoration(
+                                  color: const Color(0xFFE3E7EA),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                                ),
+                                child: Text(
+                                  '未註明',
+                                  style: TextStyle(
+                                    color: const Color(0xFF7B8A95),
+                                    fontSize: 12,
+                                    fontFamily: 'PingFang SC',
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
                               ),
-                            ),
+                              const Spacer(),
+                            ],
                           ],
                         ),
                         const SizedBox(height: 8,),

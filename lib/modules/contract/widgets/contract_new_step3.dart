@@ -13,19 +13,8 @@ class ContractNewStep3 extends StatefulWidget {
 }
 
 class _ContractNewStep3State extends State<ContractNewStep3> {
-  List<dynamic> furniture = [
-    // ['雙人床床架', false, [], ''],
-    // ['床頭櫃', false, [], ''],
-    // ['沙發', false, [], ''],
-  ];
-  List<dynamic> appliance = [
-    // ['電風扇', false, [], ''],
-    // ['冰箱', false, [], ''],
-    // ['電視', false, [], ''],
-    // ['電視遙控器', false, [], ''],
-    // ['冷氣', false, [], ''],
-    // ['冷氣遙控器', false, [], ''],
-  ];
+  List<dynamic> furniture = [];
+  List<dynamic> appliance = [];
   bool _dataInitialized = false;
 
   final TextEditingController descriptionController = TextEditingController();

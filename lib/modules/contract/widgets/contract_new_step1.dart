@@ -26,7 +26,9 @@ class _ContractNewStep1State extends ConsumerState<ContractNewStep1> {
 
   @override
   Widget build(BuildContext context) {
-    final selectedItem = ref.watch(selectedItemProvider);
+    // final selectedItem = ref.watch(selectedItemProvider);
+    final contractData = ref.watch(contractDataProvider);
+    int selectedItem = contractData['property_id'];
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -91,18 +93,22 @@ class _ContractNewStep1State extends ConsumerState<ContractNewStep1> {
                   return GestureDetector(
                     onTap: () {
                       setState(() {
-                        ref.read(selectedItemProvider.notifier).state = index;
+                        ref.read(contractDataProvider.notifier).update((map) => {
+                          ...map,
+                          'property_id': dataList[index]['property_id'],
+                        });
+                        // ref.read(selectedItemProvider.notifier).state = dataList[index]['property_id'];
                       });
                     },
                     child: Container(
                       margin: const EdgeInsets.only(bottom: 16,),
                       padding: const EdgeInsets.all(16),
                       decoration: ShapeDecoration(
-                        color: selectedItem == index ? const Color(0xFFF7F4EF) : Colors.white,
+                        color: dataList[index]['property_id'] == selectedItem ? const Color(0xFFF7F4EF) : Colors.white,
                         shape: RoundedRectangleBorder(
                           side: BorderSide(
                             width: 1,
-                            color: selectedItem == index ? const Color(0xFF8C5F42) : const Color(0xFFDEE2E6),
+                            color: dataList[index]['property_id'] == selectedItem ? const Color(0xFF8C5F42) : const Color(0xFFDEE2E6),
                           ),
                           borderRadius: BorderRadius.circular(4),
                         ),

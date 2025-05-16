@@ -35,7 +35,8 @@ class _ContractNewState extends ConsumerState<ContractNew> {
 
   @override
   Widget build(BuildContext context) {
-    final selectedItem = ref.watch(selectedItemProvider);
+    final contractData = ref.watch(contractDataProvider);
+    int selectedItem = contractData['property_id'];
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -169,9 +170,10 @@ class _ContractNewState extends ConsumerState<ContractNew> {
                 child: GestureDetector(
                   onTap: () {
                     setState(() {
-                      if (selectedItem != -1) {
+                      if (_currentStep == 0 && selectedItem != 0) {
                         _currentStep = _currentStep+1;
                       } else {
+
                       }
                     });
                   },
