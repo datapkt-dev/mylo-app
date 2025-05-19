@@ -29,8 +29,8 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
   int depositMonths = 0;
   late TextEditingController controllerAmount = TextEditingController();
   int total = 0;
-  // List<List<dynamic>> costList = [];
-  Map<dynamic, dynamic> costList = {};
+  List<dynamic> costList = [];
+  // Map<dynamic, dynamic> costList = {};
 
   late TextEditingController controllerRent;
 
@@ -49,7 +49,6 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
     depositMonths = contractData['deposit_months'];
     controllerRent = TextEditingController(text: rent.toString());
     controllerAmount = TextEditingController(text: contractData['deposit_amount'].toString());
-    costList = contractData['utility_fees'];
   }
 
   void updateTotal() {
@@ -70,6 +69,8 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
 
   @override
   Widget build(BuildContext context) {
+    final contractData = ref.watch(contractDataProvider);
+    costList = contractData['utility_fees'];
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -344,8 +345,6 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                         MaterialPageRoute(builder: (context) => ContractNewCost()),
                       ).then((result) {
                         print('生活費用返回');
-                        print(ref.read(contractDataProvider)['utility_fees'].length);
-                        print(costList);
                       });
                     },
                     child: Text('編輯'),

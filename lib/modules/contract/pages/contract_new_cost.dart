@@ -36,7 +36,7 @@ class _ContractNewCostState extends ConsumerState<ContractNewCost> {
 
   @override
   Widget build(BuildContext context) {
-    final data = ref.watch(contractDataProvider);
+    // final data = ref.watch(contractDataProvider);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -65,10 +65,12 @@ class _ContractNewCostState extends ConsumerState<ContractNewCost> {
                     _cardKeys[i].currentState?.showMethodValidationError();
                     hasError = true;
                   }
-                  // 單價為空
-                  if (costList[i][5] == null || costList[i][5].toString().isEmpty) {
-                    _cardKeys[i].currentState?.showError(true);
-                    hasError = true;
+                  if (!(costList[i][4] == '租客自繳' || costList[i][4] == '包含在租金')) {
+                    // 單價為空
+                    if (costList[i][5] == null || costList[i][5].toString().isEmpty) {
+                      _cardKeys[i].currentState?.showError(true);
+                      hasError = true;
+                    }
                   }
                 }
               }
@@ -119,16 +121,21 @@ class _ContractNewCostState extends ConsumerState<ContractNewCost> {
                     );
                   }
                   if (snapshot.hasData) {
-                    dataList = snapshot.data!;
-                    costList = List.generate(
-                      dataList.length,
-                          (index) => [false, dataList[index]['fee_name'], dataList[index]['billing_method'], dataList[index]['unit_title'], null, ''],
-                    );
+                    final contractData = ref.watch(contractDataProvider);
+                    if (contractData['utility_fees'].isNotEmpty) {
+                      costList = contractData['utility_fees'];
+                    } else {
+                      dataList = snapshot.data!;
+                      costList = List.generate(
+                        dataList.length,
+                            (index) => [false, dataList[index]['fee_name'], dataList[index]['billing_method'], dataList[index]['unit_title'], null, ''],
+                      );
+                    }
                     _cardKeys.clear(); // 清除舊的
-                    _cardKeys = List.generate(dataList.length, (index) => GlobalKey<_WaterFeeCardState>());
+                    _cardKeys = List.generate(costList.length, (index) => GlobalKey<_WaterFeeCardState>());
                   }
                   return Column(
-                    children: List.generate(dataList.length, (index) {
+                    children: List.generate(costList.length, (index) {
                       return WaterFeeCard(
                         key: _cardKeys[index],
                         costData: costList[index],
@@ -176,7 +183,12 @@ class _WaterFeeCardState extends State<WaterFeeCard> {
   @override
   void initState() {
     super.initState();
+    print(widget.costData);
     _controller.text = widget.costData[5] ?? '';
+    if (widget.costData[0]) {
+      selectedMethod = widget.costData[4];
+      _controller.text = widget.costData[5];
+    }
   }
 
   void showError(bool show) {
@@ -265,40 +277,42 @@ class _WaterFeeCardState extends State<WaterFeeCard> {
                   ),
                 ),
               ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Container(
-                  height: 55,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  decoration: ShapeDecoration(
-                    color: const Color(0xFFF4F6F7),
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                        width: 1,
-                        color: _showErrorBorder ? Colors.red : const Color(0xFFF4F6F7),
+              if (!(selectedMethod == '租客自繳' || selectedMethod == '包含在租金')) ...[
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Container(
+                    height: 55,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    decoration: ShapeDecoration(
+                      color: const Color(0xFFF4F6F7),
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                          width: 1,
+                          color: _showErrorBorder ? Colors.red : const Color(0xFFF4F6F7),
+                        ),
+                        borderRadius: BorderRadius.circular(3),
                       ),
-                      borderRadius: BorderRadius.circular(3),
                     ),
-                  ),
-                  child: TextFormField(
-                    enabled: widget.costData[0],
-                    controller: _controller,
-                    decoration: InputDecoration(
-                      labelText: widget.costData[3],
-                      border: InputBorder.none,
+                    child: TextFormField(
+                      enabled: widget.costData[0],
+                      controller: _controller,
+                      decoration: InputDecoration(
+                        labelText: widget.costData[3],
+                        border: InputBorder.none,
+                      ),
+                      keyboardType: TextInputType.number,
+                      onChanged: (value) {
+                        setState(() {
+                          widget.costData[5] = value;
+                          if (value.isNotEmpty) {
+                            _showErrorBorder = false;
+                          }
+                        });
+                      },
                     ),
-                    keyboardType: TextInputType.number,
-                    onChanged: (value) {
-                      setState(() {
-                        widget.costData[5] = value;
-                        if (value.isNotEmpty) {
-                          _showErrorBorder = false;
-                        }
-                      });
-                    },
                   ),
                 ),
-              ),
+              ],
             ],
           ),
         ],

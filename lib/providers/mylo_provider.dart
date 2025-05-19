@@ -3,11 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 final selectedItemProvider = StateProvider<int>((ref) => -1);
 final rentProvider = StateProvider<int>((ref) => 0);
 final contractDataProvider = StateProvider<Map<String, dynamic>>((ref) => {
-  "property_id": 1,
+  "property_id": 0,
   "rent": 0,
   "deposit_months": 0,      // 0 = 固定金額, 1 = 月數
   "deposit_amount": 0,   // 當 deposit_type = 0 時才生效
-  "utility_fees": {
+  "utility_fees": []
+  // {
     // "electricity_fee": {
     //   "amount": 1500,       // 電費金額
     //   "method_id": 2        // 2 = “每月與租金一起繳納”
@@ -24,5 +25,5 @@ final contractDataProvider = StateProvider<Map<String, dynamic>>((ref) => {
     //   "amount": 800,        // 管理費
     //   "method_id": 3        // 3 = “每季”
     // }
-  }
+  // }
 });

@@ -31,6 +31,19 @@ class _ContractNewState extends ConsumerState<ContractNew> {
     super.initState();
     apiService = ApiService(baseUrl: baseUrl);
     futureData = apiService.fetchData();
+
+    // 延迟修改 provider，等 build 完再执行
+    Future.microtask(() {
+      print('初始化新合約');
+      // 初始化 contractDataProvider
+      ref.read(contractDataProvider.notifier).state = {
+        "property_id": 0,
+        "rent": 0,
+        "deposit_months": 0,
+        "deposit_amount": 0,
+        "utility_fees": []
+      };
+    });
   }
 
   @override

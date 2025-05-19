@@ -382,7 +382,7 @@ class _ContractNewStep3State extends State<ContractNewStep3> {
                                 ),
                               ],
                             ),
-                            if (furniture[index]['available']) ...[
+                            if (furniture[index]['available'] && (furniture[index]['img'].isNotEmpty || furniture[index]['caption'] != '')) ...[
                               Container(
                                 width: double.infinity,
                                 padding: const EdgeInsets.all(8),
@@ -729,7 +729,7 @@ class _ContractNewStep3State extends State<ContractNewStep3> {
                                 ),
                               ],
                             ),
-                            if (appliance[index]['available']) ...[
+                            if (appliance[index]['available'] && (appliance[index]['img'].isNotEmpty || appliance[index]['caption'] != '')) ...[
                               Container(
                                 width: double.infinity,
                                 padding: const EdgeInsets.all(8),
@@ -781,48 +781,48 @@ class _ContractNewStep3State extends State<ContractNewStep3> {
               ),);
             },
           ),
-          const SizedBox(height: 16,),
-          _block(Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                '影片',
-                style: TextStyle(
-                  color: Color(0xFF2B2F35),
-                  fontSize: 15,
-                  fontFamily: 'PingFang TC',
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(height: 16,),
-              Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  decoration: ShapeDecoration(
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      side: const BorderSide(width: 1, color: Color(0xFF319877)),
-                      borderRadius: BorderRadius.circular(3),
-                    ),
-                  ),
-                  child: Column(
-                    children: [
-                      SvgPicture.asset('assets/icons/contract_new/video-recorder.svg'),
-                      const SizedBox(height: 8,),
-                      const Text(
-                        '上傳1/1',
-                        style: TextStyle(
-                          color: Color(0xFF5F6E7B),
-                          fontSize: 14,
-                          fontFamily: 'PingFang TC',
-                          fontWeight: FontWeight.w400,
-                          letterSpacing: 0.70,
-                        ),
-                      )
-                    ],
-                  )
-              )
-            ],
-          ))
+          // const SizedBox(height: 16,),
+          // _block(Column(
+          //   crossAxisAlignment: CrossAxisAlignment.start,
+          //   children: [
+          //     const Text(
+          //       '影片',
+          //       style: TextStyle(
+          //         color: Color(0xFF2B2F35),
+          //         fontSize: 15,
+          //         fontFamily: 'PingFang TC',
+          //         fontWeight: FontWeight.w500,
+          //       ),
+          //     ),
+          //     const SizedBox(height: 16,),
+          //     Container(
+          //         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          //         decoration: ShapeDecoration(
+          //           color: Colors.white,
+          //           shape: RoundedRectangleBorder(
+          //             side: const BorderSide(width: 1, color: Color(0xFF319877)),
+          //             borderRadius: BorderRadius.circular(3),
+          //           ),
+          //         ),
+          //         child: Column(
+          //           children: [
+          //             SvgPicture.asset('assets/icons/contract_new/video-recorder.svg'),
+          //             const SizedBox(height: 8,),
+          //             const Text(
+          //               '上傳1/1',
+          //               style: TextStyle(
+          //                 color: Color(0xFF5F6E7B),
+          //                 fontSize: 14,
+          //                 fontFamily: 'PingFang TC',
+          //                 fontWeight: FontWeight.w400,
+          //                 letterSpacing: 0.70,
+          //               ),
+          //             )
+          //           ],
+          //         )
+          //     )
+          //   ],
+          // )),
         ],
       ),
     );
