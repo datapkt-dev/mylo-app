@@ -173,7 +173,7 @@ class _ContractNewState extends ConsumerState<ContractNew> {
                       if (_currentStep == 0 && selectedItem != 0) {
                         _currentStep = _currentStep+1;
                       } else {
-
+                        _currentStep = _currentStep+1;
                       }
                     });
                   },
