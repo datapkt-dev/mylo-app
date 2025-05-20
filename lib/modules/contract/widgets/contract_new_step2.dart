@@ -17,7 +17,7 @@ class ContractNewStep2 extends ConsumerStatefulWidget {
 
 class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
   List<List<dynamic>> customerData = [
-    [false, '', '', '', '', '', '', '',],
+    // [false, '', '', '', '', '', '', '', []],
   ];
   DateTime effective = DateTime.now();
   DateTime expiration = DateTime.now();
@@ -71,6 +71,7 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
   Widget build(BuildContext context) {
     final contractData = ref.watch(contractDataProvider);
     costList = contractData['utility_fees'];
+    customerData = contractData['contractor'];
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -592,7 +593,7 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                   GestureDetector(
                     onTap: () {
                       setState(() {
-                        customerData.add([false, '', '', '', '', '', '', '',]);
+                        customerData.add([false, '', '', '', '', '', '', '', []]);
                       });
                     },
                     child: SvgPicture.asset('assets/icons/contract_new/add_button.svg'),
@@ -682,9 +683,13 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                                                 print('result');
                                                 print(result);
                                                 if (result != null) {
-                                                  print('not result');
+                                                  print('result not null');
                                                   setState(() {
                                                     customerData[index] = result;
+                                                  });
+                                                  ref.read(contractDataProvider.notifier).update((map) => {
+                                                    ...map,
+                                                    'contractor': customerData,
                                                   });
                                                 }
                                               });
@@ -855,7 +860,7 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                           ],
                         ),
                         if (customerData[index][0] == true) ...[
-                          const SizedBox(width: 12,),
+                          const SizedBox(height: 12,),
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -865,7 +870,7 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                               // ),
                               // SvgPicture.asset('assets/icons/contract_new/customer_female.svg'),
                               Image.asset(width: 20,'assets/images/contract_new/customer_male.png',),
-                              const SizedBox(height: 16,),
+                              const SizedBox(width: 16,),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -906,7 +911,7 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                                     ),
                                   ),
                                   Text(
-                                    customerData[index][5]+customerData[index][6]+customerData[index][7],
+                                    '${(customerData[index][5] ?? '') + (customerData[index][6] ?? '') + (customerData[index][7] ?? '')}',
                                     style: const TextStyle(
                                       color: Color(0xFF2B2F35),
                                       fontSize: 15,

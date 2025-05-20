@@ -7,7 +7,7 @@ final contractDataProvider = StateProvider<Map<String, dynamic>>((ref) => {
   "rent": 0,
   "deposit_months": 0,      // 0 = 固定金額, 1 = 月數
   "deposit_amount": 0,   // 當 deposit_type = 0 時才生效
-  "utility_fees": []
+  "utility_fees": [],
   // {
     // "electricity_fee": {
     //   "amount": 1500,       // 電費金額
@@ -26,4 +26,5 @@ final contractDataProvider = StateProvider<Map<String, dynamic>>((ref) => {
     //   "method_id": 3        // 3 = “每季”
     // }
   // }
+  "contractor": [],
 });

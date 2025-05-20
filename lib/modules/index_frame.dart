@@ -17,7 +17,7 @@ class IndexFrame extends StatefulWidget {
 class _PageFrameState extends State<IndexFrame> {
   final String baseUrl = 'https://rencoo.com.tw';
 
-  int selectedIndex = 1;
+  int selectedIndex = 2;
 
   Color getItemColor(int index) {
     return selectedIndex == index ? const Color(0xFF8C5F42) : const Color(0x4C222222);
