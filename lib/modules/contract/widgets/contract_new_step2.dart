@@ -16,7 +16,7 @@ class ContractNewStep2 extends ConsumerStatefulWidget {
 }
 
 class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
-  List<List<dynamic>> customerData = [
+  List<dynamic> customerData = [
     // [false, '', '', '', '', '', '', '', []],
   ];
   DateTime effective = DateTime.now();
