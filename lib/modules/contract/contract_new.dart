@@ -42,7 +42,7 @@ class _ContractNewState extends ConsumerState<ContractNew> {
         "deposit_months": 0,
         "deposit_amount": 0,
         "utility_fees": [],
-        "contractor": [],
+        "signatories": [],
       };
     });
   }

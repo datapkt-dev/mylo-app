@@ -26,5 +26,5 @@ final contractDataProvider = StateProvider<Map<String, dynamic>>((ref) => {
     //   "method_id": 3        // 3 = “每季”
     // }
   // }
-  "contractor": [],
+  "signatories": [],
 });

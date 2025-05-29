@@ -6,7 +6,7 @@ import 'package:mylo/units/upload_image_widget.dart';
 import '../data/api.dart';
 
 class ContractNewCustomer extends StatefulWidget {
-  final List<dynamic> dataPass;
+  final Map<String, dynamic> dataPass;
   const ContractNewCustomer({super.key, required this.dataPass});
 
   @override
@@ -24,15 +24,11 @@ class _ContractNewCustomerState extends State<ContractNewCustomer> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController idController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
-  // final TextEditingController cityController = TextEditingController();
-  // final TextEditingController districtController = TextEditingController();
-  String? city;
-  String? district;
+  String? selectedCity;
+  String? selectedDistrict;
   final TextEditingController addressController = TextEditingController();
 
-  String? selectedCity;
   List<dynamic> cityList = [];
-  String? selectedDistrict;
   List<dynamic> districtList = [];
 
   late final ApiService apiService;
@@ -47,27 +43,31 @@ class _ContractNewCustomerState extends State<ContractNewCustomer> {
     futureData = apiService.fetchCity();
 
     customerData[0] = false;
-    if (widget.dataPass[0]) {
-      nameController.text = widget.dataPass[1];
-      idController.text = widget.dataPass[2];
-      birthday = DateTime.parse(widget.dataPass[3]);
-      phoneController.text = widget.dataPass[4];
-      // cityController.text = widget.dataPass[5];
-      // districtController.text = widget.dataPass[6];
-      city = widget.dataPass[5];
-      district = widget.dataPass[6];
-      addressController.text = widget.dataPass[7];
-      imgRoute = widget.dataPass[8];
+    nameController.text = widget.dataPass['name'];
+    idController.text = widget.dataPass['national_id_number'];
+    birthday = (widget.dataPass['date_of_birth'] == null || widget.dataPass['date_of_birth'].isEmpty)
+        ? DateTime.now()
+        : DateTime.parse(widget.dataPass['date_of_birth']);
+    phoneController.text = widget.dataPass['phone_number'];
+    selectedCity = widget.dataPass['address']['city_name'] == ''
+        ? null
+        : widget.dataPass['address']['city_name'];
+    districtList = widget.dataPass['address']['district_name'] == ''
+        ? []
+        : [{'district_code': 0, 'district_name': widget.dataPass['address']['district_name']}];
+    selectedDistrict = widget.dataPass['address']['district_name'] == ''
+        ? null
+        : widget.dataPass['address']['district_name'];
+    addressController.text = widget.dataPass['address']['detailed_address'] ?? '';
+    // imgRoute = widget.dataPass[''];
+    // imgRoute = [];
     }
-  }
 
   @override
   void dispose() {
     nameController.dispose();
     idController.dispose();
     phoneController.dispose();
-    // cityController.dispose();
-    // districtController.dispose();
     addressController.dispose();
     super.dispose();
   }
@@ -94,17 +94,21 @@ class _ContractNewCustomerState extends State<ContractNewCustomer> {
           GestureDetector(
             onTap: () {
               if (nameController.text != '') {
-                customerData[0] = true;
+                customerData[0] = 1;
                 customerData[1] = nameController.text;
                 customerData[2] = idController.text;
                 customerData[3] = DateFormat('yyyy-MM-dd').format(birthday);
                 customerData[4] = phoneController.text;
                 // customerData[5] = cityController.text;
                 // customerData[6] = districtController.text;
-                customerData[5] = city;
-                customerData[6] = district;
+                customerData[5] = selectedCity;
+                customerData[6] = selectedDistrict;
                 customerData[7] = addressController.text;
-                customerData[8] = imgRoute;
+                // customerData[8] = imgRoute;
+                customerData[8] = [
+                  'https://cdn.example.com/ids/ming_front.jpg',
+                  'https://cdn.example.com/ids/ming_back.jpg',
+                ];
                 print(customerData);
                 Navigator.pop(context, customerData);
               } else {

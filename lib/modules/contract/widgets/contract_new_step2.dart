@@ -75,7 +75,7 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
   Widget build(BuildContext context) {
     final contractData = ref.watch(contractDataProvider);
     costList = contractData['utility_fees'];
-    customerData = contractData['contractor'];
+    customerData = contractData['signatories'];
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -621,7 +621,22 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                   GestureDetector(
                     onTap: () {
                       setState(() {
-                        customerData.add([false, '', '', '', '', '', '', '', []]);
+                        // customerData.add([false, '', '', '', '', '', '', '', []]);
+                        customerData.add({
+                          "role": 0,//0:主要簽約人 1:共同簽約人 2:保證人
+                          "name": '',
+                          "national_id_number": "",
+                          "date_of_birth": "",
+                          "phone_number": "",
+                          "address": {
+                            "city_name": "",
+                            "district_name": "",
+                            "detailed_address": ""
+                          },
+                          "id_card_front_url": "",
+                          "id_card_back_url":  "",
+                        }
+                        );
                       });
                     },
                     child: SvgPicture.asset('assets/icons/contract_new/add_button.svg'),
@@ -661,13 +676,13 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                               decoration: ShapeDecoration(
-                                color: customerData[index][0] == true ? const Color(0xFFD9F2E5) : const Color(0xFFE3E7EA),
+                                color: customerData[index]['role'] == 1 ? const Color(0xFFD9F2E5) : const Color(0xFFE3E7EA),
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                               ),
                               child: Text(
-                                customerData[index][0] == true ? '已完成' : '未完成',
+                                customerData[index]['role'] == 1 ? '主要簽約人' : '共同簽約人',
                                 style: TextStyle(
-                                  color: customerData[index][0] == true ? const Color(0xFF248568) : const Color(0xFF7B8A95),
+                                  color: customerData[index]['role'] == 1 ? const Color(0xFF248568) : const Color(0xFF7B8A95),
                                   fontSize: 12,
                                   fontFamily: 'PingFang SC',
                                   fontWeight: FontWeight.w400,
@@ -713,11 +728,38 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                                                 if (result != null) {
                                                   print('result not null');
                                                   setState(() {
-                                                    customerData[index] = result;
+                                                    customerData[index] = {
+                                                      "role": result[0],//0:主要簽約人 1:共同簽約人 2:保證人
+                                                      "name": result[1],
+                                                      "national_id_number": result[2],
+                                                      "date_of_birth": result[3],
+                                                      "phone_number": result[4],
+                                                      "address": {
+                                                        "city_name": result[5],
+                                                        "district_name": result[6],
+                                                        "detailed_address": result[7]
+                                                      },
+                                                      "id_card_front_url": result[8][0],
+                                                      "id_card_back_url":  result[8][1],
+                                                    };
+                                                    // customerData.add({
+                                                    //   "role": result[0],//0:主要簽約人 1:共同簽約人 2:保證人
+                                                    //   "name": result[1],
+                                                    //   "national_id_number": result[2],
+                                                    //   "date_of_birth": result[3],
+                                                    //   "phone_number": result[4],
+                                                    //   "address": {
+                                                    //     "city_name": result[5],
+                                                    //     "district_name": result[6],
+                                                    //     "detailed_address": result[7]
+                                                    //   },
+                                                    //   "id_card_front_url": result[8][0],
+                                                    //   "id_card_back_url":  result[8][1],
+                                                    // });
                                                   });
                                                   ref.read(contractDataProvider.notifier).update((map) => {
                                                     ...map,
-                                                    'contractor': customerData,
+                                                    'signatories': customerData,
                                                   });
                                                 }
                                               });
@@ -887,7 +929,7 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                             ),
                           ],
                         ),
-                        if (customerData[index][0] == true) ...[
+                        if (customerData[index]['role'] == 1) ...[
                           const SizedBox(height: 12,),
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -903,7 +945,7 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    customerData[index][1],
+                                    customerData[index]['name'],
                                     style: const TextStyle(
                                       color: Color(0xFF2B2F35),
                                       fontSize: 15,
@@ -912,7 +954,7 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                                     ),
                                   ),
                                   Text(
-                                    customerData[index][2],
+                                    customerData[index]['national_id_number'],
                                     style: const TextStyle(
                                       color: Color(0xFF2B2F35),
                                       fontSize: 15,
@@ -921,7 +963,7 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                                     ),
                                   ),
                                   Text(
-                                    customerData[index][3],
+                                    customerData[index]['date_of_birth'],
                                     style: const TextStyle(
                                       color: Color(0xFF2B2F35),
                                       fontSize: 15,
@@ -930,7 +972,7 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                                     ),
                                   ),
                                   Text(
-                                    customerData[index][4],
+                                    customerData[index]['phone_number'],
                                     style: const TextStyle(
                                       color: Color(0xFF2B2F35),
                                       fontSize: 15,
@@ -939,7 +981,7 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                                     ),
                                   ),
                                   Text(
-                                    '${(customerData[index][5] ?? '') + (customerData[index][6] ?? '') + (customerData[index][7] ?? '')}',
+                                    '${(customerData[index]['address']['city_name'] ?? '') + (customerData[index]['address']['district_name'] ?? '') + (customerData[index]['address']['detailed_address'] ?? '')}',
                                     style: const TextStyle(
                                       color: Color(0xFF2B2F35),
                                       fontSize: 15,

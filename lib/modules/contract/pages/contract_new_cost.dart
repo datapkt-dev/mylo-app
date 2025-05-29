@@ -183,7 +183,6 @@ class _WaterFeeCardState extends State<WaterFeeCard> {
   @override
   void initState() {
     super.initState();
-    print(widget.costData);
     _controller.text = widget.costData[5] ?? '';
     if (widget.costData[0]) {
       selectedMethod = widget.costData[4];
