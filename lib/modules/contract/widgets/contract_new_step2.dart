@@ -23,7 +23,8 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
   DateTime expiration = DateTime.now();
   final TextEditingController controllerNote = TextEditingController();
 
-  List<String> depositTypes= ['每月租金', '固定金額',];
+  List<String> depositTypes= ['每期租金', '固定金額',];
+  int? selectedMethodId;
   int rent = 0;
   int depositType = 0;
   int depositMonths = 0;
@@ -49,6 +50,9 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
     depositMonths = contractData['deposit_months'];
     controllerRent = TextEditingController(text: rent.toString());
     controllerAmount = TextEditingController(text: contractData['deposit_amount'].toString());
+
+    apiService = ApiService(baseUrl: baseUrl);
+    futureData = apiService.fetchPayment();
   }
 
   void updateTotal() {
@@ -117,57 +121,81 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                       ),
                     ),
                     const SizedBox(height: 12),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            height: 48,
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            decoration: ShapeDecoration(
-                              color: const Color(0xFFF4F6F7),
-                              shape: RoundedRectangleBorder(
-                                side: const BorderSide(width: 1, color: Color(0xFFF4F6F7)),
-                                borderRadius: BorderRadius.circular(3),
+                    FutureBuilder(
+                      future: futureData,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const Center(child: CircularProgressIndicator());
+                        }
+                        if (snapshot.hasError) {
+                          return Center(
+                            child: Text(
+                              '發生錯誤: ${snapshot.error}',
+                              style: const TextStyle(color: Colors.red, fontSize: 16),
+                            ),
+                          );
+                        }
+                        if (snapshot.hasData) {
+                          dataList = snapshot.data!;
+                        }
+                        return Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                decoration: ShapeDecoration(
+                                  color: const Color(0xFFF4F6F7),
+                                  shape: RoundedRectangleBorder(
+                                    side: const BorderSide(width: 1, color: Color(0xFFF4F6F7)),
+                                    borderRadius: BorderRadius.circular(3),
+                                  ),
+                                ),
+                                child: DropdownButtonFormField<int>(
+                                  decoration: const InputDecoration(labelText: '繳費方式'),
+                                  value: selectedMethodId,
+                                  items: dataList.map((item) {
+                                    return DropdownMenuItem<int>(
+                                      value: item['method_id'] as int,
+                                      child: Text(item['method_name'] as String),
+                                    );
+                                  }).toList(),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      selectedMethodId = value;
+                                    });
+                                  },
+                                ),
                               ),
                             ),
-                            child: DropdownButtonFormField<String>(
-                              decoration: const InputDecoration(labelText: '幣別'),
-                              value: null,
-                              items: const [
-                                DropdownMenuItem(value: 'TWD', child: Text('TWD')),
-                              ],
-                              onChanged: (value) {},
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Container(
-                            height: 48,
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            decoration: ShapeDecoration(
-                              color: const Color(0xFFF4F6F7),
-                              shape: RoundedRectangleBorder(
-                                side: const BorderSide(width: 1, color: Color(0xFFF4F6F7)),
-                                borderRadius: BorderRadius.circular(3),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                decoration: ShapeDecoration(
+                                  color: const Color(0xFFF4F6F7),
+                                  shape: RoundedRectangleBorder(
+                                    side: const BorderSide(width: 1, color: Color(0xFFF4F6F7)),
+                                    borderRadius: BorderRadius.circular(3),
+                                  ),
+                                ),
+                                child: TextFormField(
+                                  controller: controllerRent,
+                                  decoration: const InputDecoration(labelText: '每期租金'),
+                                  keyboardType: TextInputType.number,
+                                  onChanged: (value) {
+                                    rent = int.tryParse(value) ?? 0;
+                                    ref.read(contractDataProvider.notifier).update((map) => {
+                                      ...map,
+                                      'rent': rent,
+                                    });
+                                    updateTotal();
+                                  },
+                                ),
                               ),
                             ),
-                            child: TextFormField(
-                              controller: controllerRent,
-                              decoration: const InputDecoration(labelText: '每月租金'),
-                              keyboardType: TextInputType.number,
-                              onChanged: (value) {
-                                rent = int.tryParse(value) ?? 0;
-                                ref.read(contractDataProvider.notifier).update((map) => {
-                                  ...map,
-                                  'rent': rent,
-                                });
-                                updateTotal();
-                              },
-                            ),
-                          ),
-                        ),
-                      ],
+                          ],
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -267,7 +295,7 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                               });
                             },
                           ),
-                          Text('$depositMonths 個月'),
+                          Text('$depositMonths 期'),
                           IconButton(
                             icon: const Icon(Icons.add_circle_outline),
                             onPressed: () {
