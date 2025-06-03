@@ -19,8 +19,8 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
   List<dynamic> customerData = [
     // [false, '', '', '', '', '', '', '', []],
   ];
-  DateTime effective = DateTime.now();
-  DateTime expiration = DateTime.now();
+  DateTime? effective;
+  DateTime? expiration;
   final TextEditingController controllerNote = TextEditingController();
 
   List<String> depositTypes= ['每期租金', '固定金額',];
@@ -48,10 +48,16 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
     // final initialValue = ref.read(rentProvider).toString();
     // _controller = TextEditingController(text: initialValue);
     final contractData = ref.read(contractDataProvider);
-    rent = contractData['rent'];
-    depositMonths = contractData['deposit_months'];
+    rent = contractData['rent']['amount'];
+    selectedMethodId = contractData['rent']['method_id'];
+    // depositMonths = contractData['deposit_months'];
+    depositMonths = 0;
     controllerRent = TextEditingController(text: rent.toString());
-    controllerAmount = TextEditingController(text: contractData['deposit_amount'].toString());
+    // controllerAmount = TextEditingController(text: contractData['deposit']['deposit_amount'].toString());
+    controllerAmount = TextEditingController(
+      text: contractData['deposit']?['deposit_amount']?.toString() ?? '',
+    );
+    updateTotal();
 
     apiService = ApiService(baseUrl: baseUrl);
     futureData = apiService.fetchPayment();
@@ -63,7 +69,7 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
       if (depositType == 0) {
         total = rent * depositMonths;
       } else if (depositType == 1) {
-        total = rent + int.parse(controllerAmount.text.isEmpty ? '0' : controllerAmount.text);
+        total = (int.tryParse(controllerAmount.text ?? '') ?? 0);
       }
     });
   }
@@ -166,6 +172,13 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                                     setState(() {
                                       selectedMethodId = value;
                                     });
+                                    ref.read(contractDataProvider.notifier).update((map) => {
+                                      ...map,
+                                      'rent': {
+                                        "method_id": selectedMethodId!+2,
+                                        "amount": rent,
+                                      },
+                                    });
                                   },
                                 ),
                               ),
@@ -189,7 +202,10 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                                     rent = int.tryParse(value) ?? 0;
                                     ref.read(contractDataProvider.notifier).update((map) => {
                                       ...map,
-                                      'rent': rent,
+                                      'rent': {
+                                        "method_id": selectedMethodId!+2,
+                                        "amount": rent,
+                                      },
                                     });
                                     updateTotal();
                                   },
@@ -253,6 +269,13 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                                   depositType = value!;
                                   updateTotal();
                                 });
+                                ref.read(contractDataProvider.notifier).update((map) => {
+                                  ...map,
+                                  'deposit': {
+                                    "deposit_months": depositType,
+                                    "deposit_amount": total,
+                                  },
+                                });
                               },
                               activeColor: Color(0xFF8C5F42),
                             ),
@@ -289,12 +312,19 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                               setState(() {
                                 if (depositMonths > 0) {
                                   depositMonths--;
-                                  ref.read(contractDataProvider.notifier).update((map) => {
-                                    ...map,
-                                    'deposit_months': depositMonths,
-                                  });
+                                  // ref.read(contractDataProvider.notifier).update((map) => {
+                                  //   ...map,
+                                  //   'deposit_months': depositMonths,
+                                  // });
                                 }
                                 updateTotal();
+                                ref.read(contractDataProvider.notifier).update((map) => {
+                                  ...map,
+                                  'deposit': {
+                                    "deposit_months": depositType,
+                                    "deposit_amount": total,
+                                  },
+                                });
                               });
                             },
                           ),
@@ -304,11 +334,18 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                             onPressed: () {
                               setState(() {
                                 depositMonths++;
+                                // ref.read(contractDataProvider.notifier).update((map) => {
+                                //   ...map,
+                                //   'deposit_months': depositMonths,
+                                // });
+                                updateTotal();
                                 ref.read(contractDataProvider.notifier).update((map) => {
                                   ...map,
-                                  'deposit_months': depositMonths,
+                                  'deposit': {
+                                    "deposit_months": depositType,
+                                    "deposit_amount": total,
+                                  },
                                 });
-                                updateTotal();
                               });
                             },
                           ),
@@ -331,11 +368,18 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                               keyboardType: TextInputType.number,
                               onChanged: (value) {
                                 if (value == '') value = '0';
+                                // ref.read(contractDataProvider.notifier).update((map) => {
+                                //   ...map,
+                                //   'deposit_amount': int.parse(value),
+                                // });
+                                updateTotal();
                                 ref.read(contractDataProvider.notifier).update((map) => {
                                   ...map,
-                                  'deposit_amount': int.parse(value),
+                                  'deposit': {
+                                    "deposit_months": depositType,
+                                    "deposit_amount": total,
+                                  },
                                 });
-                                updateTotal();
                               },
                             ),
                           ),
@@ -455,7 +499,7 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                               ),
                               const Spacer(),
                               Text(
-                                '\$ ${costList[index]['pricing']['price'].toString()} ${costList[index]['unit_title']}',
+                                '\$ ${costList[index]['pricing']['input'].toString()} ${costList[index]['unit_title']}',
                                 style: TextStyle(
                                   color: Color(0xFF2B2F35),
                                   fontSize: 15,
@@ -544,6 +588,11 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                           setState(() {
                             effective = result;
                           });
+                          ref.read(contractDataProvider.notifier).update((map) => {
+                            ...map,
+                            // 'lease_start': effective,
+                            'lease_start': DateFormat('yyyy-MM-dd').format(effective!),
+                          });
                         }
                       },
                       child: Container(
@@ -555,7 +604,11 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                             borderRadius: BorderRadius.circular(3),
                           ),
                         ),
-                        child: Text(DateFormat('yyyy/MM/dd').format(effective)),
+                        child: Text(
+                          effective != null
+                              ? DateFormat('yyyy/MM/dd').format(effective!)
+                              : '選擇生效日期',
+                        ),
                       ),
                     ),
                   ),
@@ -587,6 +640,11 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                           setState(() {
                             expiration = result;
                           });
+                          ref.read(contractDataProvider.notifier).update((map) => {
+                            ...map,
+                            // 'lease_end': expiration,
+                            'lease_end': DateFormat('yyyy-MM-dd').format(expiration!),
+                          });
                         }
                       },
                       child: Container(
@@ -598,7 +656,11 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                             borderRadius: BorderRadius.circular(3),
                           ),
                         ),
-                        child: Text(DateFormat('yyyy/MM/dd').format(expiration)),
+                        child: Text(
+                          expiration != null
+                              ? DateFormat('yyyy/MM/dd').format(expiration!)
+                              : '選擇結束日期',
+                        ),
                       ),
                     ),
                   ),
@@ -664,11 +726,14 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                           "national_id_number": "",
                           "date_of_birth": "",
                           "phone_number": "",
-                          "address": {
-                            "city_name": "",
-                            "district_name": "",
-                            "detailed_address": ""
-                          },
+                          "city_name": "",
+                          "district_name": "",
+                          "detailed_address": "",
+                          // "address": {
+                          //   "city_name": "",
+                          //   "district_name": "",
+                          //   "detailed_address": "",
+                          // },
                           "id_card_front_url": "",
                           "id_card_back_url":  "",
                         }
@@ -770,11 +835,14 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                                                       "national_id_number": result[2],
                                                       "date_of_birth": result[3],
                                                       "phone_number": result[4],
-                                                      "address": {
-                                                        "city_name": result[5],
-                                                        "district_name": result[6],
-                                                        "detailed_address": result[7]
-                                                      },
+                                                      "city_name": result[5],
+                                                      "district_name": result[6],
+                                                      "detailed_address": result[7],
+                                                      // "address": {
+                                                      //   "city_name": result[5],
+                                                      //   "district_name": result[6],
+                                                      //   "detailed_address": result[7]
+                                                      // },
                                                       "id_card_front_url": result[8][0],
                                                       "id_card_back_url":  result[8][1],
                                                     };
@@ -1017,7 +1085,7 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                                     ),
                                   ),
                                   Text(
-                                    '${(customerData[index]['address']['city_name'] ?? '') + (customerData[index]['address']['district_name'] ?? '') + (customerData[index]['address']['detailed_address'] ?? '')}',
+                                    '${(customerData[index]['city_name'] ?? '') + (customerData[index]['district_name'] ?? '') + (customerData[index]['detailed_address'] ?? '')}',
                                     style: const TextStyle(
                                       color: Color(0xFF2B2F35),
                                       fontSize: 15,

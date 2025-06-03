@@ -4,9 +4,19 @@ final selectedItemProvider = StateProvider<int>((ref) => -1);
 final rentProvider = StateProvider<int>((ref) => 0);
 final contractDataProvider = StateProvider<Map<String, dynamic>>((ref) => {
   "property_id": 0,
-  "rent": 0,
-  "deposit_months": 0,      // 0 = 固定金額, 1 = 月數
-  "deposit_amount": 0,   // 當 deposit_type = 0 時才生效
+  "lease_start": null,
+  "lease_end": null,
+  "rent": {
+    "method_id": null,//月繳
+    "amount": 0,
+  },
+  "deposit":{
+    "deposit_months": null,      // 0 = 固定金額, 1 = 期數
+    "deposit_amount": null,
+  },
+  // "rent": 0,
+  // "deposit_months": 0,      // 0 = 固定金額, 1 = 月數
+  // "deposit_amount": 0,   // 當 deposit_type = 0 時才生效
   "utility_fees": [],
   // {
     // "electricity_fee": {
@@ -27,4 +37,8 @@ final contractDataProvider = StateProvider<Map<String, dynamic>>((ref) => {
     // }
   // }
   "signatories": [],
+  "checklist": {
+    "appliances": [],
+    "furnitures": [],
+  },
 });

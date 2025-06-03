@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mylo/modules/contract/widgets/contract_new_step1.dart';
 import 'package:mylo/modules/contract/widgets/contract_new_step2.dart';
 import 'package:mylo/modules/contract/widgets/contract_new_step3.dart';
@@ -38,11 +39,25 @@ class _ContractNewState extends ConsumerState<ContractNew> {
       // 初始化 contractDataProvider
       ref.read(contractDataProvider.notifier).state = {
         "property_id": 0,
-        "rent": 0,
-        "deposit_months": 0,
-        "deposit_amount": 0,
+        "lease_start": null,
+        "lease_end": null,
+        "rent": {
+          "method_id": null,//月繳
+          "amount": 0,
+        },
+        "deposit":{
+          "deposit_months": null,      // 0 = 固定金額, 1 = 期數
+          "deposit_amount": null,
+        },
+        // "rent": 0,
+        // "deposit_months": 0,
+        // "deposit_amount": 0,
         "utility_fees": [],
         "signatories": [],
+        "checklist": {
+          "appliances": [],
+          "furnitures": [],
+        },
       };
     });
   }
@@ -182,14 +197,31 @@ class _ContractNewState extends ConsumerState<ContractNew> {
                   ],
                 ),
                 child: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      if (_currentStep == 0 && selectedItem != 0) {
+                  onTap: () async {
+                    final currentData = ref.read(contractDataProvider);
+                    if (_currentStep == 0 && currentData['property_id'] == 0) {
+                      Fluttertoast.showToast(msg: "請選擇物件");
+                    } else if (_currentStep == 2) {
+                      ref.read(contractDataProvider.notifier).update((data) => {
+                        ...data,
+                        'utility_fees': (data['utility_fees'] as List)
+                            .where((fee) => fee['enable'] == true)
+                            .toList(),
+                      });
+                      final updatedData = ref.read(contractDataProvider);
+                      print('before post');
+                      print(updatedData['utility_fees']);
+                      await apiService.postNewContract(updatedData);
+                      // setState(() {
+                      //   _currentStep = _currentStep+1;
+                      // });
+                    } else {
+                      print('next');
+                      print(currentData);
+                      setState(() {
                         _currentStep = _currentStep+1;
-                      } else {
-                        _currentStep = _currentStep+1;
-                      }
-                    });
+                      });
+                    }
                   },
                   child: Container(
                     height: 38,

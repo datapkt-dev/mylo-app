@@ -68,7 +68,7 @@ class _ContractNewCostState extends ConsumerState<ContractNewCost> {
                   }
                   if (!(costList[i]['method_name'] == '租客自繳' || costList[i]['method_name'] == '包含在租金')) {
                     // 單價為空
-                    if (costList[i]['pricing']['price'] == null || costList[i]['pricing']['price'].toString().isEmpty) {
+                    if (costList[i]['pricing']['input'] == null || costList[i]['pricing']['input'].toString().isEmpty) {
                       _cardKeys[i].currentState?.showError(true);
                       hasError = true;
                     }
@@ -87,7 +87,6 @@ class _ContractNewCostState extends ConsumerState<ContractNewCost> {
                 ...map,
                 'utility_fees': costList,
               });
-              print(costList);
               Navigator.pop(context);
             },
             child: const Text(
@@ -138,15 +137,14 @@ class _ContractNewCostState extends ConsumerState<ContractNewCost> {
                           // 新增欄位
                           'enable': false,
                           'pricing': {
-                            'model_id': 0,
-                            'price': null,
+                            'model': 1,
+                            'input': null,
                             'currency': 'TWD',
                           },
                           'method_id': null,
                           'method_name': null,
                         },
                       );
-                      print(costList[0]);
 
                       // costList = {
                       //   for (var item in dataList)
@@ -212,6 +210,7 @@ class WaterFeeCard extends StatefulWidget {
 
 class _WaterFeeCardState extends State<WaterFeeCard> {
   String? selectedMethod;
+  int? selectedMethodId;
   final TextEditingController _controller = TextEditingController();
   bool _showErrorBorder = false;
   bool showMethodError = false;
@@ -221,8 +220,9 @@ class _WaterFeeCardState extends State<WaterFeeCard> {
     super.initState();
     _controller.text = '';
     if (widget.costData['enable']) {
+      selectedMethodId = widget.costData['method_id'];
       selectedMethod = widget.costData['method_name'];
-      _controller.text = widget.costData['pricing']['price'].toString();
+      _controller.text = widget.costData['pricing']['input'].toString();
     }
   }
 
@@ -305,6 +305,16 @@ class _WaterFeeCardState extends State<WaterFeeCard> {
                     onChanged: !widget.costData['enable'] ? null : (value) {
                       setState(() {
                         selectedMethod = value!;
+
+                        final selected = widget.costData['billing_method']
+                            .firstWhere((item) => item['method_name'] == selectedMethod, orElse: () => null);
+
+                        if (selected != null) {
+                          selectedMethodId = selected['method_id'];
+                          widget.costData['method_id'] = selectedMethodId;
+                        }
+
+                        // widget.costData['method_id'] = selectedMethodId;
                         widget.costData['method_name'] = selectedMethod;
                         showMethodError = false;
                       });
@@ -338,7 +348,7 @@ class _WaterFeeCardState extends State<WaterFeeCard> {
                       keyboardType: TextInputType.number,
                       onChanged: (value) {
                         setState(() {
-                          widget.costData['pricing']['price'] = value;
+                          widget.costData['pricing']['input'] = value;
                           if (value.isNotEmpty) {
                             _showErrorBorder = false;
                           }

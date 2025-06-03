@@ -49,16 +49,16 @@ class _ContractNewCustomerState extends State<ContractNewCustomer> {
         ? DateTime.now()
         : DateTime.parse(widget.dataPass['date_of_birth']);
     phoneController.text = widget.dataPass['phone_number'];
-    selectedCity = widget.dataPass['address']['city_name'] == ''
+    selectedCity = widget.dataPass['city_name'] == ''
         ? null
-        : widget.dataPass['address']['city_name'];
-    districtList = widget.dataPass['address']['district_name'] == ''
+        : widget.dataPass['city_name'];
+    districtList = widget.dataPass['district_name'] == ''
         ? []
-        : [{'district_code': 0, 'district_name': widget.dataPass['address']['district_name']}];
-    selectedDistrict = widget.dataPass['address']['district_name'] == ''
+        : [{'district_code': 0, 'district_name': widget.dataPass['district_name']}];
+    selectedDistrict = widget.dataPass['district_name'] == ''
         ? null
-        : widget.dataPass['address']['district_name'];
-    addressController.text = widget.dataPass['address']['detailed_address'] ?? '';
+        : widget.dataPass['district_name'];
+    addressController.text = widget.dataPass['detailed_address'] ?? '';
     // imgRoute = widget.dataPass[''];
     // imgRoute = [];
     }

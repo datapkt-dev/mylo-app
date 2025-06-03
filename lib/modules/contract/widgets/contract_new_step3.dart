@@ -1,18 +1,20 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../../../providers/mylo_provider.dart';
 import '../../../units/upload_image_widget.dart';
 import '../data/api.dart';
 
-class ContractNewStep3 extends StatefulWidget {
+class ContractNewStep3 extends ConsumerStatefulWidget {
   // 屋況點交
   const ContractNewStep3({super.key});
 
   @override
-  State<ContractNewStep3> createState() => _ContractNewStep3State();
+  ConsumerState<ContractNewStep3> createState() => _ContractNewStep3State();
 }
 
-class _ContractNewStep3State extends State<ContractNewStep3> {
+class _ContractNewStep3State extends ConsumerState<ContractNewStep3> {
   List<dynamic> furniture = [];
   List<dynamic> appliance = [];
   bool _dataInitialized = false;
@@ -57,29 +59,36 @@ class _ContractNewStep3State extends State<ContractNewStep3> {
                 );
               }
               if (snapshot.hasData && !_dataInitialized) {
-                dataList = snapshot.data!;
+                final contractData = ref.watch(contractDataProvider);
+                if (contractData['checklist']['appliances'].isNotEmpty || contractData['checklist']['furnitures'].isNotEmpty) {
+                  furniture = contractData['checklist']['furnitures'];
+                  appliance = contractData['checklist']['appliances'];
+                } else {
+                  dataList = snapshot.data!;
 
-                furniture = dataList['furnitures'];
-                appliance = dataList['appliances'];
+                  furniture = dataList['furnitures'];
+                  appliance = dataList['appliances'];
 
-                furniture = furniture.map((item) {
-                  return {
-                    ...item,
-                    'available': false,
-                    'img': [],
-                    'caption': '',
-                  };
-                }).toList();
+                  furniture = furniture.map((item) {
+                    return {
+                      ...item,
+                      'available': false,
+                      'img': [],
+                      'image_urls': [],
+                      'caption': '',
+                    };
+                  }).toList();
 
-                appliance = appliance.map((item) {
-                  return {
-                    ...item,
-                    'available': false,
-                    'img': [],
-                    'caption': '',
-                  };
-                }).toList();
-
+                  appliance = appliance.map((item) {
+                    return {
+                      ...item,
+                      'available': false,
+                      'img': [],
+                      'image_urls': [],
+                      'caption': '',
+                    };
+                  }).toList();
+                }
                 _dataInitialized = true;
               }
               return _block(Column(
@@ -336,6 +345,16 @@ class _ContractNewStep3State extends State<ContractNewStep3> {
                                                 furniture[index]['img'] = images ?? [];
                                                 furniture[index]['caption'] = caption ?? '';
                                               });
+
+                                              ref.read(contractDataProvider.notifier).update((map) => {
+                                                ...map,
+                                                'checklist': {
+                                                  "appliances": appliance,
+                                                  "furnitures": furniture,
+                                                },
+                                              });
+                                              // final currentData = ref.read(contractDataProvider);
+                                              // print(currentData['checklist']['furnitures']);
 
                                               print(hasData ? '更新資料' : '清除資料');
                                             } else {
@@ -684,6 +703,16 @@ class _ContractNewStep3State extends State<ContractNewStep3> {
                                                 appliance[index]['caption'] = caption ?? '';
                                               });
 
+                                              ref.read(contractDataProvider.notifier).update((map) => {
+                                                ...map,
+                                                'checklist': {
+                                                  "appliances": appliance,
+                                                  "furnitures": furniture,
+                                                },
+                                              });
+                                              // final currentData = ref.read(contractDataProvider);
+                                              // print(currentData['checklist']['appliances']);
+
                                               print(hasData ? '更新資料' : '清除資料');
                                             } else {
                                               print("使用者未點擊確定，返回值為 null");
@@ -777,6 +806,16 @@ class _ContractNewStep3State extends State<ContractNewStep3> {
                       );
                     }),
                   ),
+                  // TextButton(
+                  //   onPressed: () {
+                  //     print('furniture');
+                  //     print(furniture);
+                  //     print('==========');
+                  //     print('appliance');
+                  //     print(appliance);
+                  //   },
+                  //   child: Text('test'),
+                  // ),
                 ],
               ),);
             },
