@@ -18,7 +18,8 @@ class _ContractNewCostState extends ConsumerState<ContractNewCost> {
   late List<dynamic> dataList;
 
   // final List<Widget> _customItems = [WaterFeeCard(),];
-  List<List<dynamic>> costList = [];
+  List<Map<String, dynamic>> costList = [];
+  // Map<String,  dynamic> costList = {};
 
   List<GlobalKey<_WaterFeeCardState>> _cardKeys = [];
 
@@ -59,15 +60,15 @@ class _ContractNewCostState extends ConsumerState<ContractNewCost> {
               bool hasError = false;
 
               for (int i = 0; i < costList.length; i++) {
-                if (costList[i][0] == true) {
+                if (costList[i]['enable'] == true) {
                   // 收費方式為空
-                  if (costList[i][4] == null || costList[i][4].toString().isEmpty) {
+                  if (costList[i]['method_name'] == null || costList[i]['method_name'].toString().isEmpty) {
                     _cardKeys[i].currentState?.showMethodValidationError();
                     hasError = true;
                   }
-                  if (!(costList[i][4] == '租客自繳' || costList[i][4] == '包含在租金')) {
+                  if (!(costList[i]['method_name'] == '租客自繳' || costList[i]['method_name'] == '包含在租金')) {
                     // 單價為空
-                    if (costList[i][5] == null || costList[i][5].toString().isEmpty) {
+                    if (costList[i]['pricing']['price'] == null || costList[i]['pricing']['price'].toString().isEmpty) {
                       _cardKeys[i].currentState?.showError(true);
                       hasError = true;
                     }
@@ -86,6 +87,7 @@ class _ContractNewCostState extends ConsumerState<ContractNewCost> {
                 ...map,
                 'utility_fees': costList,
               });
+              print(costList);
               Navigator.pop(context);
             },
             child: const Text(
@@ -128,8 +130,34 @@ class _ContractNewCostState extends ConsumerState<ContractNewCost> {
                       dataList = snapshot.data!;
                       costList = List.generate(
                         dataList.length,
-                            (index) => [false, dataList[index]['fee_name'], dataList[index]['billing_method'], dataList[index]['unit_title'], null, ''],
+                            (index) => {
+                          'fee_id': dataList[index]['fee_id'],
+                          'fee_name': dataList[index]['fee_name'],
+                          'billing_method': dataList[index]['billing_method'],
+                          'unit_title': dataList[index]['unit_title'],
+                          // 新增欄位
+                          'enable': false,
+                          'pricing': {
+                            'model_id': 0,
+                            'price': null,
+                            'currency': 'TWD',
+                          },
+                          'method_id': null,
+                          'method_name': null,
+                        },
                       );
+                      print(costList[0]);
+
+                      // costList = {
+                      //   for (var item in dataList)
+                      //     item['fee_name'].toString(): {
+                      //       'selected': false,
+                      //       'amount': null,
+                      //       "method_id": null,
+                      //       'billing_method': item['billing_method'],
+                      //       'unit_title': item['unit_title'],
+                      //     }
+                      // };
                     }
                     _cardKeys.clear(); // 清除舊的
                     _cardKeys = List.generate(costList.length, (index) => GlobalKey<_WaterFeeCardState>());
@@ -141,6 +169,14 @@ class _ContractNewCostState extends ConsumerState<ContractNewCost> {
                         costData: costList[index],
                       );
                     }),
+
+                    // children: costList.entries.map((entry) {
+                    //   final index = costList.keys.toList().indexOf(entry.key);
+                    //   return WaterFeeCard(
+                    //     key: _cardKeys[index],
+                    //     costData: entry.value,
+                    //   );
+                    // }).toList()
                   );
                 },
               ),
@@ -167,7 +203,7 @@ class _ContractNewCostState extends ConsumerState<ContractNewCost> {
 }
 
 class WaterFeeCard extends StatefulWidget {
-  final List<dynamic> costData;
+  final Map<String, dynamic> costData;
   const WaterFeeCard({super.key, required this.costData});
 
   @override
@@ -183,10 +219,10 @@ class _WaterFeeCardState extends State<WaterFeeCard> {
   @override
   void initState() {
     super.initState();
-    _controller.text = widget.costData[5] ?? '';
-    if (widget.costData[0]) {
-      selectedMethod = widget.costData[4];
-      _controller.text = widget.costData[5];
+    _controller.text = '';
+    if (widget.costData['enable']) {
+      selectedMethod = widget.costData['method_name'];
+      _controller.text = widget.costData['pricing']['price'].toString();
     }
   }
 
@@ -219,16 +255,16 @@ class _WaterFeeCardState extends State<WaterFeeCard> {
             children: [
               Switch(
                 activeColor: const Color(0xFF8C5F42),
-                value: widget.costData[0],
+                value: widget.costData['enable'],
                 onChanged: (val) {
                   setState(() {
-                    widget.costData[0] = val;
+                    widget.costData['enable'] = val;
                   });
                 },
               ),
               const SizedBox(width: 8),
               Text(
-                widget.costData[1],
+                widget.costData['fee_name'],
                 style: const TextStyle(fontSize: 15, fontFamily: 'PingFang TC'),
               ),
             ],
@@ -260,16 +296,16 @@ class _WaterFeeCardState extends State<WaterFeeCard> {
                       border: InputBorder.none,
                     ),
                     value: selectedMethod,
-                    items: widget.costData[2].map<DropdownMenuItem<String>>((item) {
+                    items: widget.costData['billing_method'].map<DropdownMenuItem<String>>((item) {
                       return DropdownMenuItem<String>(
                         value: item['method_name'],
                         child: Text(item['method_name']),
                       );
                     }).toList(),
-                    onChanged: !widget.costData[0] ? null : (value) {
+                    onChanged: !widget.costData['enable'] ? null : (value) {
                       setState(() {
                         selectedMethod = value!;
-                        widget.costData[4] = selectedMethod;
+                        widget.costData['method_name'] = selectedMethod;
                         showMethodError = false;
                       });
                     },
@@ -293,16 +329,16 @@ class _WaterFeeCardState extends State<WaterFeeCard> {
                       ),
                     ),
                     child: TextFormField(
-                      enabled: widget.costData[0],
+                      enabled: widget.costData['enable'],
                       controller: _controller,
                       decoration: InputDecoration(
-                        labelText: widget.costData[3],
+                        labelText: widget.costData['unit_title'],
                         border: InputBorder.none,
                       ),
                       keyboardType: TextInputType.number,
                       onChanged: (value) {
                         setState(() {
-                          widget.costData[5] = value;
+                          widget.costData['pricing']['price'] = value;
                           if (value.isNotEmpty) {
                             _showErrorBorder = false;
                           }

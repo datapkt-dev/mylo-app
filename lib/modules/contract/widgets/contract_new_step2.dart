@@ -30,6 +30,7 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
   int depositMonths = 0;
   late TextEditingController controllerAmount = TextEditingController();
   int total = 0;
+  String? selectedExpense;
   List<dynamic> costList = [];
   // Map<dynamic, dynamic> costList = {};
 
@@ -38,6 +39,7 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
   final String baseUrl = 'https://rencoo.com.tw';
   late final ApiService apiService;
   late Future<List<dynamic>> futureData;
+  late Future<List<dynamic>> futureCostData;
   late List<dynamic> dataList;
 
   @override
@@ -53,6 +55,7 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
 
     apiService = ApiService(baseUrl: baseUrl);
     futureData = apiService.fetchPayment();
+    futureCostData = apiService.fetchCost();
   }
 
   void updateTotal() {
@@ -367,6 +370,39 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
+                  // GestureDetector(
+                  //   onTap: () async {
+                  //     final result = await showModalBottomSheet<Map>(
+                  //       context: context,
+                  //       isScrollControlled: true,
+                  //       backgroundColor: Colors.white,
+                  //       builder: (context) {
+                  //         return StatefulBuilder(
+                  //           builder: (context, setModalState) {
+                  //             return Padding(
+                  //               padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                  //               child: SingleChildScrollView(
+                  //                 child: Container(
+                  //                   padding: const EdgeInsets.all(16),
+                  //                   child: selectedExpense == null
+                  //                       ? _buildExpenseSelection(setModalState)
+                  //                       : _buildExpenseInputForm(setModalState),
+                  //                 ),
+                  //               ),
+                  //             );
+                  //           },
+                  //         );
+                  //       },
+                  //     );
+                  //     if (result != null) {
+                  //       print('使用者輸入：$result');
+                  //     }
+                  //     setState(() {
+                  //       selectedExpense = null;
+                  //     });
+                  //   },
+                  //   child: Text('編輯'),
+                  // ),
                   GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -391,7 +427,7 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                         Row(
                           children: [
                             Text(
-                              costList[index][1],
+                              costList[index]['fee_name'],
                               style: const TextStyle(
                                 color: Color(0xFF2B2F35),
                                 fontSize: 15,
@@ -399,7 +435,7 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
-                            if (costList[index][0]) ...[
+                            if (costList[index]['enable']) ...[
                               const SizedBox(width: 8,),
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
@@ -408,7 +444,7 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                                 ),
                                 child: Text(
-                                  costList[index][4],
+                                  costList[index]['method_name'],
                                   style: TextStyle(
                                     color: const Color(0xFF22C555),
                                     fontSize: 12,
@@ -419,7 +455,7 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                               ),
                               const Spacer(),
                               Text(
-                                '\$ ${costList[index][5]} ${costList[index][3]}',
+                                '\$ ${costList[index]['pricing']['price'].toString()} ${costList[index]['unit_title']}',
                                 style: TextStyle(
                                   color: Color(0xFF2B2F35),
                                   fontSize: 15,
@@ -1061,6 +1097,285 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
         ),
       ),
       child: child,
+    );
+  }
+
+  Widget buildExpenseTile({
+    required String label,
+    required String imagePath,
+    required String value,
+    required String? selected,
+    required void Function() onTap,
+  }) {
+    final isSelected = selected == value;
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 78,
+        alignment: Alignment.center,
+        padding: const EdgeInsets.all(10),
+        decoration: ShapeDecoration(
+          color: isSelected ? const Color(0xFF319877) : const Color(0xFFF3F3F3),
+          shape: RoundedRectangleBorder(
+            side: BorderSide(
+              width: 1,
+              color: const Color(0xFFE3E7EA),
+            ),
+            borderRadius: BorderRadius.circular(4),
+          ),
+        ),
+        child: Column(
+          children: [
+            SizedBox(
+              width: 32,
+              height: 32,
+              child: Image.asset(imagePath),
+            ),
+            Text(
+              label,
+              style: TextStyle(
+                color: isSelected ? Colors.white : const Color(0xFF5F6E7B),
+                fontSize: 16,
+                fontFamily: 'PingFang SC',
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildExpenseSelection(StateSetter setModalState) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text('生活費用', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            Expanded(
+              child: Column(
+                children: [
+                  buildExpenseTile(
+                    label: '電費',
+                    imagePath: 'assets/images/electricity.png',
+                    value: 'electricity',
+                    selected: selectedExpense,
+                    onTap: () {
+                      setModalState(() {
+                        selectedExpense = '電費';
+                      });
+                    },
+                  ),
+                  SizedBox(height: 10,),
+                  buildExpenseTile(
+                    label: '管理費',
+                    imagePath: 'assets/images/electricity.png',
+                    value: 'electricity',
+                    selected: selectedExpense,
+                    onTap: () {
+                      setModalState(() {
+                        selectedExpense = '管理費';
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(width: 10,),
+            Expanded(
+              child: Column(
+                children: [
+                  buildExpenseTile(
+                    label: '水費',
+                    imagePath: 'assets/images/electricity.png',
+                    value: 'electricity',
+                    selected: selectedExpense,
+                    onTap: () {
+                      setModalState(() {
+                        selectedExpense = '水費';
+                      });
+                    },
+                  ),
+                  SizedBox(height: 10,),
+                  Container(
+                    height: 78,
+                    padding: const EdgeInsets.all(10),
+                    decoration: ShapeDecoration(
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                          width: 1,
+                          strokeAlign: BorderSide.strokeAlignCenter,
+                          color: Colors.white,
+                        ),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(width: 10,),
+            Expanded(
+              child: Column(
+                children: [
+                  buildExpenseTile(
+                    label: '瓦斯費',
+                    imagePath: 'assets/images/electricity.png',
+                    value: 'electricity',
+                    selected: selectedExpense,
+                    onTap: () {
+                      setModalState(() {
+                        selectedExpense = '瓦斯費';
+                      });
+                    },
+                  ),
+                  SizedBox(height: 10,),
+                  Container(
+                    height: 78,
+                    padding: const EdgeInsets.all(10),
+                    decoration: ShapeDecoration(
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                          width: 1,
+                          strokeAlign: BorderSide.strokeAlignCenter,
+                          color: Colors.white,
+                        ),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 20),
+        Row(
+          children: [
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  setModalState(() {
+                    // selectedExpense = null; // 點返回，回到支出列表
+                  });
+                },
+                child: Container(
+                  height: 40,
+                  alignment: Alignment.center,
+                  decoration: ShapeDecoration(
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(
+                        width: 1,
+                        color: const Color(0xFFCBD2D6),
+                      ),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                  child: Text(
+                    '返回',
+                    style: TextStyle(
+                      color: const Color(0xFF2B2F35),
+                      fontSize: 14,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(width: 16,),
+            Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    height: 40,
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                    clipBehavior: Clip.antiAlias,
+                    decoration: ShapeDecoration(
+                      color: const Color(0xFF319877),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                    ),
+                    child: Text(
+                      '下一步',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontFamily: 'PingFang SC',
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                )
+            ),
+          ],
+        ),
+        const SizedBox(height: 20),
+        // 可以加返回、取消等等
+      ],
+    );
+  }
+
+  Widget _buildExpenseInputForm(StateSetter setModalState) {
+    TextEditingController amountController = TextEditingController();
+    TextEditingController remarkController = TextEditingController();
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          '$selectedExpense 計費資訊',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+        ),
+        const SizedBox(height: 16),
+        TextField(
+          controller: amountController,
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(labelText: '費用金額'),
+        ),
+        const SizedBox(height: 12),
+        TextField(
+          controller: remarkController,
+          decoration: InputDecoration(labelText: '備註（可選）'),
+        ),
+        const SizedBox(height: 24),
+        Row(
+          children: [
+            Expanded(
+              child: ElevatedButton(
+                onPressed: () {
+                  setModalState(() {
+                    selectedExpense = null; // 回到選單畫面
+                  });
+                },
+                child: Text('返回'),
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context, {
+                    'type': selectedExpense,
+                    'amount': amountController.text,
+                    'remark': remarkController.text,
+                  });
+                },
+                child: Text('儲存'),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 20),
+      ],
     );
   }
 }
