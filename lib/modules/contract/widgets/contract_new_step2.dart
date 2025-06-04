@@ -879,7 +879,7 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                                                 if (result != null) {
                                                   setState(() {
                                                     customerData[index] = {
-                                                      "role": result[0],//0:主要簽約人 1:共同簽約人 2:保證人
+                                                      "role": result[0],
                                                       "name": result[1],
                                                       "national_id_number": result[2],
                                                       "date_of_birth": result[3],
@@ -1445,6 +1445,14 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
     TextEditingController amountController = TextEditingController();
     TextEditingController remarkController = TextEditingController();
 
+    List<String> method = ['租客自繳', '含在租金內', '月繳', '季繳', '年繳',];
+    int? selectedMethod;
+
+    List<String> billingTypes= ['每單位', '固定金額',];
+    int? billing = 0;
+
+    final TextEditingController controller = TextEditingController();
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -1452,42 +1460,236 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
           '$selectedExpense 計費資訊',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
         ),
-        const SizedBox(height: 16),
-        TextField(
-          controller: amountController,
-          keyboardType: TextInputType.number,
-          decoration: InputDecoration(labelText: '費用金額'),
+        // const SizedBox(height: 16),
+        // TextField(
+        //   controller: amountController,
+        //   keyboardType: TextInputType.number,
+        //   decoration: InputDecoration(labelText: '費用金額'),
+        // ),
+        // const SizedBox(height: 12),
+        // TextField(
+        //   controller: remarkController,
+        //   decoration: InputDecoration(labelText: '備註（可選）'),
+        // ),
+        // const SizedBox(height: 24),
+        // Row(
+        //   children: [
+        //     Expanded(
+        //       child: ElevatedButton(
+        //         onPressed: () {
+        //           setModalState(() {
+        //             selectedExpense = null; // 回到選單畫面
+        //           });
+        //         },
+        //         child: Text('返回'),
+        //       ),
+        //     ),
+        //     const SizedBox(width: 16),
+        //     Expanded(
+        //       child: ElevatedButton(
+        //         onPressed: () {
+        //           Navigator.pop(context, {
+        //             'type': selectedExpense,
+        //             'amount': amountController.text,
+        //             'remark': remarkController.text,
+        //           });
+        //         },
+        //         child: Text('儲存'),
+        //       ),
+        //     ),
+        //   ],
+        // ),
+        // const SizedBox(height: 20),
+        Theme(
+          data: Theme.of(context).copyWith(
+            unselectedWidgetColor: Colors.grey, // ← 這裡改未選中的顏色
+          ),
+          child: Row(
+            children: List.generate(billingTypes.length, (index) {
+              return Row(
+                children: [
+                  Radio(
+                    value: index,
+                    groupValue: billing,
+                    onChanged: (value) {
+                      setState(() {
+                        billing = value;
+                        // widget.costData['pricing']['model'] = billing + 1;
+                      });
+                    },
+                    activeColor: const Color(0xFF8C5F42),
+                  ),
+                  Text(
+                    billingTypes[index],
+                    style: TextStyle(
+                      color: Colors.grey,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                ],
+              );
+            }),
+          ),
         ),
-        const SizedBox(height: 12),
-        TextField(
-          controller: remarkController,
-          decoration: InputDecoration(labelText: '備註（可選）'),
-        ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 10),
         Row(
           children: [
             Expanded(
-              child: ElevatedButton(
-                onPressed: () {
-                  setModalState(() {
-                    selectedExpense = null; // 回到選單畫面
-                  });
-                },
-                child: Text('返回'),
+              child: Container(
+                height: 55,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                decoration: ShapeDecoration(
+                  color: const Color(0xFFF4F6F7),
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide(
+                      width: 1,
+                      color: const Color(0xFFF4F6F7),
+                    ),
+                    borderRadius: BorderRadius.circular(3),
+                  ),
+                ),
+                child: // 收費方式 Dropdown
+                DropdownButtonFormField<int>(
+                  isExpanded: true,
+                  decoration: InputDecoration(
+                    labelText: '收費方式',
+                    errorText: null,
+                    contentPadding: EdgeInsets.zero,
+                    border: InputBorder.none,
+                  ),
+                  value: selectedMethod,
+                  items: List.generate(method.length, (index) {
+                    return DropdownMenuItem<int>(
+                      value: index,
+                      child: Text(method[index]),
+                    );
+                  }),
+                  // onChanged: !widget.costData['enable'] ? null : (value) {
+                  //   setState(() {
+                  //     selectedMethod = value!;
+                  //
+                  //     final selected = widget.costData['billing_method']
+                  //         .firstWhere((item) => item['method_name'] == selectedMethod, orElse: () => null);
+                  //
+                  //     if (selected != null) {
+                  //       selectedMethodId = selected['method_id'];
+                  //       widget.costData['method_id'] = selectedMethodId;
+                  //     }
+                  //
+                  //     // widget.costData['method_id'] = selectedMethodId;
+                  //     widget.costData['method_name'] = selectedMethod;
+                  //     showMethodError = false;
+                  //   });
+                  // },
+                  onChanged: (int? newValue) {
+                    // 更新選取的值
+                    selectedMethod = newValue;
+                    // 如果你在 StatefulWidget 中，記得加 setState()
+                    // setState(() {});
+                  },
+                ),
               ),
             ),
-            const SizedBox(width: 16),
+            if (!(selectedMethod == 0 || selectedMethod == 1)) ...[
+              const SizedBox(width: 16),
+              Expanded(
+                child: Container(
+                  height: 55,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  decoration: ShapeDecoration(
+                    color: const Color(0xFFF4F6F7),
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(
+                        width: 1,
+                        color: const Color(0xFFF4F6F7),
+                      ),
+                      borderRadius: BorderRadius.circular(3),
+                    ),
+                  ),
+                  child: TextFormField(
+                    // enabled: widget.costData['enable'],
+                    controller: controller,
+                    decoration: InputDecoration(
+                      // labelText: widget.costData['unit_title'],
+                      border: InputBorder.none,
+                    ),
+                    keyboardType: TextInputType.number,
+                    onChanged: (value) {
+                      // setState(() {
+                      //   widget.costData['pricing']['input'] = value;
+                      //   if (value.isNotEmpty) {
+                      //     _showErrorBorder = false;
+                      //   }
+                      // });
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
+        const SizedBox(height: 20),
+        Row(
+          children: [
             Expanded(
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context, {
-                    'type': selectedExpense,
-                    'amount': amountController.text,
-                    'remark': remarkController.text,
+              child: GestureDetector(
+                onTap: () {
+                  setModalState(() {
+                    selectedExpense = null; // 點返回，回到支出列表
                   });
                 },
-                child: Text('儲存'),
+                child: Container(
+                  height: 40,
+                  alignment: Alignment.center,
+                  decoration: ShapeDecoration(
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(
+                        width: 1,
+                        color: const Color(0xFFCBD2D6),
+                      ),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                  child: Text(
+                    '返回',
+                    style: TextStyle(
+                      color: const Color(0xFF2B2F35),
+                      fontSize: 14,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
               ),
+            ),
+            SizedBox(width: 16,),
+            Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    height: 40,
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                    clipBehavior: Clip.antiAlias,
+                    decoration: ShapeDecoration(
+                      color: const Color(0xFF319877),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                    ),
+                    child: Text(
+                      '確定',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontFamily: 'PingFang SC',
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                )
             ),
           ],
         ),
