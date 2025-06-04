@@ -1665,31 +1665,31 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
             ),
             SizedBox(width: 16,),
             Expanded(
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Container(
-                    height: 40,
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                    clipBehavior: Clip.antiAlias,
-                    decoration: ShapeDecoration(
-                      color: const Color(0xFF319877),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                    ),
-                    child: Text(
-                      '確定',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontFamily: 'PingFang SC',
-                        fontWeight: FontWeight.w500,
-                      ),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Container(
+                  height: 40,
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  clipBehavior: Clip.antiAlias,
+                  decoration: ShapeDecoration(
+                    color: const Color(0xFF319877),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                  ),
+                  child: Text(
+                    '確定',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontFamily: 'PingFang SC',
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
-                )
+                ),
+              ),
             ),
           ],
         ),
