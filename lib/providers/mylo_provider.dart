@@ -11,13 +11,14 @@ final contractDataProvider = StateProvider<Map<String, dynamic>>((ref) => {
     "amount": 0,
   },
   "deposit":{
-    "deposit_months": null,      // 0 = 固定金額, 1 = 期數
+    "deposit_months": 0,      // 0 = 固定金額, 1 = 期數
     "deposit_amount": null,
   },
   // "rent": 0,
   // "deposit_months": 0,      // 0 = 固定金額, 1 = 月數
   // "deposit_amount": 0,   // 當 deposit_type = 0 時才生效
   "utility_fees": [],
+  "utility_fees_temp": [],
   // {
     // "electricity_fee": {
     //   "amount": 1500,       // 電費金額

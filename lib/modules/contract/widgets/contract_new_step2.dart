@@ -51,7 +51,8 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
     rent = contractData['rent']['amount'];
     selectedMethodId = contractData['rent']['method_id'];
     // depositMonths = contractData['deposit_months'];
-    depositMonths = 0;
+    depositType = contractData['deposit']['deposit_months'] == 0 && contractData['deposit']['deposit_amount'] == null ? 0 : contractData['deposit']['deposit_months'] > 0 ? 0 : 1;
+    depositMonths = contractData['deposit']['deposit_months'];
     controllerRent = TextEditingController(text: rent.toString());
     // controllerAmount = TextEditingController(text: contractData['deposit']['deposit_amount'].toString());
     controllerAmount = TextEditingController(
@@ -89,7 +90,7 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
   @override
   Widget build(BuildContext context) {
     final contractData = ref.watch(contractDataProvider);
-    costList = contractData['utility_fees'];
+    costList = contractData['utility_fees_temp'];
     customerData = contractData['signatories'];
     return SingleChildScrollView(
       child: Column(
@@ -209,7 +210,7 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                                     ref.read(contractDataProvider.notifier).update((map) => {
                                       ...map,
                                       'rent': {
-                                        "method_id": selectedMethodId!+2,
+                                        ...?map['rent'],
                                         "amount": rent,
                                       },
                                     });
@@ -273,12 +274,15 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                               onChanged: (value) {
                                 setState(() {
                                   depositType = value!;
+                                  if (depositType == 1) {
+                                    depositMonths = 0;
+                                  }
                                   updateTotal();
                                 });
                                 ref.read(contractDataProvider.notifier).update((map) => {
                                   ...map,
                                   'deposit': {
-                                    "deposit_months": depositType,
+                                    "deposit_months": depositMonths,
                                     "deposit_amount": total,
                                   },
                                 });
@@ -310,7 +314,7 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                                 ref.read(contractDataProvider.notifier).update((map) => {
                                   ...map,
                                   'deposit': {
-                                    "deposit_months": depositType,
+                                    "deposit_months": depositMonths,
                                     "deposit_amount": total,
                                   },
                                 });
@@ -331,7 +335,7 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                                 ref.read(contractDataProvider.notifier).update((map) => {
                                   ...map,
                                   'deposit': {
-                                    "deposit_months": depositType,
+                                    "deposit_months": depositMonths,
                                     "deposit_amount": total,
                                   },
                                 });
@@ -365,7 +369,7 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                                 ref.read(contractDataProvider.notifier).update((map) => {
                                   ...map,
                                   'deposit': {
-                                    "deposit_months": depositType,
+                                    "deposit_months": depositMonths,
                                     "deposit_amount": total,
                                   },
                                 });
@@ -392,7 +396,6 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     '生活費用',
@@ -403,39 +406,40 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  // GestureDetector(
-                  //   onTap: () async {
-                  //     final result = await showModalBottomSheet<Map>(
-                  //       context: context,
-                  //       isScrollControlled: true,
-                  //       backgroundColor: Colors.white,
-                  //       builder: (context) {
-                  //         return StatefulBuilder(
-                  //           builder: (context, setModalState) {
-                  //             return Padding(
-                  //               padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-                  //               child: SingleChildScrollView(
-                  //                 child: Container(
-                  //                   padding: const EdgeInsets.all(16),
-                  //                   child: selectedExpense == null
-                  //                       ? _buildExpenseSelection(setModalState)
-                  //                       : _buildExpenseInputForm(setModalState),
-                  //                 ),
-                  //               ),
-                  //             );
-                  //           },
-                  //         );
-                  //       },
-                  //     );
-                  //     if (result != null) {
-                  //       print('使用者輸入：$result');
-                  //     }
-                  //     setState(() {
-                  //       selectedExpense = null;
-                  //     });
-                  //   },
-                  //   child: Text('編輯'),
-                  // ),
+                  Spacer(),
+                  GestureDetector(
+                    onTap: () async {
+                      final result = await showModalBottomSheet<Map>(
+                        context: context,
+                        isScrollControlled: true,
+                        backgroundColor: Colors.white,
+                        builder: (context) {
+                          return StatefulBuilder(
+                            builder: (context, setModalState) {
+                              return Padding(
+                                padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                                child: SingleChildScrollView(
+                                  child: Container(
+                                    padding: const EdgeInsets.all(16),
+                                    child: selectedExpense == null
+                                        ? _buildExpenseSelection(setModalState)
+                                        : _buildExpenseInputForm(setModalState),
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      );
+                      if (result != null) {
+                        print('使用者輸入：$result');
+                      }
+                      setState(() {
+                        selectedExpense = null;
+                      });
+                    },
+                    child: Text('編輯'),
+                  ),
                   GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -443,6 +447,7 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                         MaterialPageRoute(builder: (context) => ContractNewCost()),
                       ).then((result) {
                         print('生活費用返回');
+                        print(costList);
                       });
                     },
                     child: Text('編輯'),
@@ -451,16 +456,19 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
               ),
               const SizedBox(height: 16,),
               Column(
-                children: List.generate(costList.length, (index) {
+                children: costList
+                    .where((item) => item['enable'] == true)
+                    .map<Widget>((item) {
+                      print(item);
                   return Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.only(bottom: 16,),
+                    padding: const EdgeInsets.only(bottom: 16),
                     child: Column(
                       children: [
                         Row(
                           children: [
                             Text(
-                              costList[index]['fee_name'],
+                              item['fee_name'],
                               style: const TextStyle(
                                 color: Color(0xFF2B2F35),
                                 fontSize: 15,
@@ -468,63 +476,118 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
-                            if (costList[index]['enable']) ...[
-                              const SizedBox(width: 8,),
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                decoration: ShapeDecoration(
-                                  color: const Color(0xFFDCFCE5),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                                ),
-                                child: Text(
-                                  costList[index]['method_name'],
-                                  style: TextStyle(
-                                    color: const Color(0xFF22C555),
-                                    fontSize: 12,
-                                    fontFamily: 'PingFang SC',
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
+                            const SizedBox(width: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                              decoration: ShapeDecoration(
+                                color: const Color(0xFFDCFCE5),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                               ),
-                              const Spacer(),
-                              Text(
-                                '\$ ${costList[index]['pricing']['input'].toString()} ${costList[index]['unit_title']}',
-                                style: TextStyle(
-                                  color: Color(0xFF2B2F35),
-                                  fontSize: 15,
-                                  fontFamily: 'PingFang TC',
+                              child: Text(
+                                item['method_name'] ?? '未註明',
+                                style: const TextStyle(
+                                  color: Color(0xFF22C555),
+                                  fontSize: 12,
+                                  fontFamily: 'PingFang SC',
                                   fontWeight: FontWeight.w400,
                                 ),
                               ),
-                            ] else ...[
-                              const SizedBox(width: 8,),
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                decoration: ShapeDecoration(
-                                  color: const Color(0xFFE3E7EA),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                                ),
-                                child: Text(
-                                  '未註明',
-                                  style: TextStyle(
-                                    color: const Color(0xFF7B8A95),
-                                    fontSize: 12,
-                                    fontFamily: 'PingFang SC',
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
+                            ),
+                            const Spacer(),
+                            Text(
+                              '\$ ${item['pricing']['input'] ?? ''} ${item['unit_title']}',
+                              style: const TextStyle(
+                                color: Color(0xFF2B2F35),
+                                fontSize: 15,
+                                fontFamily: 'PingFang TC',
+                                fontWeight: FontWeight.w400,
                               ),
-                              const Spacer(),
-                            ],
+                            ),
                           ],
                         ),
-                        const SizedBox(height: 8,),
-                        index < costList.length-1 ? const Divider(thickness: 1, color: Color(0xFFCBD2D6)) : SizedBox.shrink(),
+                        const SizedBox(height: 8),
+                        const Divider(thickness: 1, color: Color(0xFFCBD2D6)),
                       ],
                     ),
                   );
-                }),
-              ),
+                })
+                    .toList(),
+              )
+              // Column(
+              //   children: List.generate(costList.length, (index) {
+              //     return Container(
+              //       width: double.infinity,
+              //       padding: const EdgeInsets.only(bottom: 16,),
+              //       child: Column(
+              //         children: [
+              //           Row(
+              //             children: [
+              //               Text(
+              //                 costList[index]['fee_name'],
+              //                 style: const TextStyle(
+              //                   color: Color(0xFF2B2F35),
+              //                   fontSize: 15,
+              //                   fontFamily: 'PingFang TC',
+              //                   fontWeight: FontWeight.w400,
+              //                 ),
+              //               ),
+              //               if (costList[index]['enable']) ...[
+              //                 const SizedBox(width: 8,),
+              //                 Container(
+              //                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              //                   decoration: ShapeDecoration(
+              //                     color: const Color(0xFFDCFCE5),
+              //                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+              //                   ),
+              //                   child: Text(
+              //                     costList[index]['method_name'],
+              //                     style: TextStyle(
+              //                       color: const Color(0xFF22C555),
+              //                       fontSize: 12,
+              //                       fontFamily: 'PingFang SC',
+              //                       fontWeight: FontWeight.w400,
+              //                     ),
+              //                   ),
+              //                 ),
+              //                 const Spacer(),
+              //                 Text(
+              //                   '\$ ${costList[index]['pricing']['input'].toString()} ${costList[index]['unit_title']}',
+              //                   style: TextStyle(
+              //                     color: Color(0xFF2B2F35),
+              //                     fontSize: 15,
+              //                     fontFamily: 'PingFang TC',
+              //                     fontWeight: FontWeight.w400,
+              //                   ),
+              //                 ),
+              //               ] else ...[
+              //                 const SizedBox(width: 8,),
+              //                 Container(
+              //                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              //                   decoration: ShapeDecoration(
+              //                     color: const Color(0xFFE3E7EA),
+              //                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+              //                   ),
+              //                   child: Text(
+              //                     '未註明',
+              //                     style: TextStyle(
+              //                       color: const Color(0xFF7B8A95),
+              //                       fontSize: 12,
+              //                       fontFamily: 'PingFang SC',
+              //                       fontWeight: FontWeight.w400,
+              //                     ),
+              //                   ),
+              //                 ),
+              //                 const Spacer(),
+              //               ],
+              //             ],
+              //           ),
+              //           const SizedBox(height: 8,),
+              //           index < costList.length-1 ? const Divider(thickness: 1, color: Color(0xFFCBD2D6),) : SizedBox.shrink(),
+              //         ],
+              //       ),
+              //     );
+              //   }),
+              // ),
             ],
           )),
           const SizedBox(height: 16,),
@@ -766,13 +829,13 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                               decoration: ShapeDecoration(
-                                color: customerData[index]['role'] == 1 ? const Color(0xFFD9F2E5) : const Color(0xFFE3E7EA),
+                                color: customerData[index]['role'] == 0 ? const Color(0xFFD9F2E5) : const Color(0xFFE3E7EA),
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                               ),
                               child: Text(
-                                customerData[index]['role'] == 1 ? '主要簽約人' : '共同簽約人',
+                                customerData[index]['role'] == 0 ? '主要簽約人' : '共同簽約人',
                                 style: TextStyle(
-                                  color: customerData[index]['role'] == 1 ? const Color(0xFF248568) : const Color(0xFF7B8A95),
+                                  color: customerData[index]['role'] == 0 ? const Color(0xFF248568) : const Color(0xFF7B8A95),
                                   fontSize: 12,
                                   fontFamily: 'PingFang SC',
                                   fontWeight: FontWeight.w400,
@@ -813,10 +876,7 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                                                 context,
                                                 MaterialPageRoute(builder: (context) => ContractNewCustomer(dataPass: customerData[index],)),
                                               ).then((result) {
-                                                print('result');
-                                                print(result);
                                                 if (result != null) {
-                                                  print('result not null');
                                                   setState(() {
                                                     customerData[index] = {
                                                       "role": result[0],//0:主要簽約人 1:共同簽約人 2:保證人

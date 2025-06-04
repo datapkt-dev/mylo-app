@@ -21,6 +21,8 @@ class _ContractNewCustomerState extends State<ContractNewCustomer> {
   DateTime birthday = DateTime.now();
   bool native = true;
 
+  int? selectedRole;
+  List<String> role = ['主要簽約人', '共同簽約人', '保證人',];
   final TextEditingController nameController = TextEditingController();
   final TextEditingController idController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
@@ -42,7 +44,7 @@ class _ContractNewCustomerState extends State<ContractNewCustomer> {
     apiService = ApiService(baseUrl: baseUrl);
     futureData = apiService.fetchCity();
 
-    customerData[0] = false;
+    customerData[0] = widget.dataPass['role'];
     nameController.text = widget.dataPass['name'];
     idController.text = widget.dataPass['national_id_number'];
     birthday = (widget.dataPass['date_of_birth'] == null || widget.dataPass['date_of_birth'].isEmpty)
@@ -94,7 +96,7 @@ class _ContractNewCustomerState extends State<ContractNewCustomer> {
           GestureDetector(
             onTap: () {
               if (nameController.text != '') {
-                customerData[0] = 1;
+                customerData[0] = selectedRole;
                 customerData[1] = nameController.text;
                 customerData[2] = idController.text;
                 customerData[3] = DateFormat('yyyy-MM-dd').format(birthday);
@@ -109,7 +111,6 @@ class _ContractNewCustomerState extends State<ContractNewCustomer> {
                   'https://cdn.example.com/ids/ming_front.jpg',
                   'https://cdn.example.com/ids/ming_back.jpg',
                 ];
-                print(customerData);
                 Navigator.pop(context, customerData);
               } else {
                 Fluttertoast.showToast(msg: "請檢查姓名不可為空");
@@ -146,31 +147,70 @@ class _ContractNewCustomerState extends State<ContractNewCustomer> {
                     ),
                   ),
                   const SizedBox(height: 8,),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
-                    decoration: ShapeDecoration(
-                      color: const Color(0xFFF4F6F7),
-                      shape: RoundedRectangleBorder(
-                        side: const BorderSide(width: 1, color: Color(0xFFF4F6F7)),
-                        borderRadius: BorderRadius.circular(3),
-                      ),
-                    ),
-                    child: TextField(
-                      controller: nameController,
-                      maxLines: 1,
-                      decoration: const InputDecoration(
-                        hintText: '簽約人姓名',
-                        hintStyle: TextStyle(
-                          color: Color(0xFF7B8A95),
-                          fontSize: 15,
-                          fontFamily: 'PingFang TC',
-                          fontWeight: FontWeight.w400,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                          decoration: ShapeDecoration(
+                            color: const Color(0xFFF4F6F7),
+                            shape: RoundedRectangleBorder(
+                              side: const BorderSide(width: 1, color: Color(0xFFF4F6F7)),
+                              borderRadius: BorderRadius.circular(3),
+                            ),
+                          ),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<int>(
+                              isExpanded: true,
+                              value: selectedRole,
+                              icon: const Icon(Icons.arrow_drop_down),
+                              hint: const Text("簽約人身份"), // 當還沒選擇時的顯示
+                              // 下拉選單內容 (items)
+                              items: List.generate(role.length, (index) {
+                                return DropdownMenuItem<int>(
+                                  value: index,
+                                  child: Text(role[index]),
+                                );
+                              }),
+                              onChanged: (int? newValue) {
+                                setState(() {
+                                  selectedRole = newValue;
+                                });
+                              },
+                            ),
+                          ),
                         ),
-                        border: InputBorder.none,
                       ),
-                      onChanged: (value) {},
-                    ),
+                      const SizedBox(width: 8,),
+                      Expanded(
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                          decoration: ShapeDecoration(
+                            color: const Color(0xFFF4F6F7),
+                            shape: RoundedRectangleBorder(
+                              side: const BorderSide(width: 1, color: Color(0xFFF4F6F7)),
+                              borderRadius: BorderRadius.circular(3),
+                            ),
+                          ),
+                          child: TextField(
+                            controller: nameController,
+                            maxLines: 1,
+                            decoration: const InputDecoration(
+                              hintText: '簽約人姓名',
+                              hintStyle: TextStyle(
+                                color: Color(0xFF7B8A95),
+                                fontSize: 15,
+                                fontFamily: 'PingFang TC',
+                                fontWeight: FontWeight.w400,
+                              ),
+                              border: InputBorder.none,
+                            ),
+                            onChanged: (value) {},
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 24,),
                   const Text(

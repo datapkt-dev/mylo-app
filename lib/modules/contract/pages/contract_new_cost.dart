@@ -83,7 +83,7 @@ class _ContractNewCostState extends ConsumerState<ContractNewCost> {
 
               ref.read(contractDataProvider.notifier).update((map) => {
                 ...map,
-                'utility_fees': costList,
+                'utility_fees_temp': costList,
               });
               Navigator.pop(context);
             },
@@ -121,8 +121,8 @@ class _ContractNewCostState extends ConsumerState<ContractNewCost> {
                   }
                   if (snapshot.hasData) {
                     final contractData = ref.watch(contractDataProvider);
-                    if (contractData['utility_fees'].isNotEmpty) {
-                      costList = contractData['utility_fees'];
+                    if (contractData['utility_fees_temp'].isNotEmpty) {
+                      costList = contractData['utility_fees_temp'];
                     } else {
                       dataList = snapshot.data!;
                       costList = List.generate(
@@ -213,7 +213,7 @@ class _WaterFeeCardState extends State<WaterFeeCard> {
   bool _showErrorBorder = false;
   bool showMethodError = false;
 
-  List<String> billingTypes= ['每期租金', '固定金額',];
+  List<String> billingTypes= ['每單位', '固定金額',];
   int billing = 0;
 
   @override

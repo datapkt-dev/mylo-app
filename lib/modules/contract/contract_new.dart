@@ -46,13 +46,14 @@ class _ContractNewState extends ConsumerState<ContractNew> {
           "amount": 0,
         },
         "deposit":{
-          "deposit_months": null,      // 0 = 固定金額, 1 = 期數
+          "deposit_months": 0,      // 0 = 固定金額, 1 = 期數
           "deposit_amount": null,
         },
         // "rent": 0,
         // "deposit_months": 0,
         // "deposit_amount": 0,
         "utility_fees": [],
+        "utility_fees_temp": [],
         "signatories": [],
         "checklist": {
           "appliances": [],
@@ -204,7 +205,7 @@ class _ContractNewState extends ConsumerState<ContractNew> {
                     } else if (_currentStep == 2) {
                       ref.read(contractDataProvider.notifier).update((data) => {
                         ...data,
-                        'utility_fees': (data['utility_fees'] as List)
+                        'utility_fees': (data['utility_fees_temp'] as List)
                             .where((fee) => fee['enable'] == true)
                             .toList(),
                       });
@@ -216,8 +217,6 @@ class _ContractNewState extends ConsumerState<ContractNew> {
                       //   _currentStep = _currentStep+1;
                       // });
                     } else {
-                      print('next');
-                      print(currentData);
                       setState(() {
                         _currentStep = _currentStep+1;
                       });
