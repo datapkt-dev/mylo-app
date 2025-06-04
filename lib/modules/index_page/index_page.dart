@@ -33,15 +33,13 @@ class _IndexPageState extends State<IndexPage> {
         automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
         centerTitle: false,
-        title: Container(
-          child: Text(
-            '麥落',
-            style: TextStyle(
-              color: Color(0xFF202531),
-              fontSize: 22,
-              fontFamily: 'PingFang TC',
-              fontWeight: FontWeight.w400,
-            ),
+        title: Text(
+          '麥落',
+          style: TextStyle(
+            color: Color(0xFF202531),
+            fontSize: 22,
+            fontFamily: 'PingFang TC',
+            fontWeight: FontWeight.w400,
           ),
         ),
       ),

@@ -231,11 +231,11 @@ class _PageFrameState extends State<IndexFrame> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildBottomNavigationBarItem(
-                0,
-                'assets/icons/frame/index.svg',
-                '首頁',
-              ),
+              // _buildBottomNavigationBarItem(
+              //   0,
+              //   'assets/icons/frame/index.svg',
+              //   '首頁',
+              // ),
               _buildBottomNavigationBarItem(
                 1,
                 'assets/icons/frame/property.svg',
