@@ -81,8 +81,6 @@ class _ContractNewCostState extends ConsumerState<ContractNewCost> {
                 return;
               }
 
-              // final filteredList = costList.where((item) => item[0] == true).toList();
-              // print(filteredList);
               ref.read(contractDataProvider.notifier).update((map) => {
                 ...map,
                 'utility_fees': costList,
@@ -215,6 +213,9 @@ class _WaterFeeCardState extends State<WaterFeeCard> {
   bool _showErrorBorder = false;
   bool showMethodError = false;
 
+  List<String> billingTypes= ['每期租金', '固定金額',];
+  int billing = 0;
+
   @override
   void initState() {
     super.initState();
@@ -223,6 +224,7 @@ class _WaterFeeCardState extends State<WaterFeeCard> {
       selectedMethodId = widget.costData['method_id'];
       selectedMethod = widget.costData['method_name'];
       _controller.text = widget.costData['pricing']['input'].toString();
+      billing = widget.costData['pricing']['model'];
     }
   }
 
@@ -269,7 +271,41 @@ class _WaterFeeCardState extends State<WaterFeeCard> {
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          Theme(
+            data: Theme.of(context).copyWith(
+              unselectedWidgetColor: Colors.grey, // ← 這裡改未選中的顏色
+            ),
+            child: Row(
+              children: List.generate(billingTypes.length, (index) {
+                final isEnabled = widget.costData['enable'];
+                return Row(
+                  children: [
+                    Radio(
+                      value: index,
+                      groupValue: billing,
+                      onChanged: isEnabled
+                          ? (value) {
+                        setState(() {
+                          billing = value as int;
+                          widget.costData['pricing']['model'] = billing + 1;
+                        });
+                      }
+                          : null,
+                      activeColor: isEnabled ? const Color(0xFF8C5F42) : Colors.grey,
+                    ),
+                    Text(
+                      billingTypes[index],
+                      style: TextStyle(
+                        color: isEnabled ? Colors.black : Colors.grey, // 禁用時變灰
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                  ],
+                );
+              }),
+            ),
+          ),
+          const SizedBox(height: 10),
           Row(
             children: [
               Expanded(

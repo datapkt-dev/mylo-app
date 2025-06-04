@@ -57,6 +57,12 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
     controllerAmount = TextEditingController(
       text: contractData['deposit']?['deposit_amount']?.toString() ?? '',
     );
+    effective = contractData['lease_start'] != null
+        ? DateTime.parse(contractData['lease_start'])
+        : null;
+    expiration = contractData['lease_end'] != null
+        ? DateTime.parse(contractData['lease_end'])
+        : null;
     updateTotal();
 
     apiService = ApiService(baseUrl: baseUrl);
@@ -284,23 +290,6 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                           ],
                         );
                       }),
-                      // children: [
-                      //   Radio(
-                      //     value: true,
-                      //     groupValue: true,
-                      //     onChanged: (_) {},
-                      //     activeColor: Color(0xFF8C5F42),
-                      //   ),
-                      //   const Text('每月租金'),
-                      //   const SizedBox(width: 16),
-                      //   Radio(
-                      //     value: false,
-                      //     groupValue: true,
-                      //     onChanged: (_) {},
-                      //     activeColor: Color(0xFF8C5F42),
-                      //   ),
-                      //   const Text('固定金額'),
-                      // ],
                     ),
                     const SizedBox(height: 8),
                     Row(
