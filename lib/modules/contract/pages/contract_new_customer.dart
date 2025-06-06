@@ -44,7 +44,7 @@ class _ContractNewCustomerState extends State<ContractNewCustomer> {
     apiService = ApiService(baseUrl: baseUrl);
     futureData = apiService.fetchCity();
 
-    customerData[0] = widget.dataPass['role'];
+    selectedRole = widget.dataPass['role'];
     nameController.text = widget.dataPass['name'];
     idController.text = widget.dataPass['national_id_number'];
     birthday = (widget.dataPass['date_of_birth'] == null || widget.dataPass['date_of_birth'].isEmpty)
@@ -420,7 +420,7 @@ class _ContractNewCustomerState extends State<ContractNewCustomer> {
                                   items: districtList.map((district) {
                                     return DropdownMenuItem<String>(
                                       value: district['district_name'],  // 實際的 value 是 student_id
-                                      child: Text(district['district_name']), // 顯示的文字是學生名稱
+                                      child: Text(district['district_name']??''), // 顯示的文字是學生名稱
                                     );
                                   }).toList(),
                                   onTap: () {
