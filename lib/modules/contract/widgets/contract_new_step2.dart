@@ -1405,187 +1405,205 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
   }
 
   Widget _buildExpenseSelection(StateSetter setModalState) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text('生活費用', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-        const SizedBox(height: 16),
-        Row(
+    return FutureBuilder(
+      future: futureCostData,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError) {
+          return Center(
+            child: Text(
+              '發生錯誤: ${snapshot.error}',
+              style: const TextStyle(color: Colors.red, fontSize: 16),
+            ),
+          );
+        }
+        // if (snapshot.hasData) {
+        // }
+        return Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Expanded(
-              child: Column(
-                children: [
-                  buildExpenseTile(
-                    label: '電費',
-                    image: SvgPicture.asset(
-                      'assets/icons/cost_bill/electricity.svg',
-                      width: 17,
-                      height: 22,
-                    ),
-                    value: 'electricity',
-                    selected: selectedExpense,
-                    onTap: () {
-                      setModalState(() {
-                        selectedExpense = '電費';
-                      });
-                    },
-                  ),
-                  SizedBox(height: 10,),
-                  buildExpenseTile(
-                    label: '管理費',
-                    image: SvgPicture.asset('assets/icons/cost_bill/management_cost.svg'),
-                    value: 'electricity',
-                    selected: selectedExpense,
-                    onTap: () {
-                      setModalState(() {
-                        selectedExpense = '管理費';
-                      });
-                    },
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(width: 10,),
-            Expanded(
-              child: Column(
-                children: [
-                  buildExpenseTile(
-                    label: '水費',
-                    image: SvgPicture.asset('assets/icons/cost_bill/water.svg'),
-                    value: 'electricity',
-                    selected: selectedExpense,
-                    onTap: () {
-                      setModalState(() {
-                        selectedExpense = '水費';
-                      });
-                    },
-                  ),
-                  SizedBox(height: 10,),
-                  Container(
-                    height: 78,
-                    padding: const EdgeInsets.all(10),
-                    decoration: ShapeDecoration(
-                      color: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(
-                          width: 1,
-                          strokeAlign: BorderSide.strokeAlignCenter,
-                          color: Colors.white,
+            Text('生活費用', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    children: [
+                      buildExpenseTile(
+                        label: '電費',
+                        image: SvgPicture.asset(
+                          'assets/icons/cost_bill/electricity.svg',
+                          width: 17,
+                          height: 22,
                         ),
-                        borderRadius: BorderRadius.circular(4),
+                        value: 'electricity',
+                        selected: selectedExpense,
+                        onTap: () {
+                          setModalState(() {
+                            selectedExpense = '電費';
+                          });
+                        },
                       ),
-                    ),
+                      SizedBox(height: 10,),
+                      buildExpenseTile(
+                        label: '管理費',
+                        image: SvgPicture.asset('assets/icons/cost_bill/management_cost.svg'),
+                        value: 'electricity',
+                        selected: selectedExpense,
+                        onTap: () {
+                          setModalState(() {
+                            selectedExpense = '管理費';
+                          });
+                        },
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
-            SizedBox(width: 10,),
-            Expanded(
-              child: Column(
-                children: [
-                  buildExpenseTile(
-                    label: '瓦斯費',
-                    image: SvgPicture.asset(
-                      'assets/icons/cost_bill/gas.svg',
-                      color: Color(0xFF5F6E7B),
-                    ),
-                    value: 'electricity',
-                    selected: selectedExpense,
-                    onTap: () {
-                      setModalState(() {
-                        selectedExpense = '瓦斯費';
-                      });
-                    },
-                  ),
-                  SizedBox(height: 10,),
-                  Container(
-                    height: 78,
-                    padding: const EdgeInsets.all(10),
-                    decoration: ShapeDecoration(
-                      color: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(
-                          width: 1,
-                          strokeAlign: BorderSide.strokeAlignCenter,
+                ),
+                SizedBox(width: 10,),
+                Expanded(
+                  child: Column(
+                    children: [
+                      buildExpenseTile(
+                        label: '水費',
+                        image: SvgPicture.asset('assets/icons/cost_bill/water.svg'),
+                        value: 'electricity',
+                        selected: selectedExpense,
+                        onTap: () {
+                          setModalState(() {
+                            selectedExpense = '水費';
+                          });
+                        },
+                      ),
+                      SizedBox(height: 10,),
+                      Container(
+                        height: 78,
+                        padding: const EdgeInsets.all(10),
+                        decoration: ShapeDecoration(
                           color: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(
+                              width: 1,
+                              strokeAlign: BorderSide.strokeAlignCenter,
+                              color: Colors.white,
+                            ),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
                         ),
-                        borderRadius: BorderRadius.circular(4),
                       ),
-                    ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+                SizedBox(width: 10,),
+                Expanded(
+                  child: Column(
+                    children: [
+                      buildExpenseTile(
+                        label: '瓦斯費',
+                        image: SvgPicture.asset(
+                          'assets/icons/cost_bill/gas.svg',
+                          color: Color(0xFF5F6E7B),
+                        ),
+                        value: 'electricity',
+                        selected: selectedExpense,
+                        onTap: () {
+                          setModalState(() {
+                            selectedExpense = '瓦斯費';
+                          });
+                        },
+                      ),
+                      SizedBox(height: 10,),
+                      Container(
+                        height: 78,
+                        padding: const EdgeInsets.all(10),
+                        decoration: ShapeDecoration(
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(
+                              width: 1,
+                              strokeAlign: BorderSide.strokeAlignCenter,
+                              color: Colors.white,
+                            ),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-        const SizedBox(height: 20),
-        Row(
-          children: [
-            Expanded(
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.pop(context);
-                  // setModalState(() {
-                    // selectedExpense = null; // 點返回，回到支出列表
-                  // });
-                },
-                child: Container(
-                  height: 40,
-                  alignment: Alignment.center,
-                  decoration: ShapeDecoration(
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                        width: 1,
-                        color: const Color(0xFFCBD2D6),
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                      // setModalState(() {
+                      // selectedExpense = null; // 點返回，回到支出列表
+                      // });
+                    },
+                    child: Container(
+                      height: 40,
+                      alignment: Alignment.center,
+                      decoration: ShapeDecoration(
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(
+                            width: 1,
+                            color: const Color(0xFFCBD2D6),
+                          ),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
                       ),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),
-                  child: Text(
-                    '返回',
-                    style: TextStyle(
-                      color: const Color(0xFF2B2F35),
-                      fontSize: 14,
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w500,
+                      child: Text(
+                        '返回',
+                        style: TextStyle(
+                          color: const Color(0xFF2B2F35),
+                          fontSize: 14,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ),
-            SizedBox(width: 16,),
-            Expanded(
-              child: GestureDetector(
-                onTap: () {
-                },
-                child: Container(
-                  height: 40,
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                  clipBehavior: Clip.antiAlias,
-                  decoration: ShapeDecoration(
-                    color: const Color(0xFF319877),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                  ),
-                  child: Text(
-                    '下一步',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontFamily: 'PingFang SC',
-                      fontWeight: FontWeight.w500,
+                SizedBox(width: 16,),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                    },
+                    child: Container(
+                      height: 40,
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                      clipBehavior: Clip.antiAlias,
+                      decoration: ShapeDecoration(
+                        color: const Color(0xFF319877),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                      ),
+                      child: Text(
+                        '下一步',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontFamily: 'PingFang SC',
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
+              ],
             ),
+            const SizedBox(height: 20),
+            // 可以加返回、取消等等
           ],
-        ),
-        const SizedBox(height: 20),
-        // 可以加返回、取消等等
-      ],
+        );
+      },
     );
   }
 
@@ -1598,224 +1616,242 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
 
     final TextEditingController controller = TextEditingController();
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Center(
-          child: Text(
-            '$selectedExpense 計費資訊',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-          ),
-        ),
-        const SizedBox(height: 16),
-        Text(
-          '繳費方式',
-          style: TextStyle(
-            color: const Color(0xFF2B2F35),
-            fontSize: 15,
-            fontFamily: 'PingFang TC',
-            fontWeight: FontWeight.w400,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Container(
-          height: 55,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          decoration: ShapeDecoration(
-            color: const Color(0xFFF4F6F7),
-            shape: RoundedRectangleBorder(
-              side: BorderSide(
-                width: 1,
-                color: const Color(0xFFF4F6F7),
+    return FutureBuilder(
+      future: futureCostData,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError) {
+          return Center(
+            child: Text(
+              '發生錯誤: ${snapshot.error}',
+              style: const TextStyle(color: Colors.red, fontSize: 16),
+            ),
+          );
+        }
+        // if (snapshot.hasData) {
+        // }
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Text(
+                '$selectedExpense 計費資訊',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
               ),
-              borderRadius: BorderRadius.circular(3),
             ),
-          ),
-          child: // 收費方式 Dropdown
-          DropdownButtonFormField<int>(
-            isExpanded: true,
-            hint: const Text("繳費方式"),
-            decoration: InputDecoration(
-              errorText: null,
-              contentPadding: EdgeInsets.zero,
-              border: InputBorder.none,
-            ),
-            value: billing,
-            items: List.generate(billingTypes.length, (index) {
-              return DropdownMenuItem<int>(
-                value: index,
-                child: Text(billingTypes[index]),
-              );
-            }),
-            onChanged: (int? newValue) {
-              billing = newValue;
-            },
-          ),
-        ),
-        const SizedBox(height: 10),
-        Text(
-          '費用類型',
-          style: TextStyle(
-            color: const Color(0xFF2B2F35),
-            fontSize: 15,
-            fontFamily: 'PingFang TC',
-            fontWeight: FontWeight.w400,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Container(
-          height: 55,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          decoration: ShapeDecoration(
-            color: const Color(0xFFF4F6F7),
-            shape: RoundedRectangleBorder(
-              side: BorderSide(
-                width: 1,
-                color: const Color(0xFFF4F6F7),
+            const SizedBox(height: 16),
+            Text(
+              '繳費方式',
+              style: TextStyle(
+                color: const Color(0xFF2B2F35),
+                fontSize: 15,
+                fontFamily: 'PingFang TC',
+                fontWeight: FontWeight.w400,
               ),
-              borderRadius: BorderRadius.circular(3),
             ),
-          ),
-          child: // 收費方式 Dropdown
-          DropdownButtonFormField<int>(
-            isExpanded: true,
-            hint: const Text("費用類型"),
-            decoration: InputDecoration(
-              errorText: null,
-              contentPadding: EdgeInsets.zero,
-              border: InputBorder.none,
+            const SizedBox(height: 8),
+            Container(
+              height: 55,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              decoration: ShapeDecoration(
+                color: const Color(0xFFF4F6F7),
+                shape: RoundedRectangleBorder(
+                  side: BorderSide(
+                    width: 1,
+                    color: const Color(0xFFF4F6F7),
+                  ),
+                  borderRadius: BorderRadius.circular(3),
+                ),
+              ),
+              child: // 收費方式 Dropdown
+              DropdownButtonFormField<int>(
+                isExpanded: true,
+                hint: const Text("費用類型"),
+                decoration: InputDecoration(
+                  errorText: null,
+                  contentPadding: EdgeInsets.zero,
+                  border: InputBorder.none,
+                ),
+                value: selectedMethod,
+                items: List.generate(method.length, (index) {
+                  return DropdownMenuItem<int>(
+                    value: index,
+                    child: Text(method[index]),
+                  );
+                }),
+                onChanged: (int? newValue) {
+                  selectedMethod = newValue;
+                },
+              ),
             ),
-            value: selectedMethod,
-            items: List.generate(method.length, (index) {
-              return DropdownMenuItem<int>(
-                value: index,
-                child: Text(method[index]),
-              );
-            }),
-            onChanged: (int? newValue) {
-              selectedMethod = newValue;
-            },
-          ),
-        ),
-        const SizedBox(height: 10),
-        Text(
-          '金額',
-          style: TextStyle(
-            color: const Color(0xFF2B2F35),
-            fontSize: 15,
-            fontFamily: 'PingFang TC',
-            fontWeight: FontWeight.w400,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
-          decoration: ShapeDecoration(
-            color: const Color(0xFFF4F6F7),
-            shape: RoundedRectangleBorder(
-              side: const BorderSide(width: 1, color: Color(0xFFF4F6F7)),
-              borderRadius: BorderRadius.circular(3),
+            const SizedBox(height: 10),
+            Text(
+              '費用類型',
+              style: TextStyle(
+                color: const Color(0xFF2B2F35),
+                fontSize: 15,
+                fontFamily: 'PingFang TC',
+                fontWeight: FontWeight.w400,
+              ),
             ),
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: controller,
-                  maxLines: 1,
-                  decoration: const InputDecoration(
-                    hintStyle: TextStyle(
-                      color: Color(0xFF7B8A95),
+            const SizedBox(height: 8),
+            Container(
+              height: 55,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              decoration: ShapeDecoration(
+                color: const Color(0xFFF4F6F7),
+                shape: RoundedRectangleBorder(
+                  side: BorderSide(
+                    width: 1,
+                    color: const Color(0xFFF4F6F7),
+                  ),
+                  borderRadius: BorderRadius.circular(3),
+                ),
+              ),
+              child: // 收費方式 Dropdown
+              DropdownButtonFormField<int>(
+                isExpanded: true,
+                hint: const Text("繳費方式"),
+                decoration: InputDecoration(
+                  errorText: null,
+                  contentPadding: EdgeInsets.zero,
+                  border: InputBorder.none,
+                ),
+                value: billing,
+                items: List.generate(billingTypes.length, (index) {
+                  return DropdownMenuItem<int>(
+                    value: index,
+                    child: Text(billingTypes[index]),
+                  );
+                }),
+                onChanged: (int? newValue) {
+                  billing = newValue;
+                },
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              '金額',
+              style: TextStyle(
+                color: const Color(0xFF2B2F35),
+                fontSize: 15,
+                fontFamily: 'PingFang TC',
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+              decoration: ShapeDecoration(
+                color: const Color(0xFFF4F6F7),
+                shape: RoundedRectangleBorder(
+                  side: const BorderSide(width: 1, color: Color(0xFFF4F6F7)),
+                  borderRadius: BorderRadius.circular(3),
+                ),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: controller,
+                      maxLines: 1,
+                      decoration: const InputDecoration(
+                        hintStyle: TextStyle(
+                          color: Color(0xFF7B8A95),
+                          fontSize: 15,
+                          fontFamily: 'PingFang TC',
+                          fontWeight: FontWeight.w400,
+                        ),
+                        border: InputBorder.none,
+                      ),
+                      onChanged: (value) {},
+                    ),
+                  ),
+                  Text(
+                    '元/期',
+                    style: TextStyle(
+                      color: const Color(0xFF2B2F35),
                       fontSize: 15,
                       fontFamily: 'PingFang TC',
                       fontWeight: FontWeight.w400,
                     ),
-                    border: InputBorder.none,
-                  ),
-                  onChanged: (value) {},
-                ),
+                  )
+                ],
               ),
-              Text(
-                '元/期',
-                style: TextStyle(
-                  color: const Color(0xFF2B2F35),
-                  fontSize: 15,
-                  fontFamily: 'PingFang TC',
-                  fontWeight: FontWeight.w400,
-                ),
-              )
-            ],
-          ),
-        ),
-        const SizedBox(height: 20),
-        Row(
-          children: [
-            Expanded(
-              child: GestureDetector(
-                onTap: () {
-                  setModalState(() {
-                    selectedExpense = null; // 點返回，回到支出列表
-                  });
-                },
-                child: Container(
-                  height: 40,
-                  alignment: Alignment.center,
-                  decoration: ShapeDecoration(
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                        width: 1,
-                        color: const Color(0xFFCBD2D6),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      setModalState(() {
+                        selectedExpense = null; // 點返回，回到支出列表
+                      });
+                    },
+                    child: Container(
+                      height: 40,
+                      alignment: Alignment.center,
+                      decoration: ShapeDecoration(
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(
+                            width: 1,
+                            color: const Color(0xFFCBD2D6),
+                          ),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
                       ),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),
-                  child: Text(
-                    '返回',
-                    style: TextStyle(
-                      color: const Color(0xFF2B2F35),
-                      fontSize: 14,
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(width: 16,),
-            Expanded(
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: Container(
-                  height: 40,
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                  clipBehavior: Clip.antiAlias,
-                  decoration: ShapeDecoration(
-                    color: const Color(0xFF319877),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                  ),
-                  child: Text(
-                    '確定',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontFamily: 'PingFang SC',
-                      fontWeight: FontWeight.w500,
+                      child: Text(
+                        '返回',
+                        style: TextStyle(
+                          color: const Color(0xFF2B2F35),
+                          fontSize: 14,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
+                SizedBox(width: 16,),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      height: 40,
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                      clipBehavior: Clip.antiAlias,
+                      decoration: ShapeDecoration(
+                        color: const Color(0xFF319877),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                      ),
+                      child: Text(
+                        '確定',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontFamily: 'PingFang SC',
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
+            const SizedBox(height: 20),
           ],
-        ),
-        const SizedBox(height: 20),
-      ],
+        );
+      },
     );
   }
 }
