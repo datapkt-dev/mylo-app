@@ -23,7 +23,9 @@ class _PageFrameState extends State<IndexFrame> {
     return selectedIndex == index ? const Color(0xFF8C5F42) : const Color(0x4C222222);
   }
 
-  final Set<int> selectedIndices = {};
+  List<int> selectedIndices = [];
+  // bool isSelecting = false;
+  bool isChecked = false;
 
   final List<Map<String, String>> items = [
     {'title': '好好住社區', 'subtitle': '台北市大安區敦化南路88號', 'tag': '部分代管'},
@@ -45,6 +47,43 @@ class _PageFrameState extends State<IndexFrame> {
     futureData = apiService.fetchData();
   }
 
+  // void enterSelection(int index) {
+  //   setState(() {
+  //     // isSelecting = true;
+  //     selectedIndices.add(index);
+  //   });
+  // }
+
+  void toggleItem(int index) {
+    setState(() {
+      if (selectedIndices.contains(index)) {
+        selectedIndices.removeAt(index);
+        // if (selectedIndices.isEmpty) {
+        //   isSelecting = false;
+        // }
+      } else {
+        selectedIndices.add(index);
+      }
+      // 更新全選狀態
+      if (selectedIndices.length == dataList.length) {
+        isChecked = true;
+      } else {
+        isChecked = false;
+      }
+    });
+  }
+
+  void toggleSelectAll(bool? value) {
+    setState(() {
+      isChecked = value!;
+      if (isChecked) {
+        selectedIndices = List.generate(dataList.length, (index) => index);
+      } else {
+        selectedIndices.clear();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,14 +96,33 @@ class _PageFrameState extends State<IndexFrame> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    '選擇社區',
-                    style: TextStyle(
-                      color: Color(0xFF2B2F35),
-                      fontSize: 16,
-                      fontFamily: 'PingFang SC',
-                      fontWeight: FontWeight.w500,
-                    ),
+                  Row(
+                    children: [
+                      Text(
+                        '選擇房東',
+                        style: TextStyle(
+                          color: Color(0xFF2B2F35),
+                          fontSize: 16,
+                          fontFamily: 'PingFang SC',
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      Spacer(),
+                      Checkbox(
+                        value: isChecked,
+                        onChanged: toggleSelectAll,
+                        activeColor: Color(0xFF319877),
+                      ),
+                      Text(
+                        '全選',
+                        style: TextStyle(
+                          color: const Color(0xFF323232),
+                          fontSize: 14,
+                          fontFamily: 'PingFang TC',
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ],
                   ),
                   FutureBuilder(
                     future: futureData,
@@ -82,123 +140,83 @@ class _PageFrameState extends State<IndexFrame> {
                       }
                       if (snapshot.hasData) {
                         dataList = snapshot.data!;
-                        print(dataList);
                       }
                       return Column(
                         children: List.generate(dataList.length, (index) {
-                          return Theme(
-                            data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-                            child: ExpansionTile(
-                              leading: ClipOval(
-                                child: Image.network(
-                                  'http://rencoo.com.tw/${dataList[index]['avatar_url']}',
-                                  width: 24,
-                                  height: 24,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              title: Text(
-                                '${dataList[index]['first_name']}${dataList[index]['last_name']} (4)',
-                                style: TextStyle(
-                                  color: Color(0xFF2B2F35),
-                                  fontSize: 14,
-                                  fontFamily: 'PingFang TC',
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                              tilePadding: EdgeInsets.zero,
-                              childrenPadding: EdgeInsets.zero,
-                              children: List.generate(items.length, (index) {
-                                final item = items[index];
-                                final isSelected = selectedIndices.contains(index);
-
-                                return GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      if (isSelected) {
-                                        selectedIndices.remove(index);
-                                      } else {
-                                        selectedIndices.add(index);
-                                      }
-                                    });
-                                  },
-                                  child: Container(
-                                    margin: EdgeInsets.only(bottom: 10),
-                                    padding: EdgeInsets.symmetric(horizontal: 4,),
-                                    decoration: ShapeDecoration(
-                                      color: isSelected ? Color(0xFFF6F6F6) : Colors.transparent,
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                          final isSelected = selectedIndices.contains(index);
+                          return Stack(
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.only(bottom: 8),
+                                decoration: ShapeDecoration(
+                                  color: isSelected ? Color(0xFFD9F2E5) : Colors.transparent,
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                      width: 1,
+                                      color: isSelected ? Color(0xFF319877) : Color(0xFFE3E7EA),
                                     ),
-                                    child: ListTile(
-                                      contentPadding: EdgeInsets.zero,
-                                      leading: Stack(
-                                        children: [
-                                          Container(
-                                            width: 40,
-                                            height: 40,
-                                            decoration: ShapeDecoration(
-                                              shape: RoundedRectangleBorder(
-                                                side: BorderSide(width: 1, color: const Color(0xFFDEE2E6)),
-                                                borderRadius: BorderRadius.circular(4),
-                                              ),
-                                            ),
-                                            child: ClipRRect(
-                                              borderRadius: BorderRadius.circular(4),
-                                              child: Image.asset(
-                                                'assets/images/property.png',
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                          ),
-                                          Positioned(
-                                            bottom: 0,
-                                            child: Container(
-                                              width: 40,
-                                              height: 11,
-                                              alignment: Alignment.center,
-                                              decoration: ShapeDecoration(
-                                                color: item['tag'] == '部分包租' ? Color(0xFFB3885C) : Color(0xFF319877),
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(4),
-                                                ),
-                                              ),
-                                              child: Text(
-                                                item['tag']!,
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 8,
-                                                  fontFamily: 'PingFang TC',
-                                                  fontWeight: FontWeight.w400,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                ),
+                                child: Theme(
+                                  data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                                  child: ListTile(
+                                    leading: ClipOval(
+                                      // child: Image.network(
+                                      //   'http://rencoo.com.tw/${dataList[index]['avatar_url']}',
+                                      //   width: 24,
+                                      //   height: 24,
+                                      //   fit: BoxFit.cover,
+                                      // ),
+                                      child: Image.asset(
+                                        width: 24,
+                                        height: 24,
+                                        index % 2 == 0
+                                            ? 'assets/images/contract_new/customer_female.png'
+                                            : 'assets/images/contract_new/customer_male.png',
                                       ),
-                                      title: Text(
-                                        item['title']!,
-                                        style: TextStyle(
-                                          color: const Color(0xFF2B2F35),
-                                          fontSize: 14,
-                                          fontFamily: 'PingFang TC',
-                                          fontWeight: FontWeight.w500,
+                                    ),
+                                    title: Text(
+                                      '${dataList[index]['first_name']}${dataList[index]['last_name']} (4)',
+                                      style: TextStyle(
+                                        color: Color(0xFF2B2F35),
+                                        fontSize: 14,
+                                        fontFamily: 'PingFang TC',
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                    onTap: () {
+                                      toggleItem(index);
+                                    },
+                                  ),
+                                ),
+                              ),
+                              if (/*isSelecting && */isSelected) ...[
+                                Positioned(
+                                  top: 0,
+                                  right: 0,
+                                  child: Container(
+                                    width: 14,
+                                    height: 12,
+                                    alignment: Alignment.center,
+                                    decoration: const ShapeDecoration(
+                                      color: Color(0xFF319877),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.only(
+                                          topRight: Radius.circular(4),
+                                          bottomLeft: Radius.circular(4),
                                         ),
                                       ),
-                                      subtitle: Text(
-                                        item['subtitle']!,
-                                        style: TextStyle(
-                                          color: const Color(0xFF5F6E7B),
-                                          fontSize: 12,
-                                          fontFamily: 'PingFang TC',
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                      // no trailing
+                                    ),
+                                    child: const Icon(
+                                      Icons.check_rounded,
+                                      color: Colors.white,
+                                      size: 8,
                                     ),
                                   ),
-                                );
-                              }),
-                            ),
+                                ),
+                              ],
+                            ],
                           );
                         }),
                       );

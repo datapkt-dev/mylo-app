@@ -203,15 +203,8 @@ class _ContractNewState extends ConsumerState<ContractNew> {
                     if (_currentStep == 0 && currentData['property_id'] == 0) {
                       Fluttertoast.showToast(msg: "請選擇物件");
                     } else if (_currentStep == 2) {
-                      // ref.read(contractDataProvider.notifier).update((data) => {
-                      //   ...data,
-                      //   'utility_fees': (data['utility_fees_temp'] as List)
-                      //       .where((fee) => fee['enable'] == true)
-                      //       .toList(),
-                      // });
                       final updatedData = ref.read(contractDataProvider);
-                      print('before post');
-                      print(updatedData['utility_fees']);
+                      // print(updatedData['utility_fees']);
                       await apiService.postNewContract(updatedData);
                       // setState(() {
                       //   _currentStep = _currentStep+1;
