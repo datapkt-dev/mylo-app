@@ -53,7 +53,7 @@ class _ContractNewState extends ConsumerState<ContractNew> {
         // "deposit_months": 0,
         // "deposit_amount": 0,
         "utility_fees": [],
-        "utility_fees_temp": [],
+        // "utility_fees_temp": [],
         "signatories": [],
         "checklist": {
           "appliances": [],
@@ -203,12 +203,12 @@ class _ContractNewState extends ConsumerState<ContractNew> {
                     if (_currentStep == 0 && currentData['property_id'] == 0) {
                       Fluttertoast.showToast(msg: "請選擇物件");
                     } else if (_currentStep == 2) {
-                      ref.read(contractDataProvider.notifier).update((data) => {
-                        ...data,
-                        'utility_fees': (data['utility_fees_temp'] as List)
-                            .where((fee) => fee['enable'] == true)
-                            .toList(),
-                      });
+                      // ref.read(contractDataProvider.notifier).update((data) => {
+                      //   ...data,
+                      //   'utility_fees': (data['utility_fees_temp'] as List)
+                      //       .where((fee) => fee['enable'] == true)
+                      //       .toList(),
+                      // });
                       final updatedData = ref.read(contractDataProvider);
                       print('before post');
                       print(updatedData['utility_fees']);
