@@ -605,7 +605,7 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
                       ),
                     );
                   }),
-                )
+                ),
               ],
             ),
           ),
@@ -1399,7 +1399,7 @@ class _ContractNewStep2State extends ConsumerState<ContractNewStep2> {
 
     if (index != -1) {
       selectedMethod = costList[index]['method_id'];
-      billing = costList[index]['method_id']-1;
+      billing = costList[index]['pricing']['model']-1;
       controller.text = costList[index]['pricing']['input'].toString();
     }
 
